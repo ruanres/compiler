@@ -2,12 +2,17 @@ package Example;
 
 import java_cup.runtime.*;
 import java_cup.runtime.ComplexSymbolFactory.Location;
+
 %%
+
+// options
+%unicode
 %cup
 %line
 %column
 %char
 %class Scanner
+
 %{
 	public Scanner(java.io.InputStream r, ComplexSymbolFactory sf){
 		this(r);
@@ -25,12 +30,17 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
     return sf.newSymbol("EOF",sym.EOF);
 %eofval}
 
+// macros
+WHITESPACE = [ \t\r\n\f]
+NUMBER = [0-9]+
+
 %%
+
 ";" { return symbol("Semicolon",sym.SEMI); }
 "+" { return symbol("Plus",sym.PLUS); }
 "*" { return symbol("Times",sym.TIMES); }
 "(" { return symbol("Left Bracket",sym.LPAREN); }
 ")" { return symbol("Right Bracket",sym.RPAREN); }
-[0-9]+ { return symbol("Integral Number",sym.NUMBER, new Integer(yytext())); }
-[ \t\r\n\f] { /* ignore white space. */ }
-. { System.err.println("Illegal character: "+yytext()); }
+{NUMBER} { return symbol("Integral Number",sym.NUMBER, new Integer(yytext())); }
+{WHITESPACE} { /* ignore white space. */ }
+. { System.err.println(String.format("Illegal character %s at line %d, column %d, char %d", yytext(), yyline, yycolumn, yychar)); }
