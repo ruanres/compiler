@@ -1,29 +1,34 @@
-package Compilador;
+package lexico;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.StringReader;
 
 
 public class Main {
   private static final String FILENAME = "teste.txt";
 
-  public static void main(String[] args){
-		try (BufferedReader br = new BufferedReader(new FileReader(FILENAME))) {
+  public static void main(String[] args) throws IOException{
+    String fileInfo = "";
 
-			String sCurrentLine;
-      String fileInfo = "";
+	try (BufferedReader br = new BufferedReader(new FileReader(FILENAME))) {
 
-			while ((sCurrentLine = br.readLine()) != null) {
+	  String sCurrentLine;
+
+	  while ((sCurrentLine = br.readLine()) != null) {
         fileInfo += sCurrentLine + '\n';
-			}
+	  }
 
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	} catch (IOException e) {
+		e.printStackTrace();
+	}
 
     generateResult(fileInfo);
   }
 
-  public static void generateResult(String fileInfo) {
+  public static void generateResult(String fileInfo) throws IOException {
     Lexer lexer = new Lexer(new StringReader(fileInfo));
 
     while(true){
