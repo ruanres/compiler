@@ -10,10 +10,10 @@ public class Main {
 		try (BufferedReader br = new BufferedReader(new FileReader(FILENAME))) {
 
 			String sCurrentLine;
-      String fileInfo = ""
+      String fileInfo = "";
 
 			while ((sCurrentLine = br.readLine()) != null) {
-        fileInfo += sCurrentLine + '\n'
+        fileInfo += sCurrentLine + '\n';
 			}
 
 		} catch (IOException e) {
@@ -33,7 +33,7 @@ public class Main {
         return;
       } else {
         String resultado = "<Palavra_Reservada> " + lexer.lexeme + "\n";
-        System.out.println(resultado)
+        System.out.println(resultado);
       }
     }
   }
