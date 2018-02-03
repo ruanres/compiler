@@ -6,38 +6,6 @@ import java_cup.runtime.*;
 
 parser code {:
 
-    public void syntax_error(Symbol s) {
-        String lexeme = s.value.toString();
-        int line = s.right;
-        int column = s.left;
-        String error = String.format("Syntax error at %s at line %d, column %d", lexeme, line, column);
-	    System.err.println(error);
-    }
-
-    public static void newScope(){
-	    typenames.push(new HashSet<String>());
-    }
-
-    public static void deleteScope(){
-	    typenames.pop();
-    }
-
-    public static boolean lookupType(String name){
-        for (HashSet<String> scope: typenames)
-            if (scope.contains(name)) return true;
-        return false;
-    }
-
-    public static void addType(String name){
-	    typenames.peek().add(name);
-    }
-
-    public static LinkedList<HashSet<String>> typenames = new LinkedList<HashSet<String>>();
-
-    public Parser(Lexer lex, ComplexSymbolFactory sf) {
-	    super(lex,sf);
-    }
-
     public static void main(String[] args) {
         try {
             ComplexSymbolFactory csf = new ComplexSymbolFactory();
@@ -54,24 +22,39 @@ parser code {:
             e.printStackTrace();
         }
     }
+
+    public void syntax_error(Symbol s) {
+        String lexeme = s.value.toString();
+        int line = s.right;
+        int column = s.left;
+        String error = String.format("Syntax error at %s at line %d, column %d", lexeme, line, column);
+	    System.err.println(error);
+    }
 :};
 
-terminal	IDENTIFIER, I_CONSTANT, F_CONSTANT, STRING_LITERAL, FUNC_NAME, SIZEOF;
-terminal	PTR_OP, INC_OP, DEC_OP, LEFT_OP, RIGHT_OP, LE_OP, GE_OP, EQ_OP, NE_OP;
-terminal	AND_OP, OR_OP, MUL_ASSIGN, DIV_ASSIGN, MOD_ASSIGN, ADD_ASSIGN;
-terminal	SUB_ASSIGN, LEFT_ASSIGN, RIGHT_ASSIGN, AND_ASSIGN;
-terminal	XOR_ASSIGN, OR_ASSIGN;
-terminal	TYPEDEF_NAME, ENUMERATION_CONSTANT;
+terminal	IDENTIFIER, I_CONSTANT, F_CONSTANT, STRING_LITERAL, FUNC_NAME, SIZEOF,
+	PTR_OP, INC_OP, DEC_OP, LEFT_OP, RIGHT_OP, LE_OP, GE_OP, EQ_OP, NE_OP, AND_OP, 
+	OR_OP, MUL_ASSIGN, DIV_ASSIGN, MOD_ASSIGN, ADD_ASSIGN, SUB_ASSIGN, LEFT_ASSIGN, 
+	RIGHT_ASSIGN, AND_ASSIGN, XOR_ASSIGN, OR_ASSIGN, TYPEDEF_NAME, ENUMERATION_CONSTANT, 
+	TYPEDEF, EXTERN, STATIC, AUTO, REGISTER, INLINE, CONST, RESTRICT, VOLATILE, BOOL, 
+	CHAR, SHORT, INT, LONG, SIGNED, UNSIGNED, FLOAT, DOUBLE, VOID, COMPLEX, IMAGINARY,
+	STRUCT, UNION, ENUM, ELLIPSIS , CASE, DEFAULT, IF, ELSE, SWITCH, WHILE, DO, FOR, 
+	GOTO, CONTINUE, BREAK, RETURN, ALIGNAS, ALIGNOF, ATOMIC, GENERIC, NORETURN, 
+	STATIC_ASSERT, THREAD_LOCAL;
 
-terminal	TYPEDEF, EXTERN, STATIC, AUTO, REGISTER, INLINE;
-terminal	CONST, RESTRICT, VOLATILE;
-terminal	BOOL, CHAR, SHORT, INT, LONG, SIGNED, UNSIGNED, FLOAT, DOUBLE, VOID;
-terminal	COMPLEX, IMAGINARY; 
-terminal	STRUCT, UNION, ENUM, ELLIPSIS;
-
-terminal	CASE, DEFAULT, IF, ELSE, SWITCH, WHILE, DO, FOR, GOTO, CONTINUE, BREAK, RETURN;
-
-terminal	ALIGNAS, ALIGNOF, ATOMIC, GENERIC, NORETURN, STATIC_ASSERT, THREAD_LOCAL;
+non terminal translation_unit, primary_expression, constant, enumeration_constant, string, generic_selection, generic_assoc_list, generic_association, postfix_expression, argument_expression_list, expression, assignment_expression;
+non terminal unary_operator, type_name, cast_expression, multiplicative_expression, additive_expression;
+non terminal shift_expression, equality_expression, and_expression, exclusive_or_expression;
+non terminal logical_and_expression, logical_or_expression, conditional_expression, constant_expression;
+non terminal declaration_specifiers, init_declarator_list, storage_class_specifier, type_specifier, type_qualifier;
+non terminal init_declarator, declarator, struct_or_union_specifier, struct_or_union, struct_declaration_list, struct_declaration;
+non terminal initializer, specifier_qualifier_list, struct_declarator_list, struct_declarator, enum_specifier;
+non terminal enumerator_list, enumerator, atomic_type_specifier, function_specifier, alignment_specifier, pointer, direct_declarator, parameter_type_list, identifier_list;
+non terminal type_qualifier_list, parameter_declaration, abstract_declarator, direct_abstract_declarator;
+non terminal initializer_list, designation, designator_list, designator, static_assert_declaration, statement, labeled_statement, compound_statement, block_item_list, block_item, selection_statement;
+non terminal jump_statement, expression_statement, external_declaration, function_definition;
+non terminal assignment_operator, parameter_list, unary_expression, iteration_statement, declaration_list;
+non terminal relational_expression, inclusive_or_expression, declaration;
 
 start with translation_unit;
 
