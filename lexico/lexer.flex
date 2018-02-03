@@ -1,7 +1,5 @@
-package Compilador;
+package lexico;
 /* Reference: http://www.quut.com/c/ANSI-C-grammar-l.html */
-
-import static Compilador.Token.*;
 
 %%
 
@@ -44,8 +42,9 @@ WS = [ \t\v\n\f]
 
               if (c == 0)
                   break;
-          }
+        }
       yyerror("unterminated comment");
+    }
   }
 
   private int check_type() {
@@ -174,4 +173,4 @@ WS = [ \t\v\n\f]
 ("?")					  { lexeme = yytext(); return QUESTION_MARK; }
 
 {WS}+					{ /* whitespace separates tokens */ }
-.					    { /* discard bad characters */ }
+.					    {  System.out.println("error: unexpected token |%s|\n", yytext() }

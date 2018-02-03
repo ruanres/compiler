@@ -13,17 +13,17 @@ public class Main {
   public static void main(String[] args) throws IOException{
     String fileInfo = "";
 
-	try (BufferedReader br = new BufferedReader(new FileReader(FILENAME))) {
+	  try (BufferedReader br = new BufferedReader(new FileReader(FILENAME))) {
 
-	  String sCurrentLine;
+	    String sCurrentLine;
 
-	  while ((sCurrentLine = br.readLine()) != null) {
+	    while ((sCurrentLine = br.readLine()) != null) {
         fileInfo += sCurrentLine + '\n';
-	  }
+	    }
 
-	} catch (IOException e) {
-		e.printStackTrace();
-	}
+	  } catch (IOException e) {
+		    e.printStackTrace();
+	  }
 
     generateResult(fileInfo);
   }
@@ -31,6 +31,18 @@ public class Main {
   public static void generateResult(String fileInfo) throws IOException {
     Lexer lexer = new Lexer(new StringReader(fileInfo));
 
+    while (true){
+      Token token = lexer.yylex();
+
+      if (token == null){
+        break;
+      }
+      
+      System.out.println(token);
+    }
+    
+
+    /*
     while(true){
       Token token = lexer.yylex();
       if(token == null){
@@ -40,7 +52,7 @@ public class Main {
         String resultado = "<Palavra_Reservada> " + lexer.lexeme + "\n";
         System.out.println(resultado);
       }
-    }
+    }*/
   }
 
 }
