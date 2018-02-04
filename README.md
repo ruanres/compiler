@@ -9,5 +9,5 @@ $ java -jar libs/jflex.jar --noinputstreamctor -d ./java/src/compiler/generated 
 # Gerar Analisador semantico
 
 ```sh
-$ java -jar libs/cup.jar -compact_red -expect 10000 -package compiler.generated -destdir ./java/src/compiler/generated ./spec/Parser.cup
+$ java -jar libs/cup.jar -compact_red -expect 10000 -package compiler.generated -destdir ./java/src/compiler/generated -parser Parser ./spec/Parser.cup
 ```
