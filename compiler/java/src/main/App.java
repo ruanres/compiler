@@ -1,11 +1,10 @@
 package main;
 
 import java.io.*;
-//import java.nio.file.Paths;
-import java.util.Scanner;
+import java.nio.file.Paths;
 
-import util.Log;
-import compiler.generated.Parser;
+//import util.Log;
+//import compiler.generated.Parser;
 import compiler.generated.Scanner;
 
 
@@ -16,9 +15,10 @@ public class App {
         Long initialTime = System.currentTimeMillis();
 
         String rootPath = Paths.get("").toAbsolutePath().toString();
-        String filePath = "/examples/";
+        String filePath = "/inputs/";
         String sourcecode = rootPath + filePath + "code.txt";
-
+        
+        /**
         try {
             File file = new File(sourcecode);
             InputStream is = new FileInputStream(file);
@@ -40,5 +40,6 @@ public class App {
             Log.logErro(e.getMessage());
             e.printStackTrace();
         }
+        **/
     }
 }
