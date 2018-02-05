@@ -5,7 +5,7 @@ import java_cup.runtime.*;
 
 %%
 
-%class Lexer
+%class Scanner
 %type Token
 %public
 %unicode
@@ -41,7 +41,7 @@ WS = [ \t\v\n\f]
   private Symbol symbol(int type) {
 		return new Token(type, yyline, yycolumn);
 	}
-	
+
   private Symbol symbol(int type, Object value) {
 		return new Token(type, yyline, yycolumn, value);
   }
@@ -126,10 +126,10 @@ WS = [ \t\v\n\f]
 
 {L}{A}*					{ return check_type(); }
 
-{HP}{H}+{IS}?			{ return symbol(sym.I_CONSTANT); }
-{NZ}{D}*{IS}?			{ return symbol(sym.I_CONSTANT); }
-"0"{O}*{IS}?			{ return symbol(sym.I_CONSTANT); }
-{CP}?"'"([^"'"\\\n]|{ES})+"'"		{ return symbol(sym.I_CONSTANT); }
+{HP}{H}+{IS}?				{ return symbol(sym.I_CONSTANT); }
+{NZ}{D}*{IS}?		    { return symbol(sym.I_CONSTANT); }
+"0"{O}*{IS}?			  { return symbol(sym.I_CONSTANT); }
+{CP}?"'"([^'\\\n]|{ES})+"'"		{ return symbol(sym.I_CONSTANT); }
 
 {D}+{E}{FS}?				{ return symbol(sym.F_CONSTANT); }
 {D}*"."{D}+{E}?{FS}?	    { return symbol(sym.F_CONSTANT); }
@@ -138,11 +138,7 @@ WS = [ \t\v\n\f]
 {HP}{H}*"."{H}+{P}{FS}?		{ return symbol(sym.F_CONSTANT); }
 {HP}{H}+"."{P}{FS}?			{ return symbol(sym.F_CONSTANT); }
 
-/* Need Fix */
-/* ({SP}?\"([^"\\\n]|{ES})*\\"{WS}*)+	{ return STRING_LITERAL; } */
-
-/* Need Fix */
-/* \"(\\.|[^\\"])*\"       { return symbol(sym.STRING_LITERAL); }  */
+\"(.[^\"]*)\"	{ return symbol(sym.STRING_LITERAL); }
 
 "..."					{ return symbol(sym.ELLIPSIS); }
 ">>="					{ return symbol(sym.RIGHT_ASSIGN); }
@@ -155,6 +151,8 @@ WS = [ \t\v\n\f]
 "&="					{ return symbol(sym.AND_ASSIGN); }
 "^="					{ return symbol(sym.XOR_ASSIGN); }
 "|="					{ return symbol(sym.OR_ASSIGN); }
+
+
 ">>"					{ return symbol(sym.RIGHT_OP); }
 "<<"					{ return symbol(sym.LEFT_OP); }
 "++"					{ return symbol(sym.INC_OP); }
@@ -166,33 +164,41 @@ WS = [ \t\v\n\f]
 ">="					{ return symbol(sym.GE_OP); }
 "=="					{ return symbol(sym.EQ_OP); }
 "!="					{ return symbol(sym.NE_OP); }
-";"				        { return symbol(sym.SEMICOLON); }
-"{"|"<%"			    { return symbol(sym.LBRACE) }
-"}"|"%>"			    { return symbol(sym.RBRACE); }
-","					    { return symbol(sym.COMMA); }
-":"					    { return symbol(sym.COLON); }
-"="					    { return symbol(sym.EQ_OP); }
+
+/* ---- Atribution ---- */
+"="					    { return symbol(sym.EQ); }
+
+/* ---- Separators ---- */
 "("					    { return symbol(sym.LPAREN); }
 ")"					    { return symbol(sym.RPAREN); }
-"["|"<:"			    { return symbol(sym.LBRACK); }
-"]"|":>"			    { return symbol(sym.RBRACK); }
+"{"|"<%"			  { return symbol(sym.LBRACE); }
+"}"|"%>"			  { return symbol(sym.RBRACE); }
+"["|"<:"			  { return symbol(sym.LBRACK); }
+"]"|":>"			  { return symbol(sym.RBRACK); }
+";"				      { return symbol(sym.SEMICOLON); }
+","					    { return symbol(sym.COMMA); }
 "."					    { return symbol(sym.DOT); }
 
-
-"&"					    { return symbol(sym.AND); }
-"!"					    { return symbol(sym.NOT); }
-"~"					    { return symbol(sym.COMP); }
-"-"					    { return symbol(sym.MINUS); }
+/* ---- Arithmetic operators ---- */
 "+"				 	    { return symbol(sym.PLUS); }
+"-"					    { return symbol(sym.MINUS); }
 "*"					    { return symbol(sym.MULT); }
 "/"					    { return symbol(sym.DIV); }
 "%"					    { return symbol(sym.MOD); }
 
+/* ---- Operator ---- */
+":"					    { return symbol(sym.COLON); }
+
+/* ---- Logic operators----  */
 "<"					    { return symbol(sym.LT); }
 ">"					    { return symbol(sym.GT); }
-"^"					    { return symbol(sym.OR); }
+"&"					    { return symbol(sym.AND); }
+"!"					    { return symbol(sym.NOT); }
+"~"					    { return symbol(sym.COMP); }
 "|"					    { return symbol(sym.OR); }
+"^"					    { return symbol(sym.XOR); }
 "?"					    { return symbol(sym.QUESTION); }
+
 
 {WS}+					{ /* whitespace separates tokens */ }
 .					    { /* print error message */ }

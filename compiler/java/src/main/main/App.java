@@ -13,28 +13,29 @@ public class App {
     public static void main(String[] args) {
         Long initialTime = System.currentTimeMillis();
 
-        File input = new File("input/code.txt");
+        File input = new File("inputs/code.txt");
         String filePath = input.getAbsolutePath();
-
+        
+        
         try {
             File file = new File(filePath);
             InputStream is = new FileInputStream(file);
             BufferedReader br = new BufferedReader(new InputStreamReader(is, "UTF-8"));
 
             scanner = new Scanner(br);
-
+            System.out.println(br.readLine());
             @SuppressWarnings("deprecation")
-            Parser parser = new Parser(scanner);
-            parser.parse();
+			Parser parser = new Parser((java_cup.runtime.Scanner) scanner);
+			parser.parse();
 
-            /**
+            
             if (Parser.errors == 0) {
                 Long totalTime = System.currentTimeMillis() - initialTime;
                 Log.log("Tempo: " + totalTime + " ms");
 
                 Log.log("Compilaçao efetuada com sucesso.");
             }
-             **/
+             
         } catch (Exception e) {
             Log.logErro(e.getMessage());
             e.printStackTrace();

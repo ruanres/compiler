@@ -1241,6 +1241,7 @@ public class Parser extends java_cup.runtime.lr_parser {
   /** <code>error</code> Symbol index. */
   public int error_sym() {return 1;}
 
+  public static int errors = 0;
 
 
     /*
@@ -1262,11 +1263,12 @@ public class Parser extends java_cup.runtime.lr_parser {
     }
     */
     public void syntax_error(Symbol s) {
-        String lexeme = s.value.toString();
+    /*	System.out.println(s);
+        String lexeme = s.value.toString(); */
         int line = s.right;
         int column = s.left;
-        String error = String.format("Syntax error at %s at line %d, column %d", lexeme, line, column);
-	    System.err.println(error);
+        String error = String.format("Syntax error at %s at line %d, column %d", s.value, line, column);
+	    System.err.println("An syntax ocurred");
     }
 
 
