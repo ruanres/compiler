@@ -141,7 +141,8 @@ WS = [ \t\v\n\f]
 /* Need Fix */
 /* ({SP}?\"([^"\\\n]|{ES})*\\"{WS}*)+	{ return STRING_LITERAL; } */
 
-\"(\\.|[^\\"])*\"       {return symbol(sym.STRING_LITERAL);}
+/* Need Fix */
+/* \"(\\.|[^\\"])*\"       { return symbol(sym.STRING_LITERAL); }  */
 
 "..."					{ return symbol(sym.ELLIPSIS); }
 ">>="					{ return symbol(sym.RIGHT_ASSIGN); }
