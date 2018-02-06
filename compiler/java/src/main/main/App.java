@@ -27,7 +27,7 @@ public class App {
     		e.printStackTrace();
     	}
         
-        LexicalAnalyser(scanner);
+        //LexicalAnalyser(scanner);
         SyntacticAnalyser(scanner);    
     } 
     

@@ -528,7 +528,10 @@ labeled_statement
 	| DEFAULT COLON statement
 	;
 
-compound_statement ::= LBRACE RBRACE | LBRACE  block_item_list RBRACE;
+compound_statement
+  ::= LBRACE RBRACE
+  | LBRACE  block_item_list RBRACE
+  ;
 
 block_item_list
 	::= block_item
