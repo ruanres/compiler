@@ -1,12 +1,13 @@
-package spec;
+package compiler.generated;
 /* Reference: http://www.quut.com/c/ANSI-C-grammar-l.html */
 import java_cup.runtime.*;
+import util.Symbol;
 
 
 %%
 
 %class Scanner
-%type Token
+%type java_cup.runtime.Symbol
 %public
 %unicode
 %line
@@ -31,174 +32,146 @@ SP = (u8|u|U|L)
 ES = (\\(["'"\?\\abfnrtv]|[0-7]{1,3}|x[a-fA-F0-9]+))
 WS = [ \t\v\n\f]
 
+LineTerminator = \r|\n|\r\n
+InputCharacter = [^\r\n]
+
+/* Comments */
+
+Comments = {LineComment} | {BlockComment}
+LineComment = "//" {InputCharacter}* {LineTerminator}?
+BlockComment = "/*" [^*] ~"*/" | "/*" "*"+ "/"
+
 %{
   public String lexeme;
-
-  private int yywrap() {       /* called at end of input */
-      return 1;           /* terminate now */
-  }
-
-  private Symbol symbol(int type) {
-		return new Token(type, yyline, yycolumn);
-	}
-
-  private Symbol symbol(int type, Object value) {
-		return new Token(type, yyline, yycolumn, value);
-  }
-
-  private void comment() {
-    int c;
-
-    while ((c = input()) != 0);
-
-    if (c == '*') {
-      while ((c = input()) == '*');
-
-       if (c == '/') { return;
-
-              if (c == 0)
-                  break;
-        }
-      yyerror("unterminated comment");
-    }
-  }
-
-  private int check_type() {
-      switch (sym_type(yytext))
-      {
-      case TYPEDEF_NAME:                /* previously defined */
-          return sym.TYPEDEF_NAME;
-      case ENUMERATION_CONSTANT:        /* previously defined */
-          return sym.ENUMERATION_CONSTANT;
-      default:                          /* includes undefined */
-          return sym.IDENTIFIER;
-      }
-  }
-
 %}
+%eofval{
+    return new Symbol (sym.EOF, new String("Fim do arquivo"));
+%eofval}
 %%
 
-"auto"				    { return symbol(sym.AUTO); }
-"break"					{ return symbol(sym.BREAK); }
-"case"				    { return symbol(sym.CASE); }
-"char"			    	{ return symbol(sym.CHAR); }
-"const"				    { return symbol(sym.CONST); }
-"continue"			    { return symbol(sym.CONTINUE); }
-"default"				{ return symbol(sym.DEFAULT); }
-"do"				    { return symbol(sym.DO); }
-"double"			    { return symbol(sym.DOUBLE); }
-"else"				    { return symbol(sym.ELSE); }
-"enum"				    { return symbol(sym.ENUM); }
-"extern"				{ return symbol(sym.EXTERN); }
-"float"				    { return symbol(sym.FLOAT); }
-"for"					{ return symbol(sym.FOR); }
-"goto"				    { return symbol(sym.GOTO); }
-"if"					{ return symbol(sym.IF); }
-"inline"				{ return symbol(sym.INLINE); }
-"int"					{ return symbol(sym.INT); }
-"long"					{ return symbol(sym.LONG); }
-"register"			    { return symbol(sym.REGISTER); }
-"restrict"			    { return symbol(sym.RESTRICT); }
-"return"				{ return symbol(sym.RETURN); }
-"short"					{ return symbol(sym.SHORT); }
-"signed"				{ return symbol(sym.SIGNED); }
-"sizeof"				{ return symbol(sym.SIZEOF); }
-"static"				{ return symbol(sym.STATIC); }
-"struct"				{ return symbol(sym.STRUCT); }
-"switch"				{ return symbol(sym.SWITCH); }
-"typedef"				{ return symbol(sym.TYPEDEF); }
-"union"					{ return symbol(sym.UNION); }
-"unsigned"			    { return symbol(sym.UNSIGNED); }
-"void"					{ return symbol(sym.VOID); }
-"volatile"			    { return symbol(sym.VOLATILE); }
-"while"					{ return symbol(sym.WHILE); }
-"_Alignas"              { return symbol(sym.ALIGNAS); }
-"_Alignof"              { return symbol(sym.ALIGNOF); }
-"_Atomic"               { return symbol(sym.ATOMIC); }
-"_Bool"                 { return symbol(sym.BOOL); }
-"_Complex"              { return symbol(sym.COMPLEX); }
-"_Generic"              { return symbol(sym.GENERIC); }
-"_Imaginary"            { return symbol(sym.IMAGINARY); }
-"_Noreturn"             { return symbol(sym.NORETURN); }
-"_Static_assert"        { return symbol(sym.STATIC_ASSERT); }
-"_Thread_local"         { return symbol(sym.THREAD_LOCAL); }
-"__func__"              { return symbol(sym.FUNC_NAME); }
+"auto"				    { return new Symbol (sym.AUTO, yychar, yyline, yytext());}
+"break"					  { return new Symbol (sym.BREAK, yychar, yyline, yytext());}
+"case"				    { return new Symbol (sym.CASE, yychar, yyline, yytext());}
+"char"			    	{ return new Symbol (sym.CHAR, yychar, yyline, yytext());}
+"const"				    { return new Symbol (sym.CONST, yychar, yyline, yytext());}
+"continue"			  { return new Symbol (sym.CONTINUE, yychar, yyline, yytext());}
+"default"				  { return new Symbol (sym.DEFAULT, yychar, yyline, yytext());}
+"do"				      { return new Symbol (sym.DO, yychar, yyline, yytext());}
+"double"			    { return new Symbol (sym.DOUBLE, yychar, yyline, yytext());}
+"else"				    { return new Symbol (sym.ELSE, yychar, yyline, yytext());}
+"enum"				    { return new Symbol (sym.ENUM, yychar, yyline, yytext());}
+"extern"				  { return new Symbol (sym.EXTERN, yychar, yyline, yytext());}
+"float"				    { return new Symbol (sym.FLOAT, yychar, yyline, yytext());}
+"for"					    { return new Symbol (sym.FOR, yychar, yyline, yytext());}
+"goto"				    { return new Symbol (sym.GOTO, yychar, yyline, yytext());}
+"if"					    { return new Symbol (sym.IF, yychar, yyline, yytext());}
+"inline"				  { return new Symbol (sym.INLINE, yychar, yyline, yytext());}
+"int"					    { return new Symbol (sym.INT, yychar, yyline, yytext());}
+"long"					  { return new Symbol (sym.LONG, yychar, yyline, yytext());}
+"register"			  { return new Symbol (sym.REGISTER, yychar, yyline, yytext());}
+"restrict"			  { return new Symbol (sym.RESTRICT, yychar, yyline, yytext());}
+"return"				  { return new Symbol (sym.RETURN, yychar, yyline, yytext());}
+"short"					  { return new Symbol (sym.SHORT, yychar, yyline, yytext());}
+"signed"				  { return new Symbol (sym.SIGNED, yychar, yyline, yytext());}
+"sizeof"				  { return new Symbol (sym.SIZEOF, yychar, yyline, yytext());}
+"static"				  { return new Symbol (sym.STATIC, yychar, yyline, yytext());}
+"struct"				  { return new Symbol (sym.STRUCT, yychar, yyline, yytext());}
+"switch"				  { return new Symbol (sym.SWITCH, yychar, yyline, yytext());}
+"typedef"				  { return new Symbol (sym.TYPEDEF, yychar, yyline, yytext());}
+"union"					  { return new Symbol (sym.UNION, yychar, yyline, yytext());}
+"unsigned"			  { return new Symbol (sym.UNSIGNED, yychar, yyline, yytext());}
+"void"					  { return new Symbol (sym.VOID, yychar, yyline, yytext());}
+"volatile"			  { return new Symbol (sym.VOLATILE, yychar, yyline, yytext());}
+"while"					  { return new Symbol (sym.WHILE, yychar, yyline, yytext());}
+"_Alignas"        { return new Symbol (sym.ALIGNAS, yychar, yyline, yytext());}
+"_Alignof"        { return new Symbol (sym.ALIGNOF, yychar, yyline, yytext());}
+"_Atomic"         { return new Symbol (sym.ATOMIC, yychar, yyline, yytext());}
+"_Bool"           { return new Symbol (sym.BOOL, yychar, yyline, yytext());}
+"_Complex"        { return new Symbol (sym.COMPLEX, yychar, yyline, yytext());}
+"_Generic"        { return new Symbol (sym.GENERIC, yychar, yyline, yytext());}
+"_Imaginary"      { return new Symbol (sym.IMAGINARY, yychar, yyline, yytext());}
+"_Noreturn"       { return new Symbol (sym.NORETURN, yychar, yyline, yytext());}
+"_Static_assert"  { return new Symbol (sym.STATIC_ASSERT, yychar, yyline, yytext());}
+"_Thread_local"   { return new Symbol (sym.THREAD_LOCAL, yychar, yyline, yytext());}
+"__func__"        { return new Symbol (sym.FUNC_NAME, yychar, yyline, yytext());}
 
-{L}{A}*					{ return check_type(); }
-
-{HP}{H}+{IS}?				{ return symbol(sym.I_CONSTANT); }
-{NZ}{D}*{IS}?		    { return symbol(sym.I_CONSTANT); }
-"0"{O}*{IS}?			  { return symbol(sym.I_CONSTANT); }
-{CP}?"'"([^'\\\n]|{ES})+"'"		{ return symbol(sym.I_CONSTANT); }
-
-{D}+{E}{FS}?				{ return symbol(sym.F_CONSTANT); }
-{D}*"."{D}+{E}?{FS}?	    { return symbol(sym.F_CONSTANT); }
-{D}+"."{E}?{FS}?			{ return symbol(sym.F_CONSTANT); }
-{HP}{H}+{P}{FS}?			{ return symbol(sym.F_CONSTANT); }
-{HP}{H}*"."{H}+{P}{FS}?		{ return symbol(sym.F_CONSTANT); }
-{HP}{H}+"."{P}{FS}?			{ return symbol(sym.F_CONSTANT); }
-
-\"(.[^\"]*)\"	{ return symbol(sym.STRING_LITERAL); }
-
-"..."					{ return symbol(sym.ELLIPSIS); }
-">>="					{ return symbol(sym.RIGHT_ASSIGN); }
-"<<="					{ return symbol(sym.LEFT_ASSIGN); }
-"+="					{ return symbol(sym.ADD_ASSIGN); }
-"-="					{ return symbol(sym.SUB_ASSIGN); }
-"*="					{ return symbol(sym.MUL_ASSIGN); }
-"/="					{ return symbol(sym.DIV_ASSIGN); }
-"%="					{ return symbol(sym.MOD_ASSIGN); }
-"&="					{ return symbol(sym.AND_ASSIGN); }
-"^="					{ return symbol(sym.XOR_ASSIGN); }
-"|="					{ return symbol(sym.OR_ASSIGN); }
+{L}{A}*					  { return new Symbol (sym.IDENTIFIER, yychar, yyline, yytext()); }
 
 
-">>"					{ return symbol(sym.RIGHT_OP); }
-"<<"					{ return symbol(sym.LEFT_OP); }
-"++"					{ return symbol(sym.INC_OP); }
-"--"					{ return symbol(sym.DEC_OP); }
-"->"					{ return symbol(sym.PTR_OP); }
-"&&"					{ return symbol(sym.AND_OP); }
-"||"					{ return symbol(sym.OR_OP); }
-"<="					{ return symbol(sym.LE_OP); }
-">="					{ return symbol(sym.GE_OP); }
-"=="					{ return symbol(sym.EQ_OP); }
-"!="					{ return symbol(sym.NE_OP); }
+{HP}{H}+{IS}?				{ return new Symbol (sym.I_CONSTANT, yychar, yyline, yytext());}
+{NZ}{D}*{IS}?		    { return new Symbol (sym.I_CONSTANT, yychar, yyline, yytext());}
+"0"{O}*{IS}?			  { return new Symbol (sym.I_CONSTANT, yychar, yyline, yytext());}
+{CP}?"'"([^"'"\\\n]|{ES})+"'"		{ return new Symbol (sym.I_CONSTANT, yychar, yyline, yytext());}
+
+{D}+{E}{FS}?				      { return new Symbol (sym.F_CONSTANT, yychar, yyline, yytext());}
+{D}*"."{D}+{E}?{FS}?	    { return new Symbol (sym.F_CONSTANT, yychar, yyline, yytext());}
+{D}+"."{E}?{FS}?			    { return new Symbol (sym.F_CONSTANT, yychar, yyline, yytext());}
+{HP}{H}+{P}{FS}?			    { return new Symbol (sym.F_CONSTANT, yychar, yyline, yytext());}
+{HP}{H}*"."{H}+{P}{FS}?		{ return new Symbol (sym.F_CONSTANT, yychar, yyline, yytext());}
+{HP}{H}+"."{P}{FS}?			  { return new Symbol (sym.F_CONSTANT, yychar, yyline, yytext());}
+
+({SP}?\"([^\"\\\n]|{ES})*\"{WS}*)+	{ return new Symbol (sym.STRING_LITERAL, yychar, yyline, yytext());}
+
+"..."					{ return new Symbol (sym.ELLIPSIS, yychar, yyline, yytext());}
+">>="					{ return new Symbol (sym.RIGHT_ASSIGN, yychar, yyline, yytext());}
+"<<="					{ return new Symbol (sym.LEFT_ASSIGN, yychar, yyline, yytext());}
+"+="					{ return new Symbol (sym.ADD_ASSIGN, yychar, yyline, yytext());}
+"-="					{ return new Symbol (sym.SUB_ASSIGN, yychar, yyline, yytext());}
+"*="					{ return new Symbol (sym.MUL_ASSIGN, yychar, yyline, yytext());}
+"/="					{ return new Symbol (sym.DIV_ASSIGN, yychar, yyline, yytext());}
+"%="					{ return new Symbol (sym.MOD_ASSIGN, yychar, yyline, yytext());}
+"&="					{ return new Symbol (sym.AND_ASSIGN, yychar, yyline, yytext());}
+"^="					{ return new Symbol (sym.XOR_ASSIGN, yychar, yyline, yytext());}
+"|="					{ return new Symbol (sym.OR_ASSIGN, yychar, yyline, yytext());}
+
+
+">>"					{ return new Symbol (sym.RIGHT_OP, yychar, yyline, yytext());}
+"<<"					{ return new Symbol (sym.LEFT_OP, yychar, yyline, yytext());}
+"++"					{ return new Symbol (sym.INC_OP, yychar, yyline, yytext());}
+"--"					{ return new Symbol (sym.DEC_OP, yychar, yyline, yytext());}
+"->"					{ return new Symbol (sym.PTR_OP, yychar, yyline, yytext());}
+"&&"					{ return new Symbol (sym.AND_OP, yychar, yyline, yytext());}
+"||"					{ return new Symbol (sym.OR_OP, yychar, yyline, yytext());}
+"<="					{ return new Symbol (sym.LE_OP, yychar, yyline, yytext());}
+">="					{ return new Symbol (sym.GE_OP, yychar, yyline, yytext());}
+"=="					{ return new Symbol (sym.EQ_OP, yychar, yyline, yytext());}
+"!="					{ return new Symbol (sym.NE_OP, yychar, yyline, yytext());}
 
 /* ---- Atribution ---- */
-"="					    { return symbol(sym.EQ); }
+"="					    { return new Symbol (sym.EQ, yychar, yyline, yytext());}
 
 /* ---- Separators ---- */
-"("					    { return symbol(sym.LPAREN); }
-")"					    { return symbol(sym.RPAREN); }
-"{"|"<%"			  { return symbol(sym.LBRACE); }
-"}"|"%>"			  { return symbol(sym.RBRACE); }
-"["|"<:"			  { return symbol(sym.LBRACK); }
-"]"|":>"			  { return symbol(sym.RBRACK); }
-";"				      { return symbol(sym.SEMICOLON); }
-","					    { return symbol(sym.COMMA); }
-"."					    { return symbol(sym.DOT); }
+"("					    { return new Symbol (sym.LPAREN, yychar, yyline, yytext());}
+")"					    { return new Symbol (sym.RPAREN, yychar, yyline, yytext());}
+"{"|"<%"			  { return new Symbol (sym.LBRACE, yychar, yyline, yytext());}
+"}"|"%>"			  { return new Symbol (sym.RBRACE, yychar, yyline, yytext());}
+"["|"<:"			  { return new Symbol (sym.LBRACK, yychar, yyline, yytext());}
+"]"|":>"			  { return new Symbol (sym.RBRACK, yychar, yyline, yytext());}
+";"				      { return new Symbol (sym.SEMICOLON, yychar, yyline, yytext());}
+","					    { return new Symbol (sym.COMMA, yychar, yyline, yytext());}
+"."					    { return new Symbol (sym.DOT, yychar, yyline, yytext());}
 
 /* ---- Arithmetic operators ---- */
-"+"				 	    { return symbol(sym.PLUS); }
-"-"					    { return symbol(sym.MINUS); }
-"*"					    { return symbol(sym.MULT); }
-"/"					    { return symbol(sym.DIV); }
-"%"					    { return symbol(sym.MOD); }
+"+"				 	    { return new Symbol (sym.PLUS, yychar, yyline, yytext());}
+"-"					    { return new Symbol (sym.MINUS, yychar, yyline, yytext());}
+"*"					    { return new Symbol (sym.MULT, yychar, yyline, yytext());}
+"/"					    { return new Symbol (sym.DIV, yychar, yyline, yytext());}
+"%"					    { return new Symbol (sym.MOD, yychar, yyline, yytext());}
 
 /* ---- Operator ---- */
-":"					    { return symbol(sym.COLON); }
+":"					    { return new Symbol (sym.COLON, yychar, yyline, yytext());}
 
 /* ---- Logic operators----  */
-"<"					    { return symbol(sym.LT); }
-">"					    { return symbol(sym.GT); }
-"&"					    { return symbol(sym.AND); }
-"!"					    { return symbol(sym.NOT); }
-"~"					    { return symbol(sym.COMP); }
-"|"					    { return symbol(sym.OR); }
-"^"					    { return symbol(sym.XOR); }
-"?"					    { return symbol(sym.QUESTION); }
+"<"					    { return new Symbol (sym.LT, yychar, yyline, yytext());}
+">"					    { return new Symbol (sym.GT, yychar, yyline, yytext());}
+"&"					    { return new Symbol (sym.AND, yychar, yyline, yytext());}
+"!"					    { return new Symbol (sym.NOT, yychar, yyline, yytext());}
+"~"					    { return new Symbol (sym.COMP, yychar, yyline, yytext());}
+"|"					    { return new Symbol (sym.OR, yychar, yyline, yytext());}
+"^"					    { return new Symbol (sym.XOR, yychar, yyline, yytext());}
+"?"					    { return new Symbol (sym.QUESTION, yychar, yyline, yytext());}
 
+{Comments}              { /* skip it */ }
 
 {WS}+					{ /* whitespace separates tokens */ }
-.					    { /* print error message */ }
+.					    { return new Symbol (sym.ERROR, yychar, yyline, yytext());}

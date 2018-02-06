@@ -107,8 +107,6 @@ public class sym {
   public static final int AUTO = 34;
   public static final int LEFT_OP = 11;
   public static final int ALIGNAS = 68;
-  public static final int ERROR = 210;
-  
   public static final String[] terminalNames = new String[] {
   "EOF",
   "error",
@@ -208,8 +206,7 @@ public class sym {
   "COMP",
   "OR",
   "XOR",
-  "QUESTION",
-  "ERROR"
+  "QUESTION"
   };
 }
 

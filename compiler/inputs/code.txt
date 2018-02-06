@@ -1,7 +1,5 @@
-
-
-int main (int argc, char** argv)
+int main()
 {
-    printf(“Hello World!\n”); // Trouxemos ele do stdio.h
-    return (0);
+   printf("Hello, World!");
+   return 0;
 }

@@ -1,8 +1,9 @@
 package main;
 
-import compiler.generated.Scanner;
 import compiler.generated.Parser;
-import util.Log;
+import compiler.generated.Scanner;
+import java_cup.runtime.Symbol;
+
 
 import java.io.*;
 
@@ -10,36 +11,44 @@ import java.io.*;
 public class App {
     public static Scanner scanner = null;
 
-    public static void main(String[] args) {
-        Long initialTime = System.currentTimeMillis();
-
+    public static void main(String[] args) throws Exception {
         File input = new File("inputs/code.txt");
         String filePath = input.getAbsolutePath();
+        String sCurrentLine;
+        String fileInfo = "";
         
-        
-        try {
-            File file = new File(filePath);
-            InputStream is = new FileInputStream(file);
-            BufferedReader br = new BufferedReader(new InputStreamReader(is, "UTF-8"));
-
-            scanner = new Scanner(br);
-            System.out.println(br.readLine());
-            @SuppressWarnings("deprecation")
-			Parser parser = new Parser((java_cup.runtime.Scanner) scanner);
-			parser.parse();
-
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+        	while ((sCurrentLine = br.readLine()) != null) {
+        		fileInfo += sCurrentLine + '\n';
+    	    }
             
-            if (Parser.errors == 0) {
-                Long totalTime = System.currentTimeMillis() - initialTime;
-                Log.log("Tempo: " + totalTime + " ms");
+        	scanner = new Scanner(new StringReader(fileInfo));
+        } catch (IOException e) {
+    		e.printStackTrace();
+    	}
+        
+        LexicalAnalyser(scanner);
+        //SyntacticAnalyser(scanner);    
+    } 
+    
+    private static void LexicalAnalyser(Scanner scanner) throws IOException {
+    	while (true){
+          Symbol token = scanner.next_token();
 
-                Log.log("Compilaçao efetuada com sucesso.");
-            }
+          if (token.sym == 0){
+              System.out.println("Fim do Arquivo");
+        	  break;
+          }
              
-        } catch (Exception e) {
-            Log.logErro(e.getMessage());
-            e.printStackTrace();
-        }
+          System.out.println(token.toString());
+    	}
+    }
+    
+    private static void SyntacticAnalyser (Scanner scanner) throws Exception {
+	  Parser parser = new Parser((java_cup.runtime.Scanner) scanner);
+	  parser.parse();
 
     }
+    
+
 }
