@@ -1,7 +1,4 @@
-
-
-int main()
-{
-   printf("Hello, World!");
-   return 0
+int main (int c, int b) {
+    int a;
+    while ( a < 5) {}
 }
