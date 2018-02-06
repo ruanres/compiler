@@ -2,7 +2,6 @@
 
 package compiler.generated;
 /* Reference: http://www.quut.com/c/ANSI-C-grammar-l.html */
-import java_cup.runtime.*;
 import util.Symbol;
 
 

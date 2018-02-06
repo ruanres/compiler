@@ -12,7 +12,7 @@ public class App {
     public static Scanner scanner = null;
 
     public static void main(String[] args) throws Exception {
-        File input = new File("inputs/code.txt");
+        File input = new File("inputs/code.c");
         String filePath = input.getAbsolutePath();
         String sCurrentLine;
         String fileInfo = "";
@@ -27,8 +27,8 @@ public class App {
     		e.printStackTrace();
     	}
         
-        LexicalAnalyser(scanner);
-        //SyntacticAnalyser(scanner);    
+        //LexicalAnalyser(scanner);
+        SyntacticAnalyser(scanner);    
     } 
     
     private static void LexicalAnalyser(Scanner scanner) throws IOException {
