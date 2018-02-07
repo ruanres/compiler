@@ -174,4 +174,7 @@ BlockComment = "/*" [^*] ~"*/" | "/*" "*"+ "/"
 {Comments}              { /* skip it */ }
 
 {WS}+					{ /* whitespace separates tokens */ }
-.					    { return new Symbol (sym.ERROR, yychar, yyline, yytext());}
+.					    { String error = String.format("Lexical error at %s at line %d, column %d", yytext(), yyline, yycolumn);
+                System.err.println(error);
+                return new Symbol (sym.error, yychar, yyline, yytext());
+              }
