@@ -1,34 +1,20 @@
 
-import java.io.*;
 import java.util.*;
 import java_cup.runtime.*;
+import java_cup.runtime.XMLElement;
+import main.App;
 
 parser code {:
-    /*
-    public static void main(String[] args) {
-        try {
-            ComplexSymbolFactory csf = new ComplexSymbolFactory();
-            // create a buffering scanner wrapper
-            ScannerBuffer lexer = new ScannerBuffer(new Lexer(new BufferedReader(new FileReader(args[0])),csf));
-            // start parsing
-            Parser p = new Parser(lexer,csf);
-            System.out.println("Parser runs: ");
-
-            newScope();
-
-            System.out.println("Parsing finished!");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    */
-    public void syntax_error(Symbol s) {
-        String lexeme = s.value.toString();
-        int line = s.right;
-        int column = s.left;
-        String error = String.format("Syntax error at %s at line %d, column %d", lexeme, line, column);
-	    System.err.println(error);
-    }
+   public void report_error(String message, Object info){
+	System.err.println("Erro "+ App.scanner.current_lexeme() + " : Erro sintiatico");
+			
+   }
+	
+	
+  public void report_fatal_error(String message, Object info) {
+	report_error(message, info);
+	throw new RuntimeException("Ocorreu um erro de sintaxe.");
+  }
 :};
 
 terminal IDENTIFIER, I_CONSTANT, F_CONSTANT, STRING_LITERAL, FUNC_NAME, SIZEOF,

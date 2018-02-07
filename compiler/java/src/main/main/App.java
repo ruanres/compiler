@@ -44,9 +44,15 @@ public class App {
     	}
     }
     
-    private static void SyntacticAnalyser (Scanner scanner) throws Exception {
-	  Parser parser = new Parser((java_cup.runtime.Scanner) scanner);
-	  parser.parse();
+    private static void SyntacticAnalyser (Scanner scanner)  {
+		try {
+		  Parser parser = new Parser((java_cup.runtime.Scanner) scanner);
+		  parser.parse();
+		}
+		catch (Exception e) {
+		  e.printStackTrace();
+		  
+		}
 
     }
     

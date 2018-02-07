@@ -648,7 +648,11 @@ public class Scanner implements java_cup.runtime.Scanner {
   /* user code: */
   public String lexeme;
 
-
+  public String current_lexeme() {
+	    int l = yyline + 1;
+	    int c = yycolumn + 1;
+	    return " (line: " + l + " , column: " + c + " , lexeme: '" + yytext() + "')";
+	  }
   /**
    * Creates a new scanner
    *

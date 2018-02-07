@@ -8,6 +8,7 @@ package compiler.generated;
 import java.util.*;
 import java_cup.runtime.*;
 import java_cup.runtime.XMLElement;
+import main.App;
 
 /** CUP v0.11b 20160615 (GIT 4ac7450) generated parser.
   */
@@ -1258,33 +1259,17 @@ public class Parser extends java_cup.runtime.lr_parser {
   /** <code>error</code> Symbol index. */
   public int error_sym() {return 1;}
 
-
-
-    /*
-    public static void main(String[] args) {
-        try {
-            ComplexSymbolFactory csf = new ComplexSymbolFactory();
-            // create a buffering scanner wrapper
-            ScannerBuffer lexer = new ScannerBuffer(new Lexer(new BufferedReader(new FileReader(args[0])),csf));
-            // start parsing
-            Parser p = new Parser(lexer,csf);
-            System.out.println("Parser runs: ");
-
-            newScope();
-
-            System.out.println("Parsing finished!");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    */
-    public void syntax_error(Symbol s) {
-        String lexeme = s.value.toString();
-        int line = s.right;
-        int column = s.left;
-        String error = String.format("Syntax error at %s at line %d, column %d", lexeme, line, column);
-	    System.err.println(error);
-    }
+	
+  public void report_error(String message, Object info){
+	System.err.println("Erro "+ App.scanner.current_lexeme() + " : Erro sintiatico");
+			
+  }
+	
+	
+  public void report_fatal_error(String message, Object info) {
+	report_error(message, info);
+	throw new RuntimeException("Ocorreu um erro de sintaxe.");
+  }
 
 
 /** Cup generated class to encapsulate user supplied action code.*/
