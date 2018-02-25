@@ -20,6 +20,7 @@ public class Symbol extends java_cup.runtime.Symbol {
   public Symbol(int type, Object value) {
 		super(type, value); 
   }
+  
 	
   @Override
   public String toString() {

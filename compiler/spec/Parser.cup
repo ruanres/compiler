@@ -4,24 +4,6 @@ import java.util.*;
 import java_cup.runtime.*;
 
 parser code {:
-    /*
-    public static void main(String[] args) {
-        try {
-            ComplexSymbolFactory csf = new ComplexSymbolFactory();
-            // create a buffering scanner wrapper
-            ScannerBuffer lexer = new ScannerBuffer(new Lexer(new BufferedReader(new FileReader(args[0])),csf));
-            // start parsing
-            Parser p = new Parser(lexer,csf);
-            System.out.println("Parser runs: ");
-
-            newScope();
-
-            System.out.println("Parsing finished!");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    */
     public void syntax_error(Symbol s) {
         String lexeme = s.value.toString();
         int line = s.right;
