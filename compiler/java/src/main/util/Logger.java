@@ -1,6 +1,6 @@
 package util;
 
-public class Log {
+public class Logger {
 
 
 	private static boolean activate_log = false;

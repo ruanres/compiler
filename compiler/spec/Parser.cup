@@ -86,8 +86,8 @@ enumeration_constant		/* before it has been defined as such */
 	;
 
 string
-	::= STRING_LITERAL
-	| FUNC_NAME
+	::= STRING_LITERAL				{: Logger.print("89 STRING_LITERAL: " + s); RESULT = new Expression(new Type("string"), s.toString()); :} 
+	| FUNC_NAME						{: Logger.print("90 FUNC_NAME: " + f); :}
 	;
 
 generic_selection
@@ -166,17 +166,17 @@ shift_expression
 	;
 
 relational_expression
-	::= shift_expression
-	| relational_expression LT shift_expression
-	| relational_expression GT shift_expression
-	| relational_expression LE_OP shift_expression
-	| relational_expression GE_OP shift_expression
+	::= shift_expression									{: Logger.print("169 shift_expression: " + s); RESULT = s; :}
+	| relational_expression LT shift_expression				{: Logger.print("170 relational_expression: " + r + " shift_expression: " + s); RESULT = Semantic.getInstance().getExpressionForOperation(Operation.LESS_THAN, (Expression) r, (Expression) s); :}
+	| relational_expression GT shift_expression				{: Logger.print("171 relational_expression: " + r + " shift_expression: " + s); RESULT = Semantic.getInstance().getExpressionForOperation(Operation.MORE_THAN, (Expression) r, (Expression) s); :}
+	| relational_expression LE_OP shift_expression			{: Logger.print("172 relational_expression: " + r + " shift_expression: " + s); RESULT = Semantic.getInstance().getExpressionForOperation(Operation.LE_OP, (Expression) r, (Expression) s); :}
+	| relational_expression GE_OP shift_expression			{: Logger.print("173 relational_expression: " + r + " shift_expression: " + s); RESULT = Semantic.getInstance().getExpressionForOperation(Operation.GE_OP, (Expression) r, (Expression) s); :}
 	;
 
 equality_expression
-	::= relational_expression
-	| equality_expression EQ_OP relational_expression
-	| equality_expression NE_OP relational_expression
+	::= relational_expression								{: Logger.print("177 relational_expression: " + r); RESULT = r; :}
+	| equality_expression EQ_OP relational_expression		{: Logger.print("178 equality_expression: " + e + " " + r); RESULT = Semantic.getInstance().getExpressionForOperation(Operation.EQ_OP, (Expression) e, (Expression) r); :}
+	| equality_expression NE_OP relational_expression		{: Logger.print("179 equality_expression: " + e + " " + r); RESULT = Semantic.getInstance().getExpressionForOperation(Operation.NE_OP, (Expression) e, (Expression) r); :}
 	;
 
 and_expression
@@ -276,17 +276,17 @@ storage_class_specifier
 	;
 
 type_specifier
-	::= VOID     {:RESULT = new Type("void"); Log.print("VOID at line 71");:}
-	| CHAR       {:RESULT = new Type("char"); Log.print("CHAR at line 71");:}
-	| SHORT      {:RESULT = new Type("short"); Log.print("SHORT at line 71");:}
-	| INT        {:RESULT = new Type("int"); Log.print("INT at line 71");:}
-	| LONG       {:RESULT = new Type("long"); Log.print("LONG at line 71");:}
-	| FLOAT      {:RESULT = new Type("float"); Log.print("FLOAT at line 71");:}
-	| DOUBLE     {:RESULT = new Type("double"); Log.print("DOUBLE at line 71");:}
-	| SIGNED     {:RESULT = new Type("signed"); Log.print("SIGNED at line 71");:}
-	| UNSIGNED   {:RESULT = new Type("unsigned"); Log.print("UNSIGNED at line 71");:}
-	| BOOL       {:RESULT = new Type("bool"); Log.print("BOOL at line 71");:}
-	| COMPLEX    {:RESULT = new Type("complex"); Log.print("COMPLEX at line 71");:}
+	::= VOID     {:RESULT = new Type("void"); Logger.print("VOID at line 71");:}
+	| CHAR       {:RESULT = new Type("char"); Logger.print("CHAR at line 71");:}
+	| SHORT      {:RESULT = new Type("short"); Logger.print("SHORT at line 71");:}
+	| INT        {:RESULT = new Type("int"); Logger.print("INT at line 71");:}
+	| LONG       {:RESULT = new Type("long"); Logger.print("LONG at line 71");:}
+	| FLOAT      {:RESULT = new Type("float"); Logger.print("FLOAT at line 71");:}
+	| DOUBLE     {:RESULT = new Type("double"); Logger.print("DOUBLE at line 71");:}
+	| SIGNED     {:RESULT = new Type("signed"); Logger.print("SIGNED at line 71");:}
+	| UNSIGNED   {:RESULT = new Type("unsigned"); Logger.print("UNSIGNED at line 71");:}
+	| BOOL       {:RESULT = new Type("bool"); Logger.print("BOOL at line 71");:}
+	| COMPLEX    {:RESULT = new Type("complex"); Logger.print("COMPLEX at line 71");:}
 	| IMAGINARY	  	/* non-mandated extension */
 	| atomic_type_specifier
 	| struct_or_union_specifier
