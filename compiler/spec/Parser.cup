@@ -276,17 +276,17 @@ storage_class_specifier
 	;
 
 type_specifier
-	::= VOID     {:RESULT = new Type("void"); Logger.print("VOID at line 71");:}
-	| CHAR       {:RESULT = new Type("char"); Logger.print("CHAR at line 71");:}
-	| SHORT      {:RESULT = new Type("short"); Logger.print("SHORT at line 71");:}
-	| INT        {:RESULT = new Type("int"); Logger.print("INT at line 71");:}
-	| LONG       {:RESULT = new Type("long"); Logger.print("LONG at line 71");:}
-	| FLOAT      {:RESULT = new Type("float"); Logger.print("FLOAT at line 71");:}
-	| DOUBLE     {:RESULT = new Type("double"); Logger.print("DOUBLE at line 71");:}
-	| SIGNED     {:RESULT = new Type("signed"); Logger.print("SIGNED at line 71");:}
-	| UNSIGNED   {:RESULT = new Type("unsigned"); Logger.print("UNSIGNED at line 71");:}
-	| BOOL       {:RESULT = new Type("bool"); Logger.print("BOOL at line 71");:}
-	| COMPLEX    {:RESULT = new Type("complex"); Logger.print("COMPLEX at line 71");:}
+	::= VOID     {:RESULT = new Type("void"); Log.print("VOID at line 71");:}
+	| CHAR       {:RESULT = new Type("char"); Log.print("CHAR at line 71");:}
+	| SHORT      {:RESULT = new Type("short"); Log.print("SHORT at line 71");:}
+	| INT        {:RESULT = new Type("int"); Log.print("INT at line 71");:}
+	| LONG       {:RESULT = new Type("long"); Log.print("LONG at line 71");:}
+	| FLOAT      {:RESULT = new Type("float"); Log.print("FLOAT at line 71");:}
+	| DOUBLE     {:RESULT = new Type("double"); Log.print("DOUBLE at line 71");:}
+	| SIGNED     {:RESULT = new Type("signed"); Log.print("SIGNED at line 71");:}
+	| UNSIGNED   {:RESULT = new Type("unsigned"); Log.print("UNSIGNED at line 71");:}
+	| BOOL       {:RESULT = new Type("bool"); Log.print("BOOL at line 71");:}
+	| COMPLEX    {:RESULT = new Type("complex"); Log.print("COMPLEX at line 71");:}
 	| IMAGINARY	  	/* non-mandated extension */
 	| atomic_type_specifier
 	| struct_or_union_specifier
