@@ -2,11 +2,12 @@ package util;
 
 public class Log {
 
-    public static void log(String value) {
-        System.out.println(value);
-    }
 
-    public static void logErro(String error) {
-        System.err.println(error);
-    }
+	private static boolean activate_log = false;
+	
+	public static void printLog(String value) {
+		if (activate_log) {
+			System.out.println(value);
+		};
+	}
 }

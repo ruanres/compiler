@@ -646,7 +646,7 @@ public class Scanner implements java_cup.runtime.Scanner {
   private int zzFinalHighSurrogate = 0;
 
   /* user code: */
-  public String lexeme;
+  public static String lexeme;
 
   public String current_lexeme() {
     int l = yyline + 1;

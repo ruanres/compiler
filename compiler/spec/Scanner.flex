@@ -42,7 +42,7 @@ LineComment = "//" {InputCharacter}* {LineTerminator}?
 BlockComment = "/*" [^*] ~"*/" | "/*" "*"+ "/"
 
 %{
-  public String lexeme;
+  public static String lexeme;
 
   public String current_lexeme() {
     int l = yyline + 1;

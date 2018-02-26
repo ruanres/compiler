@@ -1,4 +1,10 @@
-int main){
+int main ()
+{
    printf("$$Hello, World!");
-   return 0
+   teste();
+   return 0;
+}
+
+int teste() {
+	
 }
