@@ -1,8 +1,9 @@
-
 import java.io.*;
 import java.util.*;
 import java_cup.runtime.*;
-
+import core.*;
+import util.Logger;
+init with {: Semantic.parser = this;              :};
 parser code {:
     public void syntax_error(Symbol s) {
         String lexeme = s.value.toString();
@@ -12,7 +13,6 @@ parser code {:
 	    System.err.println(error);
     }
 :};
-
 terminal IDENTIFIER, I_CONSTANT, F_CONSTANT, STRING_LITERAL, FUNC_NAME, SIZEOF,
 	PTR_OP, INC_OP, DEC_OP, LEFT_OP, RIGHT_OP, LE_OP, GE_OP, EQ_OP, NE_OP, AND_OP,
 	OR_OP, MUL_ASSIGN, DIV_ASSIGN, MOD_ASSIGN, ADD_ASSIGN, SUB_ASSIGN, LEFT_ASSIGN,
@@ -22,7 +22,6 @@ terminal IDENTIFIER, I_CONSTANT, F_CONSTANT, STRING_LITERAL, FUNC_NAME, SIZEOF,
 	STRUCT, UNION, ENUM, ELLIPSIS , CASE, DEFAULT, IF, ELSE, SWITCH, WHILE, DO, FOR,
 	GOTO, CONTINUE, BREAK, RETURN, ALIGNAS, ALIGNOF, ATOMIC, GENERIC, NORETURN,
 	STATIC_ASSERT, THREAD_LOCAL;
-
 /* ---- Separators ---- */
 terminal LPAREN;
 terminal RPAREN;
@@ -33,10 +32,8 @@ terminal RBRACK;
 terminal SEMICOLON;
 terminal COMMA;
 terminal DOT;
-
 /* ---- Atribution ---- */
 terminal EQ;
-
 /* ---- Arithmetic operators ---- */
 terminal PLUS;
 terminal MINUS;
@@ -46,7 +43,6 @@ terminal MOD;
 
 /* ---- Operator ---- */
 terminal COLON;
-
 /* ---- Logic operators----  */
 terminal LT;
 terminal GT;
@@ -73,502 +69,506 @@ non terminal relational_expression, inclusive_or_expression, declaration;
 
 start with translation_unit;
 
-primary_expression ::= IDENTIFIER | constant | string
-	                     | LPAREN expression RPAREN | generic_selection;
+primary_expression ::= IDENTIFIER:id         {:Logger.print("Line 72 IDENTIFIER: " + id); RESULT = Semantic.getInstance().getIdentifier((String) id); :}
+                       | constant:c         {:RESULT = c; Logger.print("Line 73 " + c);:}
+                       | string						{:Logger.print("Line 74");:}
+	                     | LPAREN expression RPAREN  {:Logger.print("Line 75");:}
+                       | generic_selection	{:Logger.print("Line 76");:}
+                       ;
 
-constant ::= I_CONSTANT		/* includes character_constant */
-	           | F_CONSTANT
-	           | ENUMERATION_CONSTANT	/* after it has been defined as such */
+constant ::= I_CONSTANT:i		/* includes character_constant */ {:Logger.print("Line 79 I_CONSTANT: " + i); RESULT = new Expression(new Type("int"), i.toString());:}
+	           | F_CONSTANT:f 	{:Logger.print("Line 80 F_CONSTANT: " + f); RESULT = new Expression(new Type("float"), f.toString());:}
+	           | ENUMERATION_CONSTANT	/* after it has been defined as such */ {:Logger.print("Line 81");:}
 	           ;
 
 enumeration_constant		/* before it has been defined as such */
-	::= IDENTIFIER
+	::= IDENTIFIER			{:Logger.print("Line 85");:}
 	;
 
 string
-	::= STRING_LITERAL
-	| FUNC_NAME
+	::= STRING_LITERAL:s				{: Logger.print("89 STRING_LITERAL: " + s); :}
+	| FUNC_NAME:f						{: Logger.print("90 FUNC_NAME: " + f); :}
 	;
 
 generic_selection
-	::= GENERIC LPAREN assignment_expression COMMA generic_assoc_list RPAREN
+	::= GENERIC LPAREN assignment_expression COMMA generic_assoc_list RPAREN		{:Logger.print("Line 94");:}
 	;
 
 generic_assoc_list
-	::= generic_association
-	| generic_assoc_list COMMA generic_association
+	::= generic_association		{:Logger.print("Line 98");:}
+	| generic_assoc_list COMMA generic_association		{:Logger.print("Line 99");:}
 	;
 
 generic_association
-	::= type_name COLON assignment_expression
-	| DEFAULT COLON assignment_expression
+	::= type_name COLON assignment_expression			{:Logger.print("Line 103");:}
+	| DEFAULT COLON assignment_expression				{:Logger.print("Line 104");:}
 	;
 
 postfix_expression
-	::= primary_expression
-	| postfix_expression LBRACK expression RBRACK
-	| postfix_expression LPAREN RPAREN
-	| postfix_expression LPAREN argument_expression_list RPAREN
-	| postfix_expression DOT IDENTIFIER
-	| postfix_expression PTR_OP IDENTIFIER
-	| postfix_expression INC_OP
-	| postfix_expression DEC_OP
-	| LPAREN type_name LPAREN LBRACE initializer_list LBRACE
-	| LPAREN type_name RPAREN LBRACE initializer_list COMMA RBRACE
+	::= primary_expression:pr			{:Logger.print("Line 108: " + pr); RESULT = pr; :}
+	| postfix_expression LBRACK expression RBRACK		{:Logger.print("Line 109");:}
+	| postfix_expression LPAREN RPAREN					{:Logger.print("Line 110");:}
+	| postfix_expression LPAREN argument_expression_list RPAREN	{:Logger.print("Line 111");:}
+	| postfix_expression DOT IDENTIFIER			{:Logger.print("Line 112");:}
+	| postfix_expression PTR_OP IDENTIFIER		{:Logger.print("Line 113");:}
+	| postfix_expression INC_OP					{:Logger.print("Line 114");:}
+	| postfix_expression DEC_OP					{:Logger.print("Line 115");:}
+	| LPAREN type_name LPAREN LBRACE initializer_list LBRACE	{:Logger.print("Line 116");:}
+	| LPAREN type_name RPAREN LBRACE initializer_list COMMA RBRACE	{:Logger.print("Line 117");:}
 	;
 
 argument_expression_list
-	::= assignment_expression
-	| argument_expression_list COMMA assignment_expression
+	::= assignment_expression		{:Logger.print("Line 121");:}
+	| argument_expression_list COMMA assignment_expression	{:Logger.print("Line 122");:}
 	;
 
 unary_expression
-	::= postfix_expression
-	| INC_OP unary_expression
-	| DEC_OP unary_expression
-	| unary_operator cast_expression
-	| SIZEOF unary_expression
-	| SIZEOF LPAREN type_name RPAREN
-	| ALIGNOF LPAREN type_name RPAREN
+	::= postfix_expression:post				{:Logger.print("Line 126 postfix: " + post); RESULT=post;:}
+	| INC_OP unary_expression			{:Logger.print("Line 127");:}
+	| DEC_OP unary_expression			{:Logger.print("Line 128");:}
+	| unary_operator cast_expression	{:Logger.print("Line 129");:}
+	| SIZEOF unary_expression			{:Logger.print("Line 130");:}
+	| SIZEOF LPAREN type_name RPAREN	{:Logger.print("Line 131");:}
+	| ALIGNOF LPAREN type_name RPAREN	{:Logger.print("Line 132");:}
 	;
 
 unary_operator
-	::= AND
-	| MULT
-	| PLUS
-	| MINUS
-	| COMP
-	| NOT
+	::= AND		{:Logger.print("Line 136");:}
+	| MULT		{:Logger.print("Line 137");:}
+	| PLUS		{:Logger.print("Line 138");:}
+	| MINUS		{:Logger.print("Line 139");:}
+	| COMP		{:Logger.print("Line 140");:}
+	| NOT		{:Logger.print("Line 141");:}
 	;
 
 cast_expression
-	::= unary_expression
-	| LPAREN type_name RPAREN cast_expression
+	::= unary_expression:un						{:Logger.print("Line 145 unary_expression: " + un); RESULT = un;:}
+	| LPAREN type_name RPAREN cast_expression	{:Logger.print("Line 146");:}
 	;
 
 multiplicative_expression
-	::= cast_expression
-	| multiplicative_expression MULT cast_expression
-	| multiplicative_expression DIV cast_expression
-	| multiplicative_expression MOD cast_expression
+	::= cast_expression:ca									{:Logger.print("Line 150 cast_expression: " + ca); RESULT=ca;:}
+	| multiplicative_expression MULT cast_expression	{:Logger.print("Line 151");:}
+	| multiplicative_expression DIV cast_expression		{:Logger.print("Line 152");:}
+	| multiplicative_expression MOD cast_expression		{:Logger.print("Line 153");:}
 	;
 
 additive_expression
-	::= multiplicative_expression
-	| additive_expression PLUS multiplicative_expression
-	| additive_expression MINUS multiplicative_expression
+	::= multiplicative_expression:multi_exp							{:Logger.print("Line 157 mult_exp: " + multi_exp); RESULT=multi_exp;:}
+	| additive_expression PLUS multiplicative_expression	{:Logger.print("Line 158");:}
+	| additive_expression MINUS multiplicative_expression	{:Logger.print("Line 159");:}
 	;
 
 shift_expression
-	::= additive_expression
-	| shift_expression LEFT_OP additive_expression
-	| shift_expression RIGHT_OP additive_expression
+	::= additive_expression:add_exp								{:Logger.print("Line 163 add_exp: " + add_exp); RESULT=add_exp;:}
+	| shift_expression LEFT_OP additive_expression		{:Logger.print("Line 164");:}
+	| shift_expression RIGHT_OP additive_expression		{:Logger.print("Line 165");:}
 	;
 
 relational_expression
-	::= shift_expression
-	| relational_expression LT shift_expression
-	| relational_expression GT shift_expression
-	| relational_expression LE_OP shift_expression
-	| relational_expression GE_OP shift_expression
+	::= shift_expression:shift									{: Logger.print("Line 169 shift_expression: "  + shift); RESULT=shift; :}
+	| relational_expression LT shift_expression				{: Logger.print("170 relational_expression: " +  " shift_expression: "); :}
+	| relational_expression GT shift_expression				{: Logger.print("171 relational_expression: " +  " shift_expression: "); :}
+	| relational_expression LE_OP shift_expression			{: Logger.print("172 relational_expression: "  + " shift_expression: "); :}
+	| relational_expression GE_OP shift_expression			{: Logger.print("173 relational_expression: " + " shift_expression: "); :}
 	;
 
 equality_expression
-	::= relational_expression
-	| equality_expression EQ_OP relational_expression
-	| equality_expression NE_OP relational_expression
+	::= relational_expression:rel								{: Logger.print("Line 177 relational_expression: " + rel); RESULT=rel;:}
+	| equality_expression EQ_OP relational_expression		{: Logger.print("Line 178 equality_expression: " + " " ); :}
+	| equality_expression NE_OP relational_expression		{: Logger.print("Line 179 equality_expression: " +  " " );  :}
 	;
 
 and_expression
-	::= equality_expression
-	| and_expression AND equality_expression
+	::= equality_expression:eq_exp						{:Logger.print("Line 183 equality_expression: " + eq_exp); RESULT=eq_exp;:}
+	| and_expression AND equality_expression	{:Logger.print("Line 184");:}
 	;
 
 exclusive_or_expression
-	::= and_expression
-	| exclusive_or_expression XOR and_expression
+	::= and_expression:and_exp								{:Logger.print("Line 188 and_expression: " + and_exp); RESULT=and_exp;:}
+	| exclusive_or_expression XOR and_expression	{:Logger.print("Line 189");:}
 	;
 
 inclusive_or_expression
-	::= exclusive_or_expression
-	| inclusive_or_expression OR exclusive_or_expression
+	::= exclusive_or_expression:ex_or_exp								{:Logger.print("Line 193 exclusive_or_expression: " + ex_or_exp); RESULT=ex_or_exp;:}
+	| inclusive_or_expression OR exclusive_or_expression	{:Logger.print("Line 194");:}
 	;
 
 logical_and_expression
-	::= inclusive_or_expression
-	| logical_and_expression AND_OP inclusive_or_expression
+	::= inclusive_or_expression:in_or_exp								{:Logger.print("Line 198 inclusive_or_expression: " + in_or_exp); RESULT=in_or_exp;:}
+	| logical_and_expression AND_OP inclusive_or_expression	{:Logger.print("Line 199");:}
 	;
 
 logical_or_expression
-	::= logical_and_expression
-	| logical_or_expression OR_OP logical_and_expression
+	::= logical_and_expression:log_and_exp								{:Logger.print("Line 203 logical_and_expression: " + log_and_exp); RESULT=log_and_exp;:}
+	| logical_or_expression OR_OP logical_and_expression	{:Logger.print("Line 204");:}
 	;
 
 conditional_expression
-	::= logical_or_expression
-	| logical_or_expression QUESTION expression COLON conditional_expression
+	::= logical_or_expression:log_or_exp													{:Logger.print("Line 208 logical_or_expression: " + log_or_exp); RESULT=log_or_exp;:}
+	| logical_or_expression QUESTION expression COLON conditional_expression	{:Logger.print("Line 209");:}
 	;
 
 assignment_expression
-	::= conditional_expression
-	| unary_expression assignment_operator assignment_expression
+	::= conditional_expression:cond_exp										{:Logger.print("Line 213 conditional_expression: " + cond_exp); RESULT=cond_exp;:}
+	| unary_expression assignment_operator assignment_expression	{:Logger.print("Line 214");:}
 	;
 
 assignment_operator
-	::= EQ
-	| MUL_ASSIGN
-	| DIV_ASSIGN
-	| MOD_ASSIGN
-	| ADD_ASSIGN
-	| SUB_ASSIGN
-	| LEFT_ASSIGN
-	| RIGHT_ASSIGN
-	| AND_ASSIGN
-	| XOR_ASSIGN
-	| OR_ASSIGN
+	::= EQ			{:Logger.print("Line 218");:}
+	| MUL_ASSIGN	{:Logger.print("Line 219");:}
+	| DIV_ASSIGN	{:Logger.print("Line 220");:}
+	| MOD_ASSIGN	{:Logger.print("Line 221");:}
+	| ADD_ASSIGN	{:Logger.print("Line 222");:}
+	| SUB_ASSIGN	{:Logger.print("Line 223");:}
+	| LEFT_ASSIGN	{:Logger.print("Line 224");:}
+	| RIGHT_ASSIGN	{:Logger.print("Line 225");:}
+	| AND_ASSIGN	{:Logger.print("Line 226");:}
+	| XOR_ASSIGN	{:Logger.print("Line 227");:}
+	| OR_ASSIGN		{:Logger.print("Line 228");:}
 	;
 
 expression
-	::= assignment_expression
-	| expression COMMA assignment_expression
+	::= assignment_expression					{:Logger.print("Line 232");:}
+	| expression COMMA assignment_expression	{:Logger.print("Line 233");:}
 	;
 
 constant_expression
-	::= conditional_expression	/* with constraints */
+	::= conditional_expression	/* with constraints */ {:Logger.print("Line 237");:}
 	;
 
 declaration
-	::= declaration_specifiers SEMICOLON
-	| declaration_specifiers init_declarator_list SEMICOLON
-	| static_assert_declaration
+	::= declaration_specifiers SEMICOLON		{:Logger.print("Line 241");:}
+	| declaration_specifiers:decl_types init_declarator_list:decl_vars SEMICOLON		{:Logger.print("Line 242 declaration_specifiers: " + decl_types + " init_declarator_list: " + decl_vars);RESULT=decl_vars;((Variable) decl_vars).setType((Type) decl_types); Semantic.getInstance().addVariable((Variable) decl_vars);:}
+	| static_assert_declaration		{:Logger.print("Line 243");:}
 	;
 
 declaration_specifiers
-	::= storage_class_specifier declaration_specifiers
-	| storage_class_specifier
-	| type_specifier declaration_specifiers
-	| type_specifier
-	| type_qualifier declaration_specifiers
-	| type_qualifier
-	| function_specifier declaration_specifiers
-	| function_specifier
-	| alignment_specifier declaration_specifiers
-	| alignment_specifier
+	::= storage_class_specifier declaration_specifiers	{:Logger.print("Line 247");:}
+	| storage_class_specifier							{:Logger.print("Line 248");:}
+	| type_specifier declaration_specifiers				{:Logger.print("Line 249");:}
+	| type_specifier:ty									{:Logger.print("Line 250 type_specifier: " + ty);RESULT=ty;:}
+	| type_qualifier declaration_specifiers				{:Logger.print("Line 251");:}
+	| type_qualifier									{:Logger.print("Line 252");:}
+	| function_specifier declaration_specifiers			{:Logger.print("Line 253");:}
+	| function_specifier								{:Logger.print("Line 254");:}
+	| alignment_specifier declaration_specifiers		{:Logger.print("Line 255");:}
+	| alignment_specifier								{:Logger.print("Line 256");:}
 	;
 
 init_declarator_list
-	::= init_declarator
-	| init_declarator_list COMMA init_declarator
+	::= init_declarator:init_decl								{:Logger.print("Line 260 init_declarator: " + init_decl); RESULT=init_decl;:}
+	| init_declarator_list COMMA init_declarator	{:Logger.print("Line 261");:}
 	;
 
 init_declarator
-	::= declarator EQ initializer
-	| declarator
+	::= declarator:de EQ initializer:in					{:Logger.print("Line 265 declarator: " + de + " initializer: " + in); Variable temp = new Variable((String) de,new Type("null")); RESULT = temp; Semantic.getInstance().getCodeGenerator().assignmentDeclararion((Variable) de, in );:}
+	| declarator:de									{:Logger.print("Line 266 declarator: " + de);:}
 	;
 
 storage_class_specifier
-	::= TYPEDEF	/* identifiers must be flagged as TYPEDEF_NAME */
-	| EXTERN
-	| STATIC
-	| THREAD_LOCAL
-	| AUTO
-	| REGISTER
+	::= TYPEDEF	/* identifiers must be flagged as TYPEDEF_NAME */ {:Logger.print("Line 270");:}
+	| EXTERN		{:Logger.print("Line 271");:}
+	| STATIC		{:Logger.print("Line 272");:}
+	| THREAD_LOCAL	{:Logger.print("Line 273");:}
+	| AUTO			{:Logger.print("Line 274");:}
+	| REGISTER		{:Logger.print("Line 275");:}
 	;
 
 type_specifier
-	::= VOID     {:RESULT = new Type("void"); Log.print("VOID at line 71");:}
-	| CHAR       {:RESULT = new Type("char"); Log.print("CHAR at line 71");:}
-	| SHORT      {:RESULT = new Type("short"); Log.print("SHORT at line 71");:}
-	| INT        {:RESULT = new Type("int"); Log.print("INT at line 71");:}
-	| LONG       {:RESULT = new Type("long"); Log.print("LONG at line 71");:}
-	| FLOAT      {:RESULT = new Type("float"); Log.print("FLOAT at line 71");:}
-	| DOUBLE     {:RESULT = new Type("double"); Log.print("DOUBLE at line 71");:}
-	| SIGNED     {:RESULT = new Type("signed"); Log.print("SIGNED at line 71");:}
-	| UNSIGNED   {:RESULT = new Type("unsigned"); Log.print("UNSIGNED at line 71");:}
-	| BOOL       {:RESULT = new Type("bool"); Log.print("BOOL at line 71");:}
-	| COMPLEX    {:RESULT = new Type("complex"); Log.print("COMPLEX at line 71");:}
-	| IMAGINARY	  	/* non-mandated extension */
-	| atomic_type_specifier
-	| struct_or_union_specifier
-	| enum_specifier
-	| TYPEDEF_NAME		/* after it has been defined as such */
+	::= VOID     {:RESULT = new Type("void"); Logger.print("VOID at line 279");:}
+	| CHAR       {:RESULT = new Type("char"); Logger.print("CHAR at line 280");:}
+	| SHORT      {:RESULT = new Type("short"); Logger.print("SHORT at line 281");:}
+	| INT        {:RESULT = new Type("int"); Logger.print("INT at line 282");:}
+	| LONG       {:RESULT = new Type("long"); Logger.print("LONG at line 283");:}
+	| FLOAT      {:RESULT = new Type("float"); Logger.print("FLOAT at line 284");:}
+	| DOUBLE     {:RESULT = new Type("double"); Logger.print("DOUBLE at line 285");:}
+	| SIGNED     {:RESULT = new Type("signed"); Logger.print("SIGNED at line 286");:}
+	| UNSIGNED   {:RESULT = new Type("unsigned"); Logger.print("UNSIGNED at line 287");:}
+	| BOOL       {:RESULT = new Type("bool"); Logger.print("BOOL at line 288");:}
+	| COMPLEX    {:RESULT = new Type("complex"); Logger.print("COMPLEX at line 289");:}
+	| IMAGINARY	  	/* non-mandated extension */ {:Logger.print("Line 290");:}
+	| atomic_type_specifier		{:Logger.print("Line 291");:}
+	| struct_or_union_specifier	{:Logger.print("Line 292");:}
+	| enum_specifier			{:Logger.print("Line 293");:}
+	| TYPEDEF_NAME		/* after it has been defined as such */ {:Logger.print("Line 294");:}
 	;
 
 struct_or_union_specifier
-	::= struct_or_union LBRACE struct_declaration_list RBRACE
-	| struct_or_union IDENTIFIER LBRACE struct_declaration_list RBRACE
-	| struct_or_union IDENTIFIER
+	::= struct_or_union LBRACE struct_declaration_list RBRACE				{:Logger.print("Line 298");:}
+	| struct_or_union IDENTIFIER LBRACE struct_declaration_list RBRACE		{:Logger.print("Line 299");:}
+	| struct_or_union IDENTIFIER											{:Logger.print("Line 300");:}
 	;
 
 struct_or_union
-	::= STRUCT
-	| UNION
+	::= STRUCT		{:Logger.print("Line 304");:}
+	| UNION			{:Logger.print("Line 305");:}
 	;
 
 struct_declaration_list
-	::= struct_declaration
-	| struct_declaration_list struct_declaration
+	::= struct_declaration							{:Logger.print("Line 309");:}
+	| struct_declaration_list struct_declaration	{:Logger.print("Line 310");:}
 	;
 
 struct_declaration
-	::= specifier_qualifier_list SEMICOLON	/* for anonymous struct/union */
-	| specifier_qualifier_list struct_declarator_list SEMICOLON
-	| static_assert_declaration
+	::= specifier_qualifier_list SEMICOLON	{:Logger.print("Line 314");:}
+	| specifier_qualifier_list struct_declarator_list SEMICOLON	{:Logger.print("Line 315");:}
+	| static_assert_declaration	{:Logger.print("Line 316");:}
 	;
 
 specifier_qualifier_list
-	::= type_specifier specifier_qualifier_list
-	| type_specifier
-	| type_qualifier specifier_qualifier_list
-	| type_qualifier
+	::= type_specifier specifier_qualifier_list		{:Logger.print("Line 320");:}
+	| type_specifier								{:Logger.print("Line 321");:}
+	| type_qualifier specifier_qualifier_list		{:Logger.print("Line 322");:}
+	| type_qualifier								{:Logger.print("Line 323");:}
 	;
 
 struct_declarator_list
-	::= struct_declarator
-	| struct_declarator_list COMMA struct_declarator
+	::= struct_declarator								{:Logger.print("Line 327");:}
+	| struct_declarator_list COMMA struct_declarator	{:Logger.print("Line 328");:}
 	;
 
 struct_declarator
-	::= COLON constant_expression
-	| declarator COLON constant_expression
-	| declarator
+	::= COLON constant_expression			{:Logger.print("Line 332");:}
+	| declarator COLON constant_expression	{:Logger.print("Line 333");:}
+	| declarator							{:Logger.print("Line 334");:}
 	;
 
 enum_specifier
-	::= ENUM LBRACE enumerator_list RBRACE
-	| ENUM LBRACE enumerator_list COMMA RBRACE
-	| ENUM IDENTIFIER LBRACE enumerator_list RBRACE
-	| ENUM IDENTIFIER LBRACE enumerator_list COMMA RBRACE
+	::= ENUM LBRACE enumerator_list RBRACE					{:Logger.print("Line 338");:}
+	| ENUM LBRACE enumerator_list COMMA RBRACE				{:Logger.print("Line 339");:}
+	| ENUM IDENTIFIER LBRACE enumerator_list RBRACE			{:Logger.print("Line 340");:}
+	| ENUM IDENTIFIER LBRACE enumerator_list COMMA RBRACE	{:Logger.print("Line 341");:}
 	| ENUM IDENTIFIER
 	;
 
 enumerator_list
-	::= enumerator
-	| enumerator_list COMMA enumerator
+	::= enumerator							{:Logger.print("Line 346");:}
+	| enumerator_list COMMA enumerator		{:Logger.print("Line 347");:}
 	;
 
 enumerator	/* identifiers must be flagged as ENUMERATION_CONSTANT */
-	::= enumeration_constant EQ constant_expression
-	| enumeration_constant
+	::= enumeration_constant EQ constant_expression	{:Logger.print("Line 351");:}
+	| enumeration_constant							{:Logger.print("Line 352");:}
 	;
 
 atomic_type_specifier
-	::= ATOMIC LPAREN type_name RPAREN
+	::= ATOMIC LPAREN type_name RPAREN	{:Logger.print("Line 356");:}
 	;
 
 type_qualifier
-	::= CONST
-	| RESTRICT
-	| VOLATILE
-	| ATOMIC
+	::= CONST			{:Logger.print("Line 360");:}
+	| RESTRICT			{:Logger.print("Line 361");:}
+	| VOLATILE			{:Logger.print("Line 362");:}
+	| ATOMIC			{:Logger.print("Line 363");:}
 	;
 
 function_specifier
-	::= INLINE
-	| NORETURN
+	::= INLINE			{:Logger.print("Line 367");:}
+	| NORETURN			{:Logger.print("Line 368");:}
 	;
 
 alignment_specifier
-	::= ALIGNAS LPAREN type_name RPAREN
-	| ALIGNAS LPAREN constant_expression RPAREN
+	::= ALIGNAS LPAREN type_name RPAREN				{:Logger.print("Line 372");:}
+	| ALIGNAS LPAREN constant_expression RPAREN		{:Logger.print("Line 373");:}
 	;
 
 declarator
-	::= pointer direct_declarator
-	| direct_declarator
+	::= pointer direct_declarator			{:Logger.print("Line 377");:}
+	| direct_declarator:d						{:RESULT = d; Logger.print("Line 378 direct_declarator: " + d);:}
 	;
 
 direct_declarator
-	::= IDENTIFIER
-	| LPAREN declarator RPAREN
-	| direct_declarator LBRACK RBRACK
-	| direct_declarator LBRACK MULT RBRACK
-	| direct_declarator LBRACK STATIC type_qualifier_list assignment_expression RBRACK
-	| direct_declarator LBRACK STATIC assignment_expression RBRACK
-	| direct_declarator LBRACK type_qualifier_list MULT RBRACK
-	| direct_declarator LBRACK type_qualifier_list STATIC assignment_expression RBRACK
-	| direct_declarator LBRACK type_qualifier_list assignment_expression RBRACK
-	| direct_declarator LBRACK type_qualifier_list RBRACK
-	| direct_declarator LBRACK assignment_expression RBRACK
-	| direct_declarator LPAREN parameter_type_list RPAREN
-	| direct_declarator LPAREN RPAREN
-	| direct_declarator LPAREN identifier_list RPAREN
+	::= IDENTIFIER:d                 {: RESULT = d; Logger.print("Line 383 identifier: " + d);:}
+	| LPAREN declarator RPAREN				{:Logger.print("Line 383");:}
+	| direct_declarator LBRACK RBRACK		{:Logger.print("Line 384");:}
+	| direct_declarator LBRACK MULT RBRACK	{:Logger.print("Line 385");:}
+	| direct_declarator LBRACK STATIC type_qualifier_list assignment_expression RBRACK	{:Logger.print("Line 386");:}
+	| direct_declarator LBRACK STATIC assignment_expression RBRACK		{:Logger.print("Line 387");:}
+	| direct_declarator LBRACK type_qualifier_list MULT RBRACK			{:Logger.print("Line 388");:}
+	| direct_declarator LBRACK type_qualifier_list STATIC assignment_expression RBRACK	{:Logger.print("Line 389");:}
+	| direct_declarator LBRACK type_qualifier_list assignment_expression RBRACK			{:Logger.print("Line 390");:}
+	| direct_declarator LBRACK type_qualifier_list RBRACK		{:Logger.print("Line 391");:}
+	| direct_declarator LBRACK assignment_expression RBRACK		{:Logger.print("Line 392");:}
+	| direct_declarator LPAREN parameter_type_list RPAREN		{:Logger.print("Line 393");:}
+	| direct_declarator LPAREN RPAREN							{:Logger.print("Line 394");:}
+	| direct_declarator LPAREN identifier_list RPAREN			{:Logger.print("Line 395");:}
 	;
 
 pointer
-	::= MULT type_qualifier_list pointer
-	| MULT type_qualifier_list
-	| MULT pointer
-	| MULT
+	::= MULT type_qualifier_list pointer	{:Logger.print("Line 399");:}
+	| MULT type_qualifier_list				{:Logger.print("Line 400");:}
+	| MULT pointer							{:Logger.print("Line 401");:}
+	| MULT									{:Logger.print("Line 402");:}
 	;
 
 type_qualifier_list
-	::= type_qualifier
-	| type_qualifier_list type_qualifier
+	::= type_qualifier						{:Logger.print("Line 406");:}
+	| type_qualifier_list type_qualifier	{:Logger.print("Line 407");:}
 	;
 
 
 parameter_type_list
-	::= parameter_list COMMA ELLIPSIS
-	| parameter_list
+	::= parameter_list COMMA ELLIPSIS		{:Logger.print("Line 412");:}
+	| parameter_list						{:Logger.print("Line 413");:}
 	;
 
 parameter_list
-	::= parameter_declaration
-	| parameter_list COMMA parameter_declaration
+	::= parameter_declaration						{:Logger.print("Line 417");:}
+	| parameter_list COMMA parameter_declaration	{:Logger.print("Line 418");:}
 	;
 
 parameter_declaration
-	::= declaration_specifiers declarator
-	| declaration_specifiers abstract_declarator
-	| declaration_specifiers
+	::= declaration_specifiers declarator			{:Logger.print("Line 422");:}
+	| declaration_specifiers abstract_declarator	{:Logger.print("Line 423");:}
+	| declaration_specifiers						{:Logger.print("Line 424");:}
 	;
 
 identifier_list
-	::= IDENTIFIER
-	| identifier_list COMMA IDENTIFIER
+	::= IDENTIFIER									{:Logger.print("Line 428");:}
+	| identifier_list COMMA IDENTIFIER				{:Logger.print("Line 429");:}
 	;
 
 type_name
-	::= specifier_qualifier_list abstract_declarator
-	| specifier_qualifier_list
+	::= specifier_qualifier_list abstract_declarator	{:Logger.print("Line 433");:}
+	| specifier_qualifier_list							{:Logger.print("Line 434");:}
 	;
 
 abstract_declarator
-	::= pointer direct_abstract_declarator
-	| pointer
-	| direct_abstract_declarator
+	::= pointer direct_abstract_declarator	{:Logger.print("Line 438");:}
+	| pointer								{:Logger.print("Line 439");:}
+	| direct_abstract_declarator			{:Logger.print("Line 440");:}
 	;
 
 direct_abstract_declarator
-	::= LPAREN abstract_declarator RPAREN
-	| LBRACK RBRACK
-	| LBRACK MULT RBRACK
-	| LBRACK STATIC type_qualifier_list assignment_expression RBRACK
-	| LBRACK STATIC assignment_expression RBRACK
-	| LBRACK type_qualifier_list STATIC assignment_expression RBRACK
-	| LBRACK type_qualifier_list assignment_expression RBRACK
-	| LBRACK type_qualifier_list RBRACK
-	| LBRACK assignment_expression RBRACK
-	| direct_abstract_declarator LBRACK RBRACK
-	| direct_abstract_declarator LBRACK MULT RBRACK
-	| direct_abstract_declarator LBRACK STATIC type_qualifier_list assignment_expression RBRACK
-	| direct_abstract_declarator LBRACK STATIC assignment_expression RBRACK
-	| direct_abstract_declarator LBRACK type_qualifier_list assignment_expression RBRACK
-	| direct_abstract_declarator LBRACK type_qualifier_list STATIC assignment_expression RBRACK
-	| direct_abstract_declarator LBRACK type_qualifier_list RBRACK
-	| direct_abstract_declarator LBRACK assignment_expression RBRACK
-	| LPAREN RPAREN
-	| LPAREN parameter_type_list RPAREN
-	| direct_abstract_declarator LPAREN RPAREN
-	| direct_abstract_declarator LPAREN parameter_type_list RPAREN
+	::= LPAREN abstract_declarator RPAREN	{:Logger.print("Line 444");:}
+	| LBRACK RBRACK							{:Logger.print("Line 445");:}
+	| LBRACK MULT RBRACK					{:Logger.print("Line 446");:}
+	| LBRACK STATIC type_qualifier_list assignment_expression RBRACK	{:Logger.print("Line 447");:}
+	| LBRACK STATIC assignment_expression RBRACK						{:Logger.print("Line 448");:}
+	| LBRACK type_qualifier_list STATIC assignment_expression RBRACK	{:Logger.print("Line 449");:}
+	| LBRACK type_qualifier_list assignment_expression RBRACK			{:Logger.print("Line 450");:}
+	| LBRACK type_qualifier_list RBRACK									{:Logger.print("Line 451");:}
+	| LBRACK assignment_expression RBRACK								{:Logger.print("Line 452");:}
+	| direct_abstract_declarator LBRACK RBRACK							{:Logger.print("Line 453");:}
+	| direct_abstract_declarator LBRACK MULT RBRACK						{:Logger.print("Line 454");:}
+	| direct_abstract_declarator LBRACK STATIC type_qualifier_list assignment_expression RBRACK	{:Logger.print("Line 455");:}
+	| direct_abstract_declarator LBRACK STATIC assignment_expression RBRACK						{:Logger.print("Line 456");:}
+	| direct_abstract_declarator LBRACK type_qualifier_list assignment_expression RBRACK		{:Logger.print("Line 457");:}
+	| direct_abstract_declarator LBRACK type_qualifier_list STATIC assignment_expression RBRACK	{:Logger.print("Line 458");:}
+	| direct_abstract_declarator LBRACK type_qualifier_list RBRACK	{:Logger.print("Line 459");:}
+	| direct_abstract_declarator LBRACK assignment_expression RBRACK	{:Logger.print("Line 460");:}
+	| LPAREN RPAREN		{:Logger.print("Line 461");:}
+	| LPAREN parameter_type_list RPAREN		{:Logger.print("Line 462");:}
+	| direct_abstract_declarator LPAREN RPAREN	{:Logger.print("Line 463");:}
+	| direct_abstract_declarator LPAREN parameter_type_list RPAREN	{:Logger.print("Line 464");:}
 	;
 
 initializer
-	::= LBRACE initializer_list RBRACE
-	| LBRACE initializer_list COMMA RBRACE
-	| assignment_expression
+	::= LBRACE initializer_list RBRACE		{:Logger.print("Line 468");:}
+	| LBRACE initializer_list COMMA RBRACE	{:Logger.print("Line 469");:}
+	| assignment_expression:assign_exp					{:Logger.print("Line 470 assignment_expression: " + assign_exp); RESULT=assign_exp;:}
 	;
 
 initializer_list
-	::= designation initializer
-	| initializer
-	| initializer_list COMMA designation initializer
-	| initializer_list COMMA initializer
+	::= designation initializer				{:Logger.print("Line 474");:}
+	| initializer							{:Logger.print("Line 475");:}
+	| initializer_list COMMA designation initializer	{:Logger.print("Line 476");:}
+	| initializer_list COMMA initializer	{:Logger.print("Line 477");:}
 	;
 
 designation
-	::= designator_list EQ
+	::= designator_list EQ	{:Logger.print("Line 481");:}
 	;
 
 designator_list
-	::= designator
-	| designator_list designator
+	::= designator	{:Logger.print("Line 485");:}
+	| designator_list designator	{:Logger.print("Line 486");:}
 	;
 
 designator
-	::= LBRACK constant_expression RBRACK
-	| DOT IDENTIFIER
+	::= LBRACK constant_expression RBRACK	{:Logger.print("Line 490");:}
+	| DOT IDENTIFIER						{:Logger.print("Line 491");:}
 	;
 
 static_assert_declaration
-	::= STATIC_ASSERT LPAREN constant_expression COMMA STRING_LITERAL RPAREN SEMICOLON
+	::= STATIC_ASSERT LPAREN constant_expression COMMA STRING_LITERAL RPAREN SEMICOLON	{:Logger.print("Line 495");:}
 	;
 
 statement
-	::= labeled_statement
-	| compound_statement
-	| expression_statement
-	| selection_statement
-	| iteration_statement
-	| jump_statement
+	::= labeled_statement	{:Logger.print("Line 499");:}
+	| compound_statement	{:Logger.print("Line 500");:}
+	| expression_statement	{:Logger.print("Line 501");:}
+	| selection_statement	{:Logger.print("Line 502");:}
+	| iteration_statement	{:Logger.print("Line 503");:}
+	| jump_statement		{:Logger.print("Line 504");:}
 	;
 
 labeled_statement
-	::= IDENTIFIER COLON statement
-	| CASE constant_expression COLON statement
-	| DEFAULT COLON statement
+	::= IDENTIFIER COLON statement	{:Logger.print("Line 508");:}
+	| CASE constant_expression COLON statement	{:Logger.print("Line 509");:}
+	| DEFAULT COLON statement		{:Logger.print("Line 510");:}
 	;
 
 compound_statement
-  ::= LBRACE RBRACE
-  | LBRACE  block_item_list RBRACE
+  ::= LBRACE RBRACE					{:Logger.print("Line 514");:}
+  | LBRACE  block_item_list RBRACE	{:Logger.print("Line 515");:}
   ;
 
 block_item_list
-	::= block_item
-	| block_item_list block_item
+	::= block_item:block					{:Logger.print("Line 519 block_item: " + block);RESULT=block;:}
+	| block_item_list block_item	{:Logger.print("Line 520");:}
 	;
 
 block_item
-	::= declaration
-	| statement
+	::= declaration:decl					{:Logger.print("Line 524 declaration: " + decl);RESULT=decl;:}
+	| statement						{:Logger.print("Line 525");:}
 	;
 
 expression_statement
-	::= SEMICOLON
-	| expression SEMICOLON
+	::= SEMICOLON					{:Logger.print("Line 529");:}
+	| expression SEMICOLON			{:Logger.print("Line 530");:}
 	;
 
 selection_statement
-	::= IF LPAREN expression RPAREN statement ELSE statement
-	| IF LPAREN expression RPAREN statement
-	| SWITCH LPAREN expression RPAREN statement
+	::= IF LPAREN expression RPAREN statement ELSE statement	{:Logger.print("Line 534");:}
+	| IF LPAREN expression RPAREN statement		{:Logger.print("Line 535");:}
+	| SWITCH LPAREN expression RPAREN statement	{:Logger.print("Line 536");:}
 	;
 
 iteration_statement
-	::= WHILE LPAREN expression RPAREN statement
-	| DO statement WHILE LPAREN expression RPAREN SEMICOLON
-	| FOR LPAREN expression_statement expression_statement RPAREN statement
-	| FOR LPAREN expression_statement expression_statement expression RPAREN statement
-	| FOR LPAREN declaration expression_statement RPAREN statement
-	| FOR LPAREN declaration expression_statement expression RPAREN statement
+	::= WHILE LPAREN expression RPAREN statement	{:Logger.print("Line 540");:}
+	| DO statement WHILE LPAREN expression RPAREN SEMICOLON	{:Logger.print("Line 541");:}
+	| FOR LPAREN expression_statement expression_statement RPAREN statement	{:Logger.print("Line 542");:}
+	| FOR LPAREN expression_statement expression_statement expression RPAREN statement	{:Logger.print("Line 543");:}
+	| FOR LPAREN declaration expression_statement RPAREN statement	{:Logger.print("Line 544");:}
+	| FOR LPAREN declaration expression_statement expression RPAREN statement	{:Logger.print("Line 545");:}
 	;
 
 jump_statement
-	::= GOTO IDENTIFIER SEMICOLON
-	| CONTINUE SEMICOLON
-	| BREAK SEMICOLON
-	| RETURN SEMICOLON
-	| RETURN expression SEMICOLON
+	::= GOTO IDENTIFIER SEMICOLON	{:Logger.print("Line 549");:}
+	| CONTINUE SEMICOLON			{:Logger.print("Line 550");:}
+	| BREAK SEMICOLON				{:Logger.print("Line 551");:}
+	| RETURN SEMICOLON				{:Logger.print("Line 552");:}
+	| RETURN expression SEMICOLON	{:Logger.print("Line 553");:}
 	;
 
 translation_unit
-	::= external_declaration
-	| translation_unit external_declaration
+	::= external_declaration				{:Logger.print("Line 557");:}
+	| translation_unit external_declaration	{:Logger.print("Line 558");:}
 	;
 
 external_declaration
-	::= function_definition
-	| declaration
+	::= function_definition		{:Logger.print("Line 562");:}
+	| declaration				{:Logger.print("Line 563");:}
 	;
 
 function_definition
-	::= declaration_specifiers declarator declaration_list compound_statement
-	| declaration_specifiers declarator compound_statement
+	::= declaration_specifiers declarator declaration_list compound_statement	{:Logger.print("Line 567");:}
+	| declaration_specifiers declarator compound_statement						{:Logger.print("Line 568");:}
 	;
 
 declaration_list
-	::= declaration
-	| declaration_list declaration
+	::= declaration					{:Logger.print("Line 572");:}
+	| declaration_list declaration	{:Logger.print("Line 573");:}
 	;

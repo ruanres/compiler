@@ -1,4 +1,4 @@
-int main(){	
-   printf("$$Hello, World!");
+int main(){
+   int b = 3;
    return 0;
 }

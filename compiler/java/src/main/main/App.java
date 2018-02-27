@@ -12,7 +12,7 @@ public class App {
     public static Scanner scanner = null;
 
     public static void main(String[] args) throws Exception {
-        File input = new File("inputs/incorrect_code.c");
+        File input = new File("inputs/code.c");
         String filePath = input.getAbsolutePath();
         String sCurrentLine;
         String fileInfo = "";

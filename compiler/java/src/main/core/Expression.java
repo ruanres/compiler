@@ -9,7 +9,7 @@ public class Expression extends NamedEntity {
 	
 	public Expression(String name) {
 		super(name);
-		type = new Type("UNKNOWN");
+		type = new Type("null");
 	}
 	
 	public Expression(Type t) {
@@ -30,7 +30,7 @@ public class Expression extends NamedEntity {
 	
 	
 	public void setType(Type type) {
-		if (!getType().equals(new Type("UNKNOWN")) && !type.equals(getType()))
+		if (!getType().equals(new Type("null")) && !type.equals(getType()))
 			throw new SemanticException("Illegal Type Assignment " + type + " and " + getType());
 		this.type = type;
 	}
@@ -44,7 +44,7 @@ public class Expression extends NamedEntity {
 	}
 	
 	public void setValue(Expression exp) {
-		if (!exp.getType().equals(new Type("UNKNOWN")))
+		if (!exp.getType().equals(new Type("null")))
 			setType(exp.getType());
 		this.value = exp.getValue();
 	}
