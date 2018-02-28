@@ -71,7 +71,7 @@ start with translation_unit;
 
 primary_expression ::= IDENTIFIER:id         {:Logger.print("Line 72 IDENTIFIER: " + id); RESULT = Semantic.getInstance().getIdentifier((String) id); :}
                        | constant:c         {:RESULT = c; Logger.print("Line 73 " + c);:}
-                       | string						{:Logger.print("Line 74");:}
+                       | string:s						{:Logger.print("Line 74 - String"); RESULT = s;:}
 	                     | LPAREN expression RPAREN  {:Logger.print("Line 75");:}
                        | generic_selection	{:Logger.print("Line 76");:}
                        ;
@@ -86,7 +86,7 @@ enumeration_constant		/* before it has been defined as such */
 	;
 
 string
-	::= STRING_LITERAL:s				{: Logger.print("89 STRING_LITERAL: " + s); :}
+	::= STRING_LITERAL:s				{: Logger.print("89 STRING_LITERAL: " + s); RESULT = s;:}
 	| FUNC_NAME:f						{: Logger.print("90 FUNC_NAME: " + f); :}
 	;
 
@@ -167,16 +167,16 @@ shift_expression
 
 relational_expression
 	::= shift_expression:shift									{: Logger.print("Line 169 shift_expression: "  + shift); RESULT=shift; :}
-	| relational_expression LT shift_expression				{: Logger.print("170 relational_expression: " +  " shift_expression: "); :}
-	| relational_expression GT shift_expression				{: Logger.print("171 relational_expression: " +  " shift_expression: "); :}
-	| relational_expression LE_OP shift_expression			{: Logger.print("172 relational_expression: "  + " shift_expression: "); :}
-	| relational_expression GE_OP shift_expression			{: Logger.print("173 relational_expression: " + " shift_expression: "); :}
+	| relational_expression:e1 LT shift_expression:e2				{: Logger.print("Line 170 LESS THAN"); Semantic.getInstance().isRelationalExpression((Expression) e1, (Expression) e2);:}
+	| relational_expression:e1 GT shift_expression:e2			{: Logger.print("Line 171 GREATER THAN"); Semantic.getInstance().isRelationalExpression((Expression) e1, (Expression) e2); :}
+	| relational_expression:e1 LE_OP shift_expression:e2			{: Logger.print("Line 172 LESS EQUAL"); Semantic.getInstance().isRelationalExpression((Expression) e1, (Expression) e2); :}
+	| relational_expression:e1 GE_OP shift_expression:e2			{: Logger.print("Line 173 GREATER EQUAL"); Semantic.getInstance().isRelationalExpression((Expression) e1, (Expression) e2); :}
 	;
 
 equality_expression
 	::= relational_expression:rel								{: Logger.print("Line 177 relational_expression: " + rel); RESULT=rel;:}
-	| equality_expression EQ_OP relational_expression		{: Logger.print("Line 178 equality_expression: " + " " ); :}
-	| equality_expression NE_OP relational_expression		{: Logger.print("Line 179 equality_expression: " +  " " );  :}
+	| equality_expression:e1 EQ_OP relational_expression:e2		{: Logger.print("Line 178 EQUAL"); Semantic.getInstance().isRelationalExpression((Expression) e1, (Expression) e2); :}
+	| equality_expression:e1 NE_OP relational_expression:e2		{: Logger.print("Line 179 NOT EQUAL"); Semantic.getInstance().isRelationalExpression((Expression) e1, (Expression) e2); :}
 	;
 
 and_expression

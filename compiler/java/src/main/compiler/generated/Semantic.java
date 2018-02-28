@@ -81,4 +81,13 @@ public class Semantic {
 
 	}
 
+	public boolean isRelationalExpression(Expression le, Expression re) throws SemanticException {
+		if(!le.getType().equals(re.getType())){
+            throw new SemanticException("ERRO: A expressão formada pelas subexpressões de valor " + le.getValue() + " do tipo "
+                    + le.getType().getName()+" e de valor " + re.getValue() + " do tipo " + re.getType().getName()+ " não é uma expressão relacional!");
+        }
+        System.out.println("Vai retornar true");
+        return true;
+    }
+
 }
