@@ -62,22 +62,12 @@ public class Semantic {
 	}
 	
 	public Identifier getIdentifier(String name) {
-
 		if (!checkIfVariableExistInScope(name)) {
 			throw new SemanticException("Identifier name doesn't exists: " + name);
 		}
 		
-		if (cProgram.getFunctions().get(name) != null) {
-			return cProgram.getFunctions().get(name);
-		}
-
-		for (int i = scopeStack.size() - 1; i >= 0; i--) {
-			if (scopeStack.get(i).getVariable().get(name) != null) {
-				return scopeStack.get(i).getVariable().get(name);
-			}
-		}
-
-		return cProgram.getVariable().get(name);
+		System.out.println(variables);
+		return variables.get(name);
 	}
 	
 	public boolean checkIfVariableExistInScope(String name) {

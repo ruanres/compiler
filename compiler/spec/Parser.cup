@@ -211,25 +211,25 @@ conditional_expression
 
 assignment_expression
 	::= conditional_expression:cond_exp										{:Logger.print("Line 213 conditional_expression: " + cond_exp); RESULT=cond_exp;:}
-	| unary_expression assignment_operator assignment_expression	{:Logger.print("Line 214");:}
+	| unary_expression:un_exp assignment_operator:as_op assignment_expression:as_exp	{:Logger.print("Line 214 unary_expression: " + un_exp + " assignment_operator: " + as_op + " assignment_expression: " + as_exp); RESULT=as_exp;:}
 	;
 
 assignment_operator
-	::= EQ			{:Logger.print("Line 218");:}
-	| MUL_ASSIGN	{:Logger.print("Line 219");:}
-	| DIV_ASSIGN	{:Logger.print("Line 220");:}
-	| MOD_ASSIGN	{:Logger.print("Line 221");:}
-	| ADD_ASSIGN	{:Logger.print("Line 222");:}
-	| SUB_ASSIGN	{:Logger.print("Line 223");:}
-	| LEFT_ASSIGN	{:Logger.print("Line 224");:}
-	| RIGHT_ASSIGN	{:Logger.print("Line 225");:}
-	| AND_ASSIGN	{:Logger.print("Line 226");:}
-	| XOR_ASSIGN	{:Logger.print("Line 227");:}
-	| OR_ASSIGN		{:Logger.print("Line 228");:}
+	::= EQ			    {:Logger.print("Line 218 EQ"); RESULT= new Node("=","primary", "PLUS");:}
+	| MUL_ASSIGN	  {:Logger.print("Line 219 MUL_ASSIGN"); RESULT= new Node("*=","primary", "MUL_ASSIGN");:}
+	| DIV_ASSIGN	  {:Logger.print("Line 220 DIV_ASSIGN"); RESULT= new Node("/=","primary", "DIV_ASSIGN");:}
+	| MOD_ASSIGN	  {:Logger.print("Line 221 MOD_ASSIGN"); RESULT= new Node("%=","primary", "MOD_ASSIGN");:}
+	| ADD_ASSIGN	  {:Logger.print("Line 222 ADD_ASSIGN"); RESULT= new Node("+=","primary", "ADD_ASSIGN");:}
+	| SUB_ASSIGN	  {:Logger.print("Line 223 SUB_ASSIGN"); RESULT= new Node("-=","primary", "SUB_ASSIGN");:}
+	| LEFT_ASSIGN	  {:Logger.print("Line 224 LEFT_ASSIGN"); RESULT= new Node("<<=","primary", "LEFT_ASSIGN");:}
+	| RIGHT_ASSIGN	{:Logger.print("Line 225 RIGHT_ASSIGN"); RESULT= new Node(">>=","primary", "RIGHT_ASSIGN");:}
+	| AND_ASSIGN	  {:Logger.print("Line 226 AND_ASSIGN"); RESULT= new Node("&=","primary", "AND_ASSIGN");:}
+	| XOR_ASSIGN	  {:Logger.print("Line 227 XOR_ASSIGN"); RESULT= new Node("^=","primary", "XOR_ASSIGN");:}
+	| OR_ASSIGN		  {:Logger.print("Line 228 OR_ASSIGN"); RESULT= new Node("|=","primary", "OR_ASSIGN");:}
 	;
 
 expression
-	::= assignment_expression					{:Logger.print("Line 232");:}
+	::= assignment_expression:assign_exp					{:Logger.print("Line 232 assignment_expression: " + assign_exp); RESULT=assign_exp;:}
 	| expression COMMA assignment_expression	{:Logger.print("Line 233");:}
 	;
 
@@ -262,7 +262,7 @@ init_declarator_list
 	;
 
 init_declarator
-	::= declarator:de EQ initializer:in					{:Logger.print("Line 265 declarator: " + de + " initializer: " + in); Variable temp = new Variable((String) de,new Type("null")); RESULT = temp; Semantic.getInstance().getCodeGenerator().assignmentDeclararion((Variable) de, in );:}
+	::= declarator:de EQ initializer:in					{:Logger.print("Line 265 declarator: " + de + " initializer: " + in); Variable temp = new Variable((String) de,new Type("null")); RESULT = temp;:}
 	| declarator:de									{:Logger.print("Line 266 declarator: " + de);:}
 	;
 
@@ -498,7 +498,7 @@ static_assert_declaration
 statement
 	::= labeled_statement	{:Logger.print("Line 499");:}
 	| compound_statement	{:Logger.print("Line 500");:}
-	| expression_statement	{:Logger.print("Line 501");:}
+	| expression_statement:exp_stat	{:Logger.print("Line 501 expression_statement: " + exp_stat); RESULT=exp_stat;:}
 	| selection_statement	{:Logger.print("Line 502");:}
 	| iteration_statement	{:Logger.print("Line 503");:}
 	| jump_statement		{:Logger.print("Line 504");:}
@@ -517,17 +517,17 @@ compound_statement
 
 block_item_list
 	::= block_item:block					{:Logger.print("Line 519 block_item: " + block);RESULT=block;:}
-	| block_item_list block_item	{:Logger.print("Line 520");:}
+	| block_item_list block_item:block	{:Logger.print("Line 520 block_item: " + block);RESULT=block;:}
 	;
 
 block_item
 	::= declaration:decl					{:Logger.print("Line 524 declaration: " + decl);RESULT=decl;:}
-	| statement						{:Logger.print("Line 525");:}
+	| statement:stat						{:Logger.print("Line 525 statement: " + stat); RESULT=stat;:}
 	;
 
 expression_statement
 	::= SEMICOLON					{:Logger.print("Line 529");:}
-	| expression SEMICOLON			{:Logger.print("Line 530");:}
+	| expression:exp SEMICOLON			{:Logger.print("Line 530 expression: " + exp); RESULT=exp;:}
 	;
 
 selection_statement
