@@ -13,7 +13,7 @@ public class CodeGenerator {
 	 public CodeGenerator() {
 		 this.assemblyCode = getInitAssemblyCode();
 		 this.registers = Register.values();
-	     labels = 10;
+	     labels = 100;
 	     register = -1;
 	 }
 	 
@@ -21,7 +21,7 @@ public class CodeGenerator {
 		 return "100: LD SP, #4000\n";
 	 }
 	
-	 public void assignmentDeclaration(Variable var, Object obj) {
+	 public void assignmentDeclaration(Variable var) {
 	   // No futuro fazer para função	 
 	   generateSTCode(var);
 	 }
@@ -52,5 +52,11 @@ public class CodeGenerator {
 			register++; 
 			return allocateRegister();
 		}
-	}
+	 }
+	 
+	 @Override
+	 public String toString() {
+		 System.out.println(assemblyCode);
+		 return assemblyCode;
+	 }
 }

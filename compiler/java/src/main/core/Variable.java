@@ -1,15 +1,30 @@
 package core;
 
-public class Variable extends Expression implements Parameter, Identifier {
-
+public class Variable extends Expression {
+	
+	private Type type;
+	private String name;
+	
 	public Variable(String name, Type type) {
-		super(name);
-		setType(type);
+		super(type);
+		this.type = type;
+		this.name = name;
 	}
 	
-	@Override
-	public String getAssemblyValue() {
-		return getName();
+	public Type getType() {
+		return type;	
+	}
+	
+	public String getName() {
+		return name;
+	};
+	
+	public void setType(Type type) {
+		this.type = type;	
+	}
+		
+	public void setName(String name) {
+		this.name = name;
 	};
 	
 	@Override
