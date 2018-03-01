@@ -77,7 +77,7 @@ primary_expression ::= IDENTIFIER:id         {:Logger.print("Line 72 IDENTIFIER:
                        ;
 
 constant ::= I_CONSTANT:i		/* includes character_constant */ {:Logger.print("Line 79 I_CONSTANT: " + i); RESULT = new Expression(new Type("int"), i.toString());:}
-	           | F_CONSTANT:f 	{:Logger.print("Line 80 F_CONSTANT: " + f); RESULT = new Expression(new Type("string"), f.toString());:}
+	           | F_CONSTANT:f 	{:Logger.print("Line 80 F_CONSTANT: " + f); RESULT = new Expression(new Type("float"), f.toString());:}
 	           | ENUMERATION_CONSTANT	/* after it has been defined as such */ {:Logger.print("Line 81");:}
 	           ;
 
@@ -86,7 +86,7 @@ enumeration_constant		/* before it has been defined as such */
 	;
 
 string
-	::= STRING_LITERAL:s				{: Logger.print("89 STRING_LITERAL: " + s); RESULT = new Expression(new Type("float"), s.toString());:}
+	::= STRING_LITERAL:s				{: Logger.print("89 STRING_LITERAL: " + s); RESULT = new Expression(new Type("string"), s.toString());:}
 	| FUNC_NAME:f						{: Logger.print("90 FUNC_NAME: " + f); :}
 	;
 
