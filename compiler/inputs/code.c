@@ -1,4 +1,4 @@
 int main(){
-   int a = 2;
+   char a[] = "teste";
    return 0;
 }

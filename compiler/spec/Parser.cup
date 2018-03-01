@@ -70,14 +70,14 @@ non terminal relational_expression, inclusive_or_expression, declaration;
 start with translation_unit;
 
 primary_expression ::= IDENTIFIER:id         {:Logger.print("Line 72 IDENTIFIER: " + id); RESULT = Semantic.getInstance().getIdentifier((String) id); :}
-                       | constant:c         {:RESULT = c; Logger.print("Line 73 " + c);:}
+                       | constant:c         {:Logger.print("Line 73 " + c); RESULT = c; :}
                        | string:s						{:Logger.print("Line 74 - String"); RESULT = s;:}
 	                     | LPAREN expression RPAREN  {:Logger.print("Line 75");:}
                        | generic_selection	{:Logger.print("Line 76");:}
                        ;
 
 constant ::= I_CONSTANT:i		/* includes character_constant */ {:Logger.print("Line 79 I_CONSTANT: " + i); RESULT = new Expression(new Type("int"), i.toString());:}
-	           | F_CONSTANT:f 	{:Logger.print("Line 80 F_CONSTANT: " + f); RESULT = new Expression(new Type("float"), f.toString());:}
+	           | F_CONSTANT:f 	{:Logger.print("Line 80 F_CONSTANT: " + f); RESULT = new Expression(new Type("string"), f.toString());:}
 	           | ENUMERATION_CONSTANT	/* after it has been defined as such */ {:Logger.print("Line 81");:}
 	           ;
 
@@ -86,7 +86,7 @@ enumeration_constant		/* before it has been defined as such */
 	;
 
 string
-	::= STRING_LITERAL:s				{: Logger.print("89 STRING_LITERAL: " + s); RESULT = s;:}
+	::= STRING_LITERAL:s				{: Logger.print("89 STRING_LITERAL: " + s); RESULT = new Expression(new Type("float"), s.toString());:}
 	| FUNC_NAME:f						{: Logger.print("90 FUNC_NAME: " + f); :}
 	;
 
@@ -381,7 +381,7 @@ declarator
 direct_declarator
 	::= IDENTIFIER:d                 {: RESULT = d; Logger.print("Line 383 identifier: " + d);:}
 	| LPAREN declarator RPAREN				{:Logger.print("Line 383");:}
-	| direct_declarator LBRACK RBRACK		{:Logger.print("Line 384");:}
+	| direct_declarator:dir_decl LBRACK RBRACK		{:Logger.print("Line 384 direct_declarator: "); RESULT = dir_decl;:}
 	| direct_declarator LBRACK MULT RBRACK	{:Logger.print("Line 385");:}
 	| direct_declarator LBRACK STATIC type_qualifier_list assignment_expression RBRACK	{:Logger.print("Line 386");:}
 	| direct_declarator LBRACK STATIC assignment_expression RBRACK		{:Logger.print("Line 387");:}

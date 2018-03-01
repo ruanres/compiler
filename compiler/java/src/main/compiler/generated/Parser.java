@@ -1335,7 +1335,7 @@ class CUP$Parser$actions {
 		int cleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int cright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Object c = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		RESULT = c; Logger.print("Line 73 " + c);
+		Logger.print("Line 73 " + c); RESULT = c; 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("primary_expression",1, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -1419,7 +1419,7 @@ class CUP$Parser$actions {
 		int sleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int sright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Object s = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		 Logger.print("89 STRING_LITERAL: " + s); RESULT = s;
+		 Logger.print("89 STRING_LITERAL: " + s); RESULT = new Expression(new Type("float"), s.toString());
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("string",4, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -2982,7 +2982,10 @@ class CUP$Parser$actions {
           case 170: // direct_declarator ::= direct_declarator LBRACK RBRACK 
             {
               Object RESULT =null;
-		Logger.print("Line 384");
+		int dir_declleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int dir_declright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		Object dir_decl = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		Logger.print("Line 384 direct_declarator: "); RESULT = dir_decl;
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("direct_declarator",47, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;

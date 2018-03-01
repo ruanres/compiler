@@ -26,10 +26,6 @@ public class Semantic {
 		cProgram = new Program();
 	}
 	
-	private void createNewScope(ScopedEntity scope) {
-		scopeStack.push(scope);
-	}
-	
 	public static CodeGenerator getCodeGenerator() {
         return codeGenerator;
     }
@@ -38,56 +34,30 @@ public class Semantic {
         return scopeStack.peek();
     }
 	
-	public void addFunctionAndNewScope(Function f) throws Exception {
-		createNewScope(f);
-	}
-	
 	public void addVariable(Variable var) {
-	
-		if(scopeStack.isEmpty()){
-			if (variables.get(var.toString()) != null) {
-				throw new SemanticException("Variable " + var.getName() + " already exists");
-			}
+		if (variables.get(var.toString()) != null) {
+			throw new SemanticException("Variable " + var.getName() + " already exists");
+		}
 
-			variables.put(var.toString(), var);
-        } else {
-	    	if (checkIfVariableExistInScope(var.getName())) {
-				throw new SemanticException("Variable " + var.getName() + " already exists");
-			} 
-	    	
-            getCurrentScope().addVariable(var);
-        }
-		
-		
-	
+		variables.put(var.toString(), var);
 	}
 	
 	public Identifier getIdentifier(String name) {
-		if (!checkIfVariableExistInScope(name)) {
+		if (variables.get(name) == null) {
 			throw new SemanticException("Identifier name doesn't exists: " + name);
 		}
 		
 		return variables.get(name);
 	}
 	
-	public boolean checkIfVariableExistInScope(String name) {
-		if(!scopeStack.isEmpty() && getCurrentScope().getVariable().get(name) != null){
-			return true;
-	    } else if(variables.get(name) != null){
-	        return true;
-	    } else {
-	        return false;
-	    }
-
-	}
 
 	public boolean isRelationalExpression(Expression le, Expression re) throws SemanticException {
 		if(!le.getType().equals(re.getType())){
             throw new SemanticException("ERRO: A expressão formada pelas subexpressões de valor " + le.getValue() + " do tipo "
                     + le.getType().getName()+" e de valor " + re.getValue() + " do tipo " + re.getType().getName()+ " não é uma expressão relacional!");
         }
-        System.out.println("Vai retornar true");
-        return true;
+
+		return true;
     }
 
 }
