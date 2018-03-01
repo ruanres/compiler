@@ -43,12 +43,13 @@ public class Semantic {
 	}
 	
 	public void addVariable(Variable var) {
-
+	
 		if(scopeStack.isEmpty()){
 			if (variables.get(var.toString()) != null) {
 				throw new SemanticException("Variable " + var.getName() + " already exists");
 			}
-            variables.put(var.toString(), var);
+
+			variables.put(var.toString(), var);
         } else {
 	    	if (checkIfVariableExistInScope(var.getName())) {
 				throw new SemanticException("Variable " + var.getName() + " already exists");
@@ -66,7 +67,6 @@ public class Semantic {
 			throw new SemanticException("Identifier name doesn't exists: " + name);
 		}
 		
-		System.out.println(variables);
 		return variables.get(name);
 	}
 	

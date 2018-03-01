@@ -3033,7 +3033,10 @@ class CUP$Parser$actions {
           case 180: // direct_declarator ::= direct_declarator LPAREN RPAREN 
             {
               Object RESULT =null;
-		Logger.print("Line 394");
+		int dir_declleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int dir_declright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		Object dir_decl = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		Logger.print("Line 394 dir_decl: " + dir_decl); RESULT=dir_decl;
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("direct_declarator",47, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;

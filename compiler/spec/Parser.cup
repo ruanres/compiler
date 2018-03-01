@@ -391,7 +391,7 @@ direct_declarator
 	| direct_declarator LBRACK type_qualifier_list RBRACK		{:Logger.print("Line 391");:}
 	| direct_declarator LBRACK assignment_expression RBRACK		{:Logger.print("Line 392");:}
 	| direct_declarator LPAREN parameter_type_list RPAREN		{:Logger.print("Line 393");:}
-	| direct_declarator LPAREN RPAREN							{:Logger.print("Line 394");:}
+	| direct_declarator:dir_decl LPAREN RPAREN							{:Logger.print("Line 394 dir_decl: " + dir_decl); RESULT=dir_decl;:}
 	| direct_declarator LPAREN identifier_list RPAREN			{:Logger.print("Line 395");:}
 	;
 
