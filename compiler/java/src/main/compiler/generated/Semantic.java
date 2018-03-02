@@ -55,7 +55,7 @@ public class Semantic {
 		
 		//Inicialmente a variavel � associada com o o mesmo tipo da express�o que foi dado assign. S� aqui � verificado se os tipos batem		
 		if (!variableType.equals(expressionAssignedType)) {
-			throw new SemanticException("N�o � possivel a variavel do tipo " + variableType.getName() + " ser associado com um valor/variavel do tipo " +  expressionAssignedType);
+			throw new SemanticException("Nao é possivel a variavel do tipo " + variableType.getName() + " ser associado com um valor/variavel do tipo " +  expressionAssignedType);
 		}
 		
 		currentScopeVar.setType(variableType);
@@ -67,7 +67,7 @@ public class Semantic {
 	public void checkAssignVariableIsValid(Variable var, Expression exp) {
 		Variable currentScopeVariable = getIdentifier(var.getName()); 
 		
-		if (!currentScopeVariable.getType().equalsAssign(exp.getType())) {
+		if (!currentScopeVariable.getType().equalsAssignRelational(exp.getType())) {
 			
 			if (currentScopeVariable.getType().getName() == "char") {
 				throw new SemanticException("ERRO: Literal string é imutavel");
@@ -97,7 +97,7 @@ public class Semantic {
 	
 
 	public boolean isRelationalExpression(Expression le, Expression re) throws SemanticException {
-		if(!le.getType().equalsRelationExpression(re.getType())){
+		if(!le.getType().equalsAssignRelational(re.getType())){
             throw new SemanticException("ERRO: Nao é possivel comparar uma expressao do tipo " + 
 		le.getType().getName() + " com uma expressao do tipo " + re.getType().getName());
         }

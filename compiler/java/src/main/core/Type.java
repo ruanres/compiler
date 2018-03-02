@@ -26,15 +26,14 @@ public class Type extends NamedEntity implements Parameter {
 		
 		return  this.getName().equals(auxObjName) ||
 				this.getName().equals("float") && auxObjName.equals("int") || 
-				this.getName().equals("int") && auxObjName.equals("float") || 
-				this.getName().equals("int") && auxObjName.equals("char") ;
+				this.getName().equals("int") && auxObjName.equals("float");
 	}
 
 	public Type getType() {
 		return this;
 	}
 	
-	public boolean equalsAssign(Object obj) {
+	public boolean equalsAssignRelational(Object obj) {
 		
 		// Impossivel fazer re-atribuicao a uma variavel do tipo string.
 		if (this.getType().getName() == "char") {
@@ -48,21 +47,7 @@ public class Type extends NamedEntity implements Parameter {
 		
 		return  this.getName().equals(auxObjName) ||
 				this.getName().equals("float") && auxObjName.equals("int") || 
-				this.getName().equals("int") && auxObjName.equals("float") || 
-				this.getName().equals("int") && auxObjName.equals("char") ;
+				this.getName().equals("int") && auxObjName.equals("float");
 	}
 
-	public boolean equalsRelationExpression(Object obj) {
-		if (!(obj instanceof Type))
-			return false;
-		
-		Type auxObj = (Type) obj;
-		String auxObjName = auxObj.getName();
-		
-		return  this.getName().equals(auxObjName) ||
-				this.getName().equals("float") && auxObjName.equals("int") || 
-				this.getName().equals("int") && auxObjName.equals("float") || 
-				this.getName().equals("int") && auxObjName.equals("char") ||
-				this.getName().equals("char") && auxObjName.equals("int");
-	}
 }
