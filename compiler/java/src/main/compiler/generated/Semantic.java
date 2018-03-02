@@ -53,9 +53,9 @@ public class Semantic {
 		Type expressionAssignedType = currentScopeVar.getType();
 		
 		
-		//Inicialmente a variavel é associada com o o mesmo tipo da expressão que foi dado assign. Só aqui é verificado se os tipos batem		
+		//Inicialmente a variavel ï¿½ associada com o o mesmo tipo da expressï¿½o que foi dado assign. Sï¿½ aqui ï¿½ verificado se os tipos batem		
 		if (!variableType.equals(expressionAssignedType)) {
-			throw new SemanticException("Não é possivel a variavel do tipo " + variableType.getName() + " ser associado com um valor/variavel do tipo " +  expressionAssignedType);
+			throw new SemanticException("Nï¿½o ï¿½ possivel a variavel do tipo " + variableType.getName() + " ser associado com um valor/variavel do tipo " +  expressionAssignedType);
 		}
 		
 		currentScopeVar.setType(variableType);
@@ -67,15 +67,19 @@ public class Semantic {
 	public void checkAssignVariableIsValid(Variable var, Expression exp) {
 		Variable currentScopeVariable = getIdentifier(var.getName()); 
 		
-		if (!currentScopeVariable.getType().equals(exp.getType())) {
-			throw new SemanticException("Não é possivel a variavel do tipo " + currentScopeVariable.getName() + " ser associado com um valor/variavel do tipo " +  exp.getType());
+		if (!currentScopeVariable.getType().equalsAssign(exp.getType())) {
+			
+			if (currentScopeVariable.getType().getName() == "char") {
+				throw new SemanticException("ERRO: Literal string Ã© imutavel");
+			}
+			throw new SemanticException("Nao Ã© possivel a variavel do tipo " + currentScopeVariable.getName() + " ser associado com um valor/variavel do tipo " +  exp.getType());
 		}
 		
 		if (exp instanceof Variable) {
-			//Se for uma variavel, já há um registrador com um valor da variavel guardado
+			//Se for uma variavel, jï¿½ hï¿½ um registrador com um valor da variavel guardado
 			getCodeGenerator().generateSTCode(currentScopeVariable);
 		} else if (exp instanceof Expression) {
-			//Se for uma expressão, precisa-se dar um LD na expressão para depois dar um ST
+			//Se for uma expressï¿½o, precisa-se dar um LD na expressï¿½o para depois dar um ST
 			getCodeGenerator().generateLDCode(exp);
 			getCodeGenerator().generateSTCode(var);
 
@@ -93,9 +97,9 @@ public class Semantic {
 	
 
 	public boolean isRelationalExpression(Expression le, Expression re) throws SemanticException {
-		if(!le.getType().equals(re.getType())){
-            throw new SemanticException("ERRO: A expressÃ£o formada pelas subexpressÃµes de valor " + le.getValue() + " do tipo "
-                    + le.getType().getName()+" e de valor " + re.getValue() + " do tipo " + re.getType().getName()+ " nÃ£o Ã© uma expressÃ£o relacional!");
+		if(!le.getType().equalsRelationExpression(re.getType())){
+            throw new SemanticException("ERRO: Nao Ã© possivel comparar uma expressao do tipo " + 
+		le.getType().getName() + " com uma expressao do tipo " + re.getType().getName());
         }
 
 		return true;
