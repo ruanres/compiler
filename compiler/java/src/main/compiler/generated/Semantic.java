@@ -104,19 +104,17 @@ public class Semantic {
 		return true;
     }
 
-    public boolean checkTypeCompatibility(Type leftType, Type rightType) {
-        boolean leftIsString = leftType.getName().equals("string");
-        boolean rightIsString = rightType.getName().equals("string");
+    private void checkTypeCompatibility(Expression leftExp, Expression rightExp) throws SemanticException{
+        boolean leftIsChar = leftExp.getType().toString().equals("char");
+        boolean rightIsChar = rightExp.getType().toString().equals("char");
 
-        if(leftIsString || rightIsString)
+        if(leftIsChar || rightIsChar)
             throw new SemanticException("Illegal Operation between " +
-                    leftType.getName() + " and " + rightType.getName());
-
-        return leftType.equals(rightType);
+                    leftExp.getType().toString() + " and " + rightExp.getType().toString());
     }
 
     public Expression getExpressionForOperation(Operation op, Expression e1, Expression e2) {
-        checkTypeCompatibility(e1.getType(), e2.getType());
+        checkTypeCompatibility(e1, e2);
         Type minorType = getMinorType(e1.getType(), e2.getType());
 
         getCodeGenerator().generateLDCode(e1);

@@ -3,7 +3,7 @@
 # Gerar Analisador Léxico
 
 ```sh
-$ java -jar libs/jflex.jar --noinputstreamctor -d ./java/src/main/compiler/generated ./spec/Scanner.jflex
+$ java -jar libs/jflex.jar --noinputstreamctor -d ./java/src/main/compiler/generated ./spec/Scanner.flex
 ```
 
 # Gerar Analisador Sintático
