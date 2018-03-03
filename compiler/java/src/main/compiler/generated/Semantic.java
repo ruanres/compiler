@@ -1,7 +1,6 @@
 package compiler.generated;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Stack;
 
 import core.*;
@@ -105,4 +104,45 @@ public class Semantic {
 		return true;
     }
 
+    private void checkTypeCompatibility(Expression leftExp, Expression rightExp) throws SemanticException{
+        boolean leftIsChar = leftExp.getType().toString().equals("char");
+        boolean rightIsChar = rightExp.getType().toString().equals("char");
+
+        if(leftIsChar || rightIsChar)
+            throw new SemanticException("Illegal Operation between " +
+                    leftExp.getType().toString() + " and " + rightExp.getType().toString());
+    }
+
+    public Expression getExpressionForOperation(Operation op, Expression e1, Expression e2) {
+        checkTypeCompatibility(e1, e2);
+        Type minorType = getMinorType(e1.getType(), e2.getType());
+
+        getCodeGenerator().generateLDCode(e1);
+        getCodeGenerator().generateLDCode(e2);
+
+        switch (op) {
+            case PLUS:
+                getCodeGenerator().generateADDCode();
+                break;
+            case MINUS:
+                getCodeGenerator().generateSUBCode();
+                break;
+            case MULT:
+                getCodeGenerator().generateMULCode();
+                break;
+            case DIV:
+                getCodeGenerator().generateDIVCode();
+        }
+        return new Expression(minorType);
+    }
+
+    private Type getMinorType(Type type1, Type type2) {
+        if(type1.equals(type2)) {
+            return type1;
+        } else if(type1.getName().equals("int") || type2.getName().equals("int")) {
+            return new Type("int");
+        } else {
+            return new Type("float");
+        }
+    }
 }

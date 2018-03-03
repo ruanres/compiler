@@ -53,7 +53,79 @@ public class CodeGenerator {
 			return allocateRegister();
 		}
 	 }
-	 
+
+    public void generateADDCode() {
+        labels += 4;
+        Register one = registers[register - 1];
+        Register two = allocateRegister();
+
+        register++;
+        Register result = allocateRegister();
+        addCode(labels + ": ADD " + result + ", " + one + ", " + two);
+    }
+
+    public void generateADDCode(String cons) {
+        labels += 4;
+        Register one = registers[register];
+        register++;
+        Register result = allocateRegister();
+        addCode(labels + ": ADD " + result + ", " + one + ", #" + cons);
+    }
+
+    public void generateADDCode(Register result, Register one, String cons) {
+        labels += 4;
+        addCode(labels + ": ADD " + result + ", " + one + ", " + cons);
+    }
+
+    public void generateADDCode(Register result, Register one, Expression exp) {
+        labels += 4;
+        addCode(labels + ": ADD " + result + ", " + one + ", #" + exp.getAssemblyValue());
+    }
+
+    public void generateSUBCode() {
+        labels += 4;
+
+        Register one = registers[register - 1];
+        Register two = allocateRegister();
+
+        register++;
+        Register result = allocateRegister();
+        addCode(labels + ": SUB " + result + ", " + one + ", " + two);
+    }
+
+    public void generateSUBCode(Register result, Register one, Expression exp) {
+        labels += 4;
+        addCode(labels + ": SUB " + result + ", " + one + ", #" + exp.getAssemblyValue());
+    }
+
+    public void generateMULCode() {
+        labels += 4;
+
+        Register one = registers[register - 1];
+        Register two = allocateRegister();
+
+        register++;
+        Register result = allocateRegister();
+        addCode(labels + ": MUL " + result + ", " + one + ", " + two);
+    }
+
+    public void generateMULCode(Register result, Register one, Expression exp) {
+        labels += 4;
+        addCode(labels + ": MUL " + result + ", " + one + ", #" + exp.getValue());
+    }
+
+    public void generateDIVCode() {
+        labels += 4;
+
+        Register one = registers[register - 1];
+        Register two = allocateRegister();
+
+        register++;
+        Register result = allocateRegister();
+        addCode(labels + ": DIV " + result + ", " + one + ", " + two);
+    }
+
+
 	 @Override
 	 public String toString() {
 		 System.out.println(assemblyCode);

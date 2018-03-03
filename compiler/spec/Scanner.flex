@@ -42,13 +42,11 @@ LineComment = "//" {InputCharacter}* {LineTerminator}?
 BlockComment = "/*" [^*] ~"*/" | "/*" "*"+ "/"
 
 %{
-  public static String lexeme;
-
-  public String current_lexeme() {
-    int l = yyline + 1;
-    int c = yycolumn + 1;
-    return " (line: " + l + " , column: " + c + " , lexeme: '" + yytext() + "')";
-  }
+      public String current_lexeme() {
+        int l = yyline + 1;
+        int c = yycolumn + 1;
+        return " (line: " + l + " , column: " + c + " , lexeme: '" + yytext() + "')";
+      }
 %}
 %eofval{
     return new Symbol (sym.EOF, new String("Fim do arquivo"));

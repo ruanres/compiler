@@ -1,6 +1,5 @@
 package core;
 
-import util.SemanticException;
 
 public class Expression extends NamedEntity {
 	
@@ -26,9 +25,7 @@ public class Expression extends NamedEntity {
 	public Type getType() {
 		return type;
 	}
-	
-	
-	
+
 	public void setType(Type type) {
 		this.type = type;
 	}

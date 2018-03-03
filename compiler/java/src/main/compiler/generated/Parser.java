@@ -1749,7 +1749,13 @@ class CUP$Parser$actions {
           case 45: // multiplicative_expression ::= multiplicative_expression MULT cast_expression 
             {
               Object RESULT =null;
-		Logger.print("151");
+		int meleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int meright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		Object me = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		int celeft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int ceright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		Object ce = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		Logger.print("151 MULT"); RESULT = Semantic.getInstance().getExpressionForOperation(Operation.MULT, (Expression) me, (Expression) ce); 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("multiplicative_expression",15, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -1758,7 +1764,13 @@ class CUP$Parser$actions {
           case 46: // multiplicative_expression ::= multiplicative_expression DIV cast_expression 
             {
               Object RESULT =null;
-		Logger.print("152");
+		int meleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int meright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		Object me = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		int celeft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int ceright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		Object ce = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		Logger.print("152 DIV"); RESULT = Semantic.getInstance().getExpressionForOperation(Operation.DIV, (Expression) me, (Expression) ce); 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("multiplicative_expression",15, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -1767,7 +1779,7 @@ class CUP$Parser$actions {
           case 47: // multiplicative_expression ::= multiplicative_expression MOD cast_expression 
             {
               Object RESULT =null;
-		Logger.print("153");
+		Logger.print("153 MOD"); 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("multiplicative_expression",15, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -1779,7 +1791,7 @@ class CUP$Parser$actions {
 		int multi_expleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int multi_expright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Object multi_exp = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		Logger.print("157 mult_exp: " + multi_exp); RESULT=multi_exp;
+		Logger.print("157 mult_exp: " + multi_exp); RESULT=multi_exp; 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("additive_expression",16, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -1788,7 +1800,13 @@ class CUP$Parser$actions {
           case 49: // additive_expression ::= additive_expression PLUS multiplicative_expression 
             {
               Object RESULT =null;
-		Logger.print("158");
+		int aeleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int aeright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		Object ae = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		int meleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int meright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		Object me = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		Logger.print("158 sum"); RESULT = Semantic.getInstance().getExpressionForOperation(Operation.PLUS, (Expression) ae, (Expression) me); 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("additive_expression",16, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -1797,7 +1815,13 @@ class CUP$Parser$actions {
           case 50: // additive_expression ::= additive_expression MINUS multiplicative_expression 
             {
               Object RESULT =null;
-		Logger.print("159");
+		int aeleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int aeright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		Object ae = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		int meleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int meright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		Object me = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		Logger.print("159 sub"); RESULT = Semantic.getInstance().getExpressionForOperation(Operation.MINUS, (Expression) ae, (Expression) me); 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("additive_expression",16, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
