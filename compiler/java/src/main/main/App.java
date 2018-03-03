@@ -12,7 +12,7 @@ public class App {
     public static Scanner scanner = null;
 
     public static void main(String[] args) throws Exception {
-        String fileName = "strings";
+        String fileName = "relational_exps";
         File input = new File("inputs/" + fileName + ".c");
         String filePath = input.getAbsolutePath();
         String sCurrentLine;

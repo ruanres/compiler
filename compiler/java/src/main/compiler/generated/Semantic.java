@@ -104,18 +104,20 @@ public class Semantic {
 		return true;
     }
 
-    private void checkTypeCompatibility(Expression leftExp, Expression rightExp) throws SemanticException{
+    private void checkTypeCompatibility(Operation op, Expression leftExp, Expression rightExp) throws SemanticException{
         boolean leftIsChar = leftExp.getType().toString().equals("char");
         boolean rightIsChar = rightExp.getType().toString().equals("char");
 
-        if(leftIsChar || rightIsChar)
-            throw new SemanticException("Illegal Operation between " +
-                    leftExp.getType().toString() + " and " + rightExp.getType().toString());
+        if(leftIsChar || rightIsChar) {
+            String message = String.format("It is not possible to perform the %s operation between %s and %s.",
+                    op.getValue(), leftExp.getType().toString().toUpperCase(), rightExp.getType().toString().toUpperCase());
+            throw new SemanticException(message);
+        }
     }
 
     public Expression getExpressionForOperation(Operation op, Expression e1, Expression e2) {
-        checkTypeCompatibility(e1, e2);
-        Type minorType = getMinorType(e1.getType(), e2.getType());
+        checkTypeCompatibility(op, e1, e2);
+        Type resultType = getMinorType(e1.getType(), e2.getType());
 
         getCodeGenerator().generateLDCode(e1);
         getCodeGenerator().generateLDCode(e2);
@@ -132,8 +134,19 @@ public class Semantic {
                 break;
             case DIV:
                 getCodeGenerator().generateDIVCode();
+                break;
+            case LESS_THAN:
+            case MORE_THAN:
+            case LE_OP:
+            case GE_OP:
+            case NE_OP:
+            case EQ_OP:
+			    resultType = new Type("int");
+                getCodeGenerator().generateSUBCode();
         }
-        return new Expression(minorType);
+
+
+        return new Expression(resultType);
     }
 
     private Type getMinorType(Type type1, Type type2) {

@@ -1872,13 +1872,13 @@ class CUP$Parser$actions {
           case 55: // relational_expression ::= relational_expression LT shift_expression 
             {
               Object RESULT =null;
-		int e1left = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
-		int e1right = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
-		Object e1 = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
-		int e2left = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
-		int e2right = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
-		Object e2 = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		 Logger.print("170 LESS THAN"); Semantic.getInstance().isRelationalExpression((Expression) e1, (Expression) e2);
+		int releft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int reright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		Object re = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		int seleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int seright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		Object se = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		 Logger.print("170 LESS THAN"); RESULT = Semantic.getInstance().getExpressionForOperation(Operation.LESS_THAN, (Expression) re, (Expression) se); 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("relational_expression",74, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -1887,13 +1887,13 @@ class CUP$Parser$actions {
           case 56: // relational_expression ::= relational_expression GT shift_expression 
             {
               Object RESULT =null;
-		int e1left = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
-		int e1right = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
-		Object e1 = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
-		int e2left = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
-		int e2right = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
-		Object e2 = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		 Logger.print("171 GREATER THAN"); Semantic.getInstance().isRelationalExpression((Expression) e1, (Expression) e2); 
+		int releft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int reright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		Object re = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		int seleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int seright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		Object se = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		 Logger.print("171 GREATER THAN"); RESULT = Semantic.getInstance().getExpressionForOperation(Operation.MORE_THAN, (Expression) re, (Expression) se); 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("relational_expression",74, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -1902,13 +1902,13 @@ class CUP$Parser$actions {
           case 57: // relational_expression ::= relational_expression LE_OP shift_expression 
             {
               Object RESULT =null;
-		int e1left = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
-		int e1right = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
-		Object e1 = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
-		int e2left = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
-		int e2right = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
-		Object e2 = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		 Logger.print("172 LESS EQUAL"); Semantic.getInstance().isRelationalExpression((Expression) e1, (Expression) e2); 
+		int releft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int reright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		Object re = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		int seleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int seright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		Object se = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		 Logger.print("172 LESS EQUAL"); RESULT = Semantic.getInstance().getExpressionForOperation(Operation.LE_OP, (Expression) re, (Expression) se); 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("relational_expression",74, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -1917,13 +1917,13 @@ class CUP$Parser$actions {
           case 58: // relational_expression ::= relational_expression GE_OP shift_expression 
             {
               Object RESULT =null;
-		int e1left = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
-		int e1right = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
-		Object e1 = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
-		int e2left = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
-		int e2right = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
-		Object e2 = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		 Logger.print("173 GREATER EQUAL"); Semantic.getInstance().isRelationalExpression((Expression) e1, (Expression) e2); 
+		int releft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int reright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		Object re = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		int seleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int seright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		Object se = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		 Logger.print("173 GREATER EQUAL"); RESULT = Semantic.getInstance().getExpressionForOperation(Operation.GE_OP, (Expression) re, (Expression) se); 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("relational_expression",74, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -1944,13 +1944,13 @@ class CUP$Parser$actions {
           case 60: // equality_expression ::= equality_expression EQ_OP relational_expression 
             {
               Object RESULT =null;
-		int e1left = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
-		int e1right = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
-		Object e1 = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
-		int e2left = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
-		int e2right = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
-		Object e2 = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		 Logger.print("178 EQUAL"); Semantic.getInstance().isRelationalExpression((Expression) e1, (Expression) e2); 
+		int eeleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int eeright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		Object ee = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		int releft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int reright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		Object re = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		 Logger.print("178 EQUAL"); RESULT = Semantic.getInstance().getExpressionForOperation(Operation.EQ_OP, (Expression) ee, (Expression) re); 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("equality_expression",18, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -1959,13 +1959,13 @@ class CUP$Parser$actions {
           case 61: // equality_expression ::= equality_expression NE_OP relational_expression 
             {
               Object RESULT =null;
-		int e1left = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
-		int e1right = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
-		Object e1 = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
-		int e2left = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
-		int e2right = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
-		Object e2 = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		 Logger.print("179 NOT EQUAL"); Semantic.getInstance().isRelationalExpression((Expression) e1, (Expression) e2); 
+		int eeleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int eeright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		Object ee = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		int releft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int reright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		Object re = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		 Logger.print("179 NOT EQUAL"); RESULT = Semantic.getInstance().getExpressionForOperation(Operation.NE_OP, (Expression) ee, (Expression) re); 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("equality_expression",18, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
