@@ -12,7 +12,8 @@ public class App {
     public static Scanner scanner = null;
 
     public static void main(String[] args) throws Exception {
-        File input = new File("inputs/code.c");
+        String fileName = "arithmetic_ops";
+        File input = new File("inputs/" + fileName + ".c");
         String filePath = input.getAbsolutePath();
         String sCurrentLine;
         String fileInfo = "";

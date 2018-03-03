@@ -148,15 +148,15 @@ cast_expression
 
 multiplicative_expression
 	::= cast_expression:ca									{:Logger.print("150 cast_expression: " + ca); RESULT=ca;:}
-	| multiplicative_expression MULT cast_expression	{:Logger.print("151");:}
-	| multiplicative_expression DIV cast_expression		{:Logger.print("152");:}
-	| multiplicative_expression MOD cast_expression		{:Logger.print("153");:}
+	| multiplicative_expression:me MULT cast_expression:ce	{:Logger.print("151 MULT"); RESULT = Semantic.getInstance().getExpressionForOperation(Operation.MULT, (Expression) me, (Expression) ce); :}
+	| multiplicative_expression:me DIV cast_expression:ce	{:Logger.print("152 DIV"); RESULT = Semantic.getInstance().getExpressionForOperation(Operation.DIV, (Expression) me, (Expression) ce); :}
+	| multiplicative_expression MOD cast_expression		    {:Logger.print("153 MOD"); :}
 	;
 
 additive_expression
-	::= multiplicative_expression:multi_exp							{:Logger.print("157 mult_exp: " + multi_exp); RESULT=multi_exp;:}
-	| additive_expression PLUS multiplicative_expression	{:Logger.print("158");:}
-	| additive_expression MINUS multiplicative_expression	{:Logger.print("159");:}
+	::= multiplicative_expression:multi_exp					    {:Logger.print("157 mult_exp: " + multi_exp); RESULT=multi_exp; :}
+	| additive_expression:ae PLUS multiplicative_expression:me	{:Logger.print("158 sum"); RESULT = Semantic.getInstance().getExpressionForOperation(Operation.PLUS, (Expression) ae, (Expression) me); :}
+	| additive_expression:ae MINUS multiplicative_expression:me	{:Logger.print("159 sub"); RESULT = Semantic.getInstance().getExpressionForOperation(Operation.MINUS, (Expression) ae, (Expression) me); :}
 	;
 
 shift_expression
