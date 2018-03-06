@@ -463,7 +463,9 @@ direct_declarator
 	| direct_declarator LBRACK type_qualifier_list assignment_expression RBRACK			{:Logger.print("390");:}
 	| direct_declarator LBRACK type_qualifier_list RBRACK		{:Logger.print("391");:}
 	| direct_declarator LBRACK assignment_expression RBRACK		{:Logger.print("392");:}
-	| direct_declarator LPAREN parameter_type_list RPAREN		{:Logger.print("393");:}
+	| direct_declarator:dl LPAREN parameter_type_list:ptl RPAREN		{:Logger.print("393 direct_declarator: " + dl + " parameter_type_list: " + ptl);
+                                                                    Semantic.getInstance().addFunction((String) dl, (List<String>) ptl);
+                                                                    :}
 	| direct_declarator:dir_decl LPAREN RPAREN							{:Logger.print("394 dir_decl: " + dir_decl); RESULT=dir_decl;:}
 	| direct_declarator LPAREN identifier_list RPAREN			{:Logger.print("395");:}
 	;
@@ -483,12 +485,14 @@ type_qualifier_list
 
 parameter_type_list
 	::= parameter_list COMMA ELLIPSIS		{:Logger.print("412");:}
-	| parameter_list						{:Logger.print("413");:}
+	| parameter_list:param_list						{:Logger.print("413 parameter_list: " + param_list);
+                                          RESULT=Semantic.getInstance().getCurrentScope().getParams();:}
 	;
 
 parameter_list
 	::= parameter_declaration:param_decl						{:Logger.print("417 parameter_declaration: " + param_decl);:}
-	| parameter_list COMMA parameter_declaration	{:Logger.print("418");:}
+	| parameter_list:param_list COMMA parameter_declaration:param_decl	{:Logger.print("418 parameter_list: " + param_list + " parameter_declaration: " + param_decl);
+                                                                        RESULT = param_list;:}
 	;
 
 parameter_declaration
@@ -499,7 +503,7 @@ parameter_declaration
                                                               Semantic.getInstance().initParam(var);
                                                               :}
 	| declaration_specifiers abstract_declarator	{:Logger.print("423");:}
-	| declaration_specifiers						{:Logger.print("424");:}
+	| declaration_specifiers:decl_spec						{:Logger.print("424 declaration_specifiers: " + decl_spec); RESULT=decl_spec;:}
 	;
 
 identifier_list

@@ -27,10 +27,7 @@ public class Semantic {
 	}
 	
 	public Semantic() {
-		ScopedEntity scoped = new ScopedEntity("main");
-		scopeStack.push(scoped);
 		cProgram = new Program();
-		cProgram.addFunction(new Function("main", null));
 	}
 	
 	public static CodeGenerator getCodeGenerator() {
@@ -40,6 +37,10 @@ public class Semantic {
 	public ScopedEntity getCurrentScope() {
         return scopeStack.peek();
     }
+	
+	public void addFunction(String name, List<String> params) {
+		
+	}
 	
 	public Variable assignVariable(Variable var, Expression exp) {
 		if (getCurrentScope().getVariable().get(var.toString()) != null) {
@@ -103,12 +104,8 @@ public class Semantic {
 	}
 	
 	public void initParam(Variable var) {
-		//Checks if param already exists -> type func (int a, int a); 
-		if (getCurrentScope().getVariable().get(var.getName()) != null) {
-			throw new SemanticException("Param " + var.getName() + " already exists");
-		}
-		
-		getCurrentScope().addVariable(var);
+		System.out.println(var.getType().toString());
+		getCurrentScope().addParam(var.getType().toString());
 	}
 	
 	public void createVariableWithoutExpression (Variable var) {
@@ -145,13 +142,13 @@ public class Semantic {
 		return getCurrentScope().getVariable().get(name);
 	}
 	
-	
+	//When we have function(list_parameters)
 	public void callFunction(Function func, List<Expression> expressions) {
 		cProgram.addFunction(func);
 		
-		for (Expression exp : expressions) {
-			cProgram.getFunctions().get(func.getName()).addParameter(exp);
-		}
+//		for (Expression exp : expressions) {
+//			cProgram.getFunctions().get(func.getName()).addParameter(exp);
+//		}
 	}
 	
 	public void checkNewScope(String id) {
@@ -252,4 +249,15 @@ public class Semantic {
             return new Type("float");
         }
     }
+
+	public boolean isFunction(Object in) {
+		if (cProgram.getFunctions().get(in.toString()) != null) {
+			return true;
+		}
+		return false;
+	}
+	
+	public Function getFunction(Object in) {
+		return cProgram.getFunctions().get(in.toString());
+	}
 }

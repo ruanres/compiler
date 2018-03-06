@@ -3184,7 +3184,15 @@ class CUP$Parser$actions {
           case 179: // direct_declarator ::= direct_declarator LPAREN parameter_type_list RPAREN 
             {
               Object RESULT =null;
-		Logger.print("393");
+		int dlleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-3)).left;
+		int dlright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-3)).right;
+		Object dl = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-3)).value;
+		int ptlleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
+		int ptlright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
+		Object ptl = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
+		Logger.print("393 direct_declarator: " + dl + " parameter_type_list: " + ptl);
+                                                                    Semantic.getInstance().addFunction((String) dl, (List<String>) ptl);
+                                                                    
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("direct_declarator",47, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-3)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -3277,7 +3285,11 @@ class CUP$Parser$actions {
           case 189: // parameter_type_list ::= parameter_list 
             {
               Object RESULT =null;
-		Logger.print("413");
+		int param_listleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int param_listright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		Object param_list = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		Logger.print("413 parameter_list: " + param_list);
+                                          RESULT=Semantic.getInstance().getCurrentScope().getParams();
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("parameter_type_list",48, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -3298,7 +3310,14 @@ class CUP$Parser$actions {
           case 191: // parameter_list ::= parameter_list COMMA parameter_declaration 
             {
               Object RESULT =null;
-		Logger.print("418");
+		int param_listleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int param_listright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		Object param_list = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		int param_declleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int param_declright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		Object param_decl = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		Logger.print("418 parameter_list: " + param_list + " parameter_declaration: " + param_decl);
+                                                                        RESULT = param_list;
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("parameter_list",70, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -3336,7 +3355,10 @@ class CUP$Parser$actions {
           case 194: // parameter_declaration ::= declaration_specifiers 
             {
               Object RESULT =null;
-		Logger.print("424");
+		int decl_specleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int decl_specright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		Object decl_spec = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		Logger.print("424 declaration_specifiers: " + decl_spec); RESULT=decl_spec;
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("parameter_declaration",51, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;

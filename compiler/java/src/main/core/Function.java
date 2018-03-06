@@ -2,7 +2,7 @@ package core;
 
 
 import java.util.ArrayList;
-
+import java.util.List;
 
 import util.SemanticException;
 
@@ -10,16 +10,21 @@ import util.SemanticException;
 public class Function extends ScopedEntity implements Identifier {
 	
 	private Type returnType = new Type(null); // Default Return Type
-	private ArrayList<Expression> functionParameter;
+	private ArrayList<Variable> functionParameter;
+
 	private Type returnedType = new Type(null); // Default Return Type
 
-	public Function(String name, ArrayList<Expression> parameters) {
+	public Function(String name, ArrayList<Variable> parameters) {
 		super(name);
 		if (parameters != null) {
 			functionParameter = parameters;
 		} else {
-			functionParameter = new ArrayList<Expression>();
+			functionParameter = new ArrayList<Variable>();
 		}
+	}
+	
+	public ArrayList<Variable> getFunctionParamaters() {
+		return functionParameter;
 	}
 	
 
@@ -31,20 +36,21 @@ public class Function extends ScopedEntity implements Identifier {
 		return returnType;
 	}
 	
-	public Type[] getParameterTypes() {
-		if (functionParameter == null)
-			return new Type[]{};
+	public List<Expression> getExpressions() {
+		List<Expression> exps = new ArrayList<Expression>();
 		
-		Type[] pTypes = new Type[functionParameter.size()];
-		for (int i = 0 ; i < pTypes.length ; i++)
-			pTypes[i] = functionParameter.get(i).getType();
-		return pTypes;
+		for (Variable var : functionParameter) {
+			exps.add(var.getExpression());
+		}
+		
+		return exps;
 	}
-
+	
 
 	public void setReturnType(Type type) {
 		this.returnType = type;
 	}
+	
 	
 	@Override
 	public String toString() {
@@ -63,8 +69,5 @@ public class Function extends ScopedEntity implements Identifier {
 	}
 
 
-	public void addParameter(Expression exp) {
-		functionParameter.add(exp);
-	}
 	
 }
