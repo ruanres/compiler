@@ -2491,7 +2491,7 @@ class CUP$Parser$actions {
 		Object in = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		Logger.print("265 declarator: " + de + " initializer: " + in);
                                                 Variable temp = new Variable((String) de,new Type(null));
-
+                                                
                                                 if (in instanceof Function) {
                                                   RESULT = Semantic.getInstance().assignFunction((Variable) temp, (Function) in);
                                                 } else {
@@ -3204,7 +3204,10 @@ class CUP$Parser$actions {
 		int dir_declleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
 		int dir_declright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
 		Object dir_decl = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
-		Logger.print("394 dir_decl: " + dir_decl); RESULT=dir_decl;
+		Logger.print("394 dir_decl: " + dir_decl);
+                                                            RESULT=dir_decl;
+                                                            Semantic.getInstance().addFunction((String) dir_decl, new ArrayList<String>());
+                                                          
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("direct_declarator",47, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;

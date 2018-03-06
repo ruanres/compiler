@@ -466,7 +466,10 @@ direct_declarator
 	| direct_declarator:dl LPAREN parameter_type_list:ptl RPAREN		{:Logger.print("393 direct_declarator: " + dl + " parameter_type_list: " + ptl);
                                                                     Semantic.getInstance().addFunction((String) dl, (List<String>) ptl);
                                                                     :}
-	| direct_declarator:dir_decl LPAREN RPAREN							{:Logger.print("394 dir_decl: " + dir_decl); RESULT=dir_decl;:}
+	| direct_declarator:dir_decl LPAREN RPAREN							{:Logger.print("394 dir_decl: " + dir_decl);
+                                                            RESULT=dir_decl;
+                                                            Semantic.getInstance().addFunction((String) dir_decl, new ArrayList<String>());
+                                                          :}
 	| direct_declarator LPAREN identifier_list RPAREN			{:Logger.print("395");:}
 	;
 

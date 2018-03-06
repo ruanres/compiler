@@ -19,7 +19,7 @@ public class ScopedEntity extends NamedEntity {
 	public ScopedEntity(String name) {
 		super(name);
 		variables = new HashMap<String, Variable>();
-		params = new ArrayList<String>();;
+		params = new ArrayList<String>();
 	}
 
 	public Map<String, Variable> getVariable() {

@@ -28,6 +28,8 @@ public class Semantic {
 	
 	public Semantic() {
 		cProgram = new Program();
+		ScopedEntity scoped = new ScopedEntity("init");
+		scopeStack.push(scoped);
 	}
 	
 	public static CodeGenerator getCodeGenerator() {
@@ -38,9 +40,73 @@ public class Semantic {
         return scopeStack.peek();
     }
 	
-	public void addFunction(String name, List<String> params) {
+	public void checkNewScope(String id) {
+		if (cProgram.getFunctions().get(id) != null) {
+			ScopedEntity scoped = new ScopedEntity(id);
+			scopeStack.push(scoped);
+		}
 		
 	}
+	
+	// Init Function Scope
+	public void addFunction(String name, List<String> params) {
+		if (cProgram.getFunctions().get(name) != null) {
+			throw new SemanticException("The function " + name + " was already declared");
+		}
+		
+
+		Function func = new Function(name, params);
+	
+		func.initializeFunction();
+		cProgram.addFunction(func);
+	}
+	
+	public Function getFunction(Object in) {
+		return cProgram.getFunctions().get(in.toString());
+	}
+	
+	public void initParam(Variable var) {
+		getCurrentScope().addParam(var.getType().toString());
+	}
+	
+	
+	//When we have function(list_parameters)
+	public void callFunction(Function func, List<Expression> expressions) {
+		String funcName = func.getName();
+	
+
+		if (cProgram.getFunctions().get(funcName) == null) {
+			throw new SemanticException("The function " + funcName + " wasn't declared");
+		}
+		
+
+		List<String> params = cProgram.getFunctions().get(funcName).getParams();
+		
+		System.out.println(params.size());
+		System.out.println(expressions.size());
+
+		if (expressions.size() < params.size()) {
+			throw new SemanticException("The function " + funcName +  " called should have more parameters");
+		}
+		
+		int index = 0;
+
+		for (String paramType : params) {
+			Type param = new Type(paramType);
+			Type typeParamFunctionCall = expressions.get(index).getType();
+
+			if (!param.equals(typeParamFunctionCall)) {
+				throw new SemanticException("The function " + funcName + " should have this types "
+						+ "of params: " + params.toString());
+			}
+			
+			index += 1;
+		}
+		
+	}
+	
+	// End Function Scope
+
 	
 	public Variable assignVariable(Variable var, Expression exp) {
 		if (getCurrentScope().getVariable().get(var.toString()) != null) {
@@ -103,11 +169,7 @@ public class Semantic {
 		checkAssignVariableIsValid(var, currentScopeVar.getExpression());
 	}
 	
-	public void initParam(Variable var) {
-		System.out.println(var.getType().toString());
-		getCurrentScope().addParam(var.getType().toString());
-	}
-	
+
 	public void createVariableWithoutExpression (Variable var) {
 		if (getCurrentScope().getVariable().get(var.toString()) != null) {
 			throw new SemanticException("Variable " + var.getName() + " already exists");
@@ -141,23 +203,8 @@ public class Semantic {
 
 		return getCurrentScope().getVariable().get(name);
 	}
-	
-	//When we have function(list_parameters)
-	public void callFunction(Function func, List<Expression> expressions) {
-		cProgram.addFunction(func);
 		
-//		for (Expression exp : expressions) {
-//			cProgram.getFunctions().get(func.getName()).addParameter(exp);
-//		}
-	}
 	
-	public void checkNewScope(String id) {
-		if (cProgram.getFunctions().get(id) != null) {
-			ScopedEntity scoped = new ScopedEntity(id);
-			scopeStack.push(scoped);
-		}
-	}
-
 	public boolean isRelationalExpression(Expression le, Expression re) throws SemanticException {
 		if(!le.getType().equalsAssignRelational(re.getType())){
             throw new SemanticException("ERRO: Nao é possivel comparar uma expressao do tipo " + 
@@ -257,7 +304,5 @@ public class Semantic {
 		return false;
 	}
 	
-	public Function getFunction(Object in) {
-		return cProgram.getFunctions().get(in.toString());
-	}
+	
 }
