@@ -542,7 +542,7 @@ expression_statement
 
 selection_statement
 	::= IF LPAREN expression RPAREN statement ELSE statement	{:Logger.print("534");:}
-	| IF LPAREN expression RPAREN statement		{:Logger.print("535");:}
+	| IF LPAREN expression:e RPAREN statement:s		            {: Logger.print("535"); Semantic.getInstance().checkSelectionStatement((Expression) e); :}
 	| SWITCH LPAREN expression RPAREN statement	{:Logger.print("536");:}
 	;
 
