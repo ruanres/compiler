@@ -544,7 +544,8 @@ expression_statement
 	;
 
 selection_statement
-	::= IF LPAREN expression RPAREN statement ELSE statement	{:Logger.print("534");:}
+	::= IF LPAREN expression RPAREN {:Logger.print("547"); Semantic.getInstance().createScopeIFELSE(); :} statement {:Semantic.getInstance().exitScopeIFELSE();:}
+                                               ELSE {:Semantic.getInstance().createScopeIFELSE();:} statement {:Semantic.getInstance().exitScopeIFELSE();:}
 	| IF LPAREN expression RPAREN statement		{:Logger.print("535");:}
 	| SWITCH LPAREN expression RPAREN statement	{:Logger.print("536");:}
 	;

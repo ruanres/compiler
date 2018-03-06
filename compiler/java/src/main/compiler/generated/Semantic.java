@@ -37,7 +37,12 @@ public class Semantic {
     }
 	
 	public void assignVariable(Variable var, Expression exp) {
-		if (variables.get(var.toString()) != null) {
+		if(!scopeStack.isEmpty() && getCurrentScope().getVariable().get(var.toString()) != null) {
+			System.out.println("VARIAVEL JA EXISTE NO ESCOPO");
+			throw new SemanticException("Variable " + var.getName() + " already exists");
+		}
+		else if (variables.get(var.toString()) != null) {
+			System.out.println("VARIAVEL JA EXISTE");
 			throw new SemanticException("Variable " + var.getName() + " already exists");
 		}
 		
@@ -158,5 +163,19 @@ public class Semantic {
         } else {
             return new Type("float");
         }
+    }
+    
+    public void createScopeIFELSE() {
+    	System.out.println("ENTREI CREATE SCOPE");
+    	IFELSE f = new IFELSE("IF/ELSE");
+        for(Variable v: getCurrentScope().getVariable().values()){
+            f.addVariable(v);
+            System.out.println(v.toString());
+        }
+        scopeStack.push(f);
+    }
+    
+    public void exitScopeIFELSE() {
+    	scopeStack.pop();
     }
 }
