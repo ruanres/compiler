@@ -41,14 +41,17 @@ public class Semantic {
         return scopeStack.peek();
     }
 	
-	public void assignVariable(Variable var, Expression exp) {
+	public Variable assignVariable(Variable var, Expression exp) {
 		if (getCurrentScope().getVariable().get(var.toString()) != null) {
 			throw new SemanticException("Variable " + var.getName() + " already exists");
 		}
 		
 		var.setType(exp.getType());
+		var.setExpression(exp);
 		getCodeGenerator().generateLDCode(exp);
 		getCurrentScope().getVariable().put(var.toString(), var);
+		
+		return getCurrentScope().getVariable().get(var.getName());
 	}
 	
 	//** When "type" "variable" = "value"/"variable"
@@ -70,6 +73,7 @@ public class Semantic {
 		currentScopeVar.setType(variableType);
 		getCodeGenerator().generateSTCode(currentScopeVar);
 		getCurrentScope().getVariable().put(var.toString(), var);
+
 	}
 	
 	//** When "variable" = "value"/"variable"
@@ -84,15 +88,9 @@ public class Semantic {
 			throw new SemanticException("Nao é possivel a variavel do tipo " + currentScopeVariable.getName() + " ser associado com um valor/variavel do tipo " +  exp.getType());
 		}
 		
-		if (exp instanceof Variable) {
-			//Se for uma variavel, j� h� um registrador com um valor da variavel guardado
-			getCodeGenerator().generateSTCode(currentScopeVariable);
-		} else if (exp instanceof Expression) {
-			//Se for uma express�o, precisa-se dar um LD na express�o para depois dar um ST
-			getCodeGenerator().generateLDCode(exp);
-			getCodeGenerator().generateSTCode(var);
-
-		}
+		getCodeGenerator().generateLDCode(exp);
+		getCodeGenerator().generateSTCode(var);
+		getCurrentScope().getVariable().get(var.getName()).setExpression(exp);
 		
 	}
 	
@@ -115,7 +113,7 @@ public class Semantic {
 	}
 	
 	// when type "a" = function(list_parameters);
-	public void assignFunction(Variable var, Function func) {
+	public Variable assignFunction(Variable var, Function func) {
 		if (getCurrentScope().getVariable().get(var.toString()) != null) {
 			throw new SemanticException("Variable " + var.getName() + " already exists");
 		}
@@ -127,6 +125,7 @@ public class Semantic {
 		
 		//Check the assign between the variable and the function type
 		getCurrentScope().getVariable().put(var.toString(), var);
+		return getCurrentScope().getVariable().get(var.getName());
 	}
 	
 	public Variable getIdentifier(String name) {
@@ -165,55 +164,22 @@ public class Semantic {
 
     private void checkTypeCompatibility(Expression leftExp, Expression rightExp) throws SemanticException{
     	
-    	boolean leftIsChar;
-    	boolean rightIsChar;
-    	Type rightType;
-    	Type leftType;
-    	
-    	if (leftExp instanceof Variable) {
-    		Variable temp = getCurrentScope().getVariable().get(leftExp.getName());
-    		leftType = temp.getType();
-        	leftIsChar = leftType.toString().equals("char");
-    	} else {
-    		leftType = leftExp.getType();
-        	leftIsChar = leftType.toString().equals("char");
-    	}
-    	
-    	if (rightExp instanceof Variable) {
-    		Variable temp = getCurrentScope().getVariable().get(rightExp.getName());
-    		rightType = temp.getType();
-            rightIsChar = rightType.toString().equals("char");
-    	} else {
-    		rightType = rightExp.getType();
-            rightIsChar = rightType.toString().equals("char");
-
-    	}
+    	boolean leftIsChar = leftExp.getType().equals("char");
+    	boolean rightIsChar =  rightExp.getType().equals("char");
 
         if(leftIsChar || rightIsChar)
             throw new SemanticException("Illegal Operation between " +
-            		leftType.toString() + " and " + rightType.toString());
+            		leftExp.toString() + " and " + rightExp.toString());
     }
+    
+    
 
     public Expression getExpressionForOperation(Operation op, Expression e1, Expression e2) {
         checkTypeCompatibility(e1, e2);
         
-        Type e1Type;
-        Type e2Type;
+        Type e1Type = e1.getType();
+        Type e2Type = e2.getType();
         
-        if (e1 instanceof Variable) {
-        	Variable temp = getCurrentScope().getVariable().get(e1.getName());
-        	e1Type = temp.getType();
-    	} else {
-    		e1Type = e1.getType();
-    	}
-    	
-    	if (e2 instanceof Variable) {
-    		Variable temp = getCurrentScope().getVariable().get(e2.getName());
-    		e2Type = temp.getType();
-    	} else {
-    		e2Type =  e2.getType();
-    	}
-    	
         Type minorType = getMinorType(e1Type, e2Type);
 
         getCodeGenerator().generateLDCode(e1);
@@ -234,6 +200,40 @@ public class Semantic {
         }
         return new Expression(minorType);
     }
+    
+    public Expression getExpressionForOperation(Operation op, Variable v1, Expression e2) {
+
+    	Variable var = getCurrentScope().getVariable().get(v1.getName());
+    	checkIfExistExpression(var);
+    	return getExpressionForOperation(op, var.getExpression(), e2);
+    }
+    
+    public Expression getExpressionForOperation(Operation op, Expression e1, Variable v2) {
+    	Variable var = getCurrentScope().getVariable().get(v2.getName());
+    	checkIfExistExpression(var);
+    	return getExpressionForOperation(op, e1, var.getExpression());
+    }
+    
+    public Expression getExpressionForOperation(Operation op, Variable v1, Variable v2) {
+    	Variable var1 = getCurrentScope().getVariable().get(v1.getName());
+    	Variable var2 = getCurrentScope().getVariable().get(v2.getName());
+
+    	checkIfExistExpression(var1);
+    	checkIfExistExpression(var2);
+    	return getExpressionForOperation(op, var1.getExpression(), var2.getExpression());
+    }
+    
+    private void checkIfExistExpression(Variable temp) {
+    	if (getCurrentScope().getVariable().get(temp.getName()) == null) {
+			throw new SemanticException("Variable " + temp.getName() + " doesn't exists");
+    	}
+    	
+    	Variable t = getCurrentScope().getVariable().get(temp.getName());
+    	if(!t.existExpression()) {
+			throw new SemanticException("Variable " + temp.getName() + " doesn't have an expression associated"); 
+    	}
+    }
+    
 
     private Type getMinorType(Type type1, Type type2) {
         if(type1.equals(type2)) {

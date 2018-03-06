@@ -1782,7 +1782,17 @@ class CUP$Parser$actions {
 		int celeft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int ceright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Object ce = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		Logger.print("151 MULT"); RESULT = Semantic.getInstance().getExpressionForOperation(Operation.MULT, (Expression) me, (Expression) ce); 
+		Logger.print("151 MULT");
+                                                            if (me instanceof Expression && ce instanceof Expression) {
+                                                              RESULT = Semantic.getInstance().getExpressionForOperation(Operation.MULT, (Expression) me, (Expression) ce);
+														                                } else if (me instanceof Expression && !(ce instanceof Expression)) {
+                                                              RESULT = Semantic.getInstance().getExpressionForOperation(Operation.MULT, (Expression) me, (Variable) ce);
+														                                } else if (!(me instanceof Expression) && (ce instanceof Expression) ){
+                                                              RESULT = Semantic.getInstance().getExpressionForOperation(Operation.MULT, (Variable) me, (Expression) ce);
+														                                } else {
+                                                              RESULT = Semantic.getInstance().getExpressionForOperation(Operation.MULT, (Variable) me, (Variable) ce);
+														                                }
+                                                          
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("multiplicative_expression",15, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -1797,7 +1807,17 @@ class CUP$Parser$actions {
 		int celeft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int ceright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Object ce = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		Logger.print("152 DIV"); RESULT = Semantic.getInstance().getExpressionForOperation(Operation.DIV, (Expression) me, (Expression) ce); 
+		Logger.print("152 DIV");
+                                                          if (me instanceof Expression && ce instanceof Expression) {
+                                                            RESULT = Semantic.getInstance().getExpressionForOperation(Operation.DIV, (Expression) me, (Expression) ce);
+													                                } else if (me instanceof Expression && !(ce instanceof Expression)) {
+                                                            RESULT = Semantic.getInstance().getExpressionForOperation(Operation.DIV, (Expression) me, (Variable) ce);
+													                                } else if (!(me instanceof Expression) && (ce instanceof Expression) ){
+                                                            RESULT = Semantic.getInstance().getExpressionForOperation(Operation.DIV, (Variable) me, (Expression) ce);
+													                                } else {
+                                                            RESULT = Semantic.getInstance().getExpressionForOperation(Operation.DIV, (Variable) me, (Variable) ce);
+													                                }
+                                                        
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("multiplicative_expression",15, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -1833,7 +1853,17 @@ class CUP$Parser$actions {
 		int meleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int meright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Object me = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		Logger.print("158 sum"); RESULT = Semantic.getInstance().getExpressionForOperation(Operation.PLUS, (Expression) ae, (Expression) me); 
+		Logger.print("158 sum additive_expression: " + ae + " multiplicative_expression: " + me);
+                                                                if (ae instanceof Expression && me instanceof Expression) {
+	                                                                RESULT = Semantic.getInstance().getExpressionForOperation(Operation.PLUS, (Expression) ae, (Expression) me);
+																                                } else if (ae instanceof Expression && !(me instanceof Expression)) {
+	                                                                RESULT = Semantic.getInstance().getExpressionForOperation(Operation.PLUS, (Expression) ae, (Variable) me);
+																                                } else if (!(ae instanceof Expression) && (me instanceof Expression) ){
+	                                                                RESULT = Semantic.getInstance().getExpressionForOperation(Operation.PLUS, (Variable) ae, (Expression) me);
+																                                } else {
+	                                                                RESULT = Semantic.getInstance().getExpressionForOperation(Operation.PLUS, (Variable) ae, (Variable) me);
+																                                }
+                                                              
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("additive_expression",16, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -1848,7 +1878,17 @@ class CUP$Parser$actions {
 		int meleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int meright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Object me = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		Logger.print("159 sub"); RESULT = Semantic.getInstance().getExpressionForOperation(Operation.MINUS, (Expression) ae, (Expression) me); 
+		Logger.print("159 sub");
+                                                                if (ae instanceof Expression && me instanceof Expression) {
+	                                                                RESULT = Semantic.getInstance().getExpressionForOperation(Operation.MINUS, (Expression) ae, (Expression) me);
+																                                } else if (ae instanceof Expression && !(me instanceof Expression)) {
+	                                                                RESULT = Semantic.getInstance().getExpressionForOperation(Operation.MINUS, (Expression) ae, (Variable) me);
+																                                } else if (!(ae instanceof Expression) && (me instanceof Expression) ){
+	                                                                RESULT = Semantic.getInstance().getExpressionForOperation(Operation.MINUS, (Variable) ae, (Expression) me);
+																                                } else {
+	                                                                RESULT = Semantic.getInstance().getExpressionForOperation(Operation.MINUS, (Variable) ae, (Variable) me);
+																                                }
+                                                              
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("additive_expression",16, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -2447,11 +2487,11 @@ class CUP$Parser$actions {
 		Object in = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		Logger.print("265 declarator: " + de + " initializer: " + in);
                                                 Variable temp = new Variable((String) de,new Type(null));
-                                                RESULT = temp;
+
                                                 if (in instanceof Function) {
-                                                  Semantic.getInstance().assignFunction((Variable) temp, (Function) in);
+                                                  RESULT = Semantic.getInstance().assignFunction((Variable) temp, (Function) in);
                                                 } else {
-                                                  Semantic.getInstance().assignVariable((Variable) temp, (Expression) in);
+                                                  RESULT = Semantic.getInstance().assignVariable((Variable) temp, (Expression) in);
                                                 }
                                               
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("init_declarator",30, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);

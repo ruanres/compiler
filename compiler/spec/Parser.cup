@@ -157,15 +157,55 @@ cast_expression
 
 multiplicative_expression
 	::= cast_expression:ca									{:Logger.print("150 cast_expression: " + ca); RESULT=ca;:}
-	| multiplicative_expression:me MULT cast_expression:ce	{:Logger.print("151 MULT"); RESULT = Semantic.getInstance().getExpressionForOperation(Operation.MULT, (Expression) me, (Expression) ce); :}
-	| multiplicative_expression:me DIV cast_expression:ce	{:Logger.print("152 DIV"); RESULT = Semantic.getInstance().getExpressionForOperation(Operation.DIV, (Expression) me, (Expression) ce); :}
+	| multiplicative_expression:me MULT cast_expression:ce	{:Logger.print("151 MULT");
+                                                            if (me instanceof Expression && ce instanceof Expression) {
+                                                              RESULT = Semantic.getInstance().getExpressionForOperation(Operation.MULT, (Expression) me, (Expression) ce);
+														                                } else if (me instanceof Expression && !(ce instanceof Expression)) {
+                                                              RESULT = Semantic.getInstance().getExpressionForOperation(Operation.MULT, (Expression) me, (Variable) ce);
+														                                } else if (!(me instanceof Expression) && (ce instanceof Expression) ){
+                                                              RESULT = Semantic.getInstance().getExpressionForOperation(Operation.MULT, (Variable) me, (Expression) ce);
+														                                } else {
+                                                              RESULT = Semantic.getInstance().getExpressionForOperation(Operation.MULT, (Variable) me, (Variable) ce);
+														                                }
+                                                          :}
+	| multiplicative_expression:me DIV cast_expression:ce	{:Logger.print("152 DIV");
+                                                          if (me instanceof Expression && ce instanceof Expression) {
+                                                            RESULT = Semantic.getInstance().getExpressionForOperation(Operation.DIV, (Expression) me, (Expression) ce);
+													                                } else if (me instanceof Expression && !(ce instanceof Expression)) {
+                                                            RESULT = Semantic.getInstance().getExpressionForOperation(Operation.DIV, (Expression) me, (Variable) ce);
+													                                } else if (!(me instanceof Expression) && (ce instanceof Expression) ){
+                                                            RESULT = Semantic.getInstance().getExpressionForOperation(Operation.DIV, (Variable) me, (Expression) ce);
+													                                } else {
+                                                            RESULT = Semantic.getInstance().getExpressionForOperation(Operation.DIV, (Variable) me, (Variable) ce);
+													                                }
+                                                        :}
 	| multiplicative_expression MOD cast_expression		    {:Logger.print("153 MOD"); :}
 	;
 
 additive_expression
 	::= multiplicative_expression:multi_exp					    {:Logger.print("157 mult_exp: " + multi_exp); RESULT=multi_exp; :}
-	| additive_expression:ae PLUS multiplicative_expression:me	{:Logger.print("158 sum"); RESULT = Semantic.getInstance().getExpressionForOperation(Operation.PLUS, (Expression) ae, (Expression) me); :}
-	| additive_expression:ae MINUS multiplicative_expression:me	{:Logger.print("159 sub"); RESULT = Semantic.getInstance().getExpressionForOperation(Operation.MINUS, (Expression) ae, (Expression) me); :}
+	| additive_expression:ae PLUS multiplicative_expression:me	{:Logger.print("158 sum additive_expression: " + ae + " multiplicative_expression: " + me);
+                                                                if (ae instanceof Expression && me instanceof Expression) {
+	                                                                RESULT = Semantic.getInstance().getExpressionForOperation(Operation.PLUS, (Expression) ae, (Expression) me);
+																                                } else if (ae instanceof Expression && !(me instanceof Expression)) {
+	                                                                RESULT = Semantic.getInstance().getExpressionForOperation(Operation.PLUS, (Expression) ae, (Variable) me);
+																                                } else if (!(ae instanceof Expression) && (me instanceof Expression) ){
+	                                                                RESULT = Semantic.getInstance().getExpressionForOperation(Operation.PLUS, (Variable) ae, (Expression) me);
+																                                } else {
+	                                                                RESULT = Semantic.getInstance().getExpressionForOperation(Operation.PLUS, (Variable) ae, (Variable) me);
+																                                }
+                                                              :}
+	| additive_expression:ae MINUS multiplicative_expression:me	{:Logger.print("159 sub");
+                                                                if (ae instanceof Expression && me instanceof Expression) {
+	                                                                RESULT = Semantic.getInstance().getExpressionForOperation(Operation.MINUS, (Expression) ae, (Expression) me);
+																                                } else if (ae instanceof Expression && !(me instanceof Expression)) {
+	                                                                RESULT = Semantic.getInstance().getExpressionForOperation(Operation.MINUS, (Expression) ae, (Variable) me);
+																                                } else if (!(ae instanceof Expression) && (me instanceof Expression) ){
+	                                                                RESULT = Semantic.getInstance().getExpressionForOperation(Operation.MINUS, (Variable) ae, (Expression) me);
+																                                } else {
+	                                                                RESULT = Semantic.getInstance().getExpressionForOperation(Operation.MINUS, (Variable) ae, (Variable) me);
+																                                }
+                                                              :}
 	;
 
 shift_expression
@@ -279,11 +319,11 @@ init_declarator_list
 init_declarator
 	::= declarator:de EQ initializer:in					{:Logger.print("265 declarator: " + de + " initializer: " + in);
                                                 Variable temp = new Variable((String) de,new Type(null));
-                                                RESULT = temp;
+
                                                 if (in instanceof Function) {
-                                                  Semantic.getInstance().assignFunction((Variable) temp, (Function) in);
+                                                  RESULT = Semantic.getInstance().assignFunction((Variable) temp, (Function) in);
                                                 } else {
-                                                  Semantic.getInstance().assignVariable((Variable) temp, (Expression) in);
+                                                  RESULT = Semantic.getInstance().assignVariable((Variable) temp, (Expression) in);
                                                 }
                                               :}
 	| declarator:de									{:Logger.print("266 declarator: " + de);
