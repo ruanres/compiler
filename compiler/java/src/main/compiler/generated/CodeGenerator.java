@@ -1,7 +1,6 @@
 package compiler.generated;
 
 import core.Expression;
-import core.Operation;
 import core.Register;
 import core.Variable;
 

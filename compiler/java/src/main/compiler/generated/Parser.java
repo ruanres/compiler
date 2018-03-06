@@ -3649,7 +3649,10 @@ class CUP$Parser$actions {
           case 239: // statement ::= selection_statement 
             {
               Object RESULT =null;
-		Logger.print("502");
+		int ssleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int ssright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		Object ss = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		Logger.print("502 selection_statement: " + ss);
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("statement",59, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -3790,7 +3793,16 @@ class CUP$Parser$actions {
           case 253: // selection_statement ::= IF LPAREN expression RPAREN statement ELSE statement 
             {
               Object RESULT =null;
-		Logger.print("534");
+		int eleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-4)).left;
+		int eright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-4)).right;
+		Object e = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-4)).value;
+		int sthenleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int sthenright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		Object sthen = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		int selseleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int selseright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		Object selse = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		Logger.print("534 if-then-else statement"); Semantic.getInstance().checkSelectionStatement((Expression) e); 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("selection_statement",64, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-6)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -3805,7 +3817,7 @@ class CUP$Parser$actions {
 		int sleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int sright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Object s = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		 Logger.print("535"); Semantic.getInstance().checkSelectionStatement((Expression) e); 
+		Logger.print("535 if-then statement"); Semantic.getInstance().checkSelectionStatement((Expression) e); 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("selection_statement",64, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-4)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
