@@ -14,9 +14,7 @@ public class Semantic {
 	private static Semantic sAnalysis;
     private Stack<ScopedEntity> scopeStack = new Stack<ScopedEntity>();
     private Program cProgram;
-    private HashMap<String,Variable> variables = new HashMap<String,Variable>();
     public static CodeGenerator codeGenerator;
-    public HashMap<String, Function> functions = new HashMap<String,Function>();
     
     
 	public static Semantic getInstance() {
@@ -29,9 +27,10 @@ public class Semantic {
 	}
 	
 	public Semantic() {
-		functions.put("main", new Function("main", null));
 		ScopedEntity scoped = new ScopedEntity("main");
+		scopeStack.push(scoped);
 		cProgram = new Program();
+		cProgram.addFunction(new Function("main", null));
 	}
 	
 	public static CodeGenerator getCodeGenerator() {
@@ -43,18 +42,18 @@ public class Semantic {
     }
 	
 	public void assignVariable(Variable var, Expression exp) {
-		if (variables.get(var.toString()) != null) {
+		if (getCurrentScope().getVariable().get(var.toString()) != null) {
 			throw new SemanticException("Variable " + var.getName() + " already exists");
 		}
 		
 		var.setType(exp.getType());
 		getCodeGenerator().generateLDCode(exp);
-		variables.put(var.toString(), var);
+		getCurrentScope().getVariable().put(var.toString(), var);
 	}
 	
 	//** When "type" "variable" = "value"/"variable"
 	public void checkAssignVariableIsValid(Type variableType, Variable var) {
-		Variable currentScopeVar = variables.get(var.getName()); 
+		Variable currentScopeVar = getCurrentScope().getVariable().get(var.getName()); 
 		
 		if (var.getType().toString() == null) {
 			currentScopeVar.setType(variableType);
@@ -70,7 +69,7 @@ public class Semantic {
 		
 		currentScopeVar.setType(variableType);
 		getCodeGenerator().generateSTCode(currentScopeVar);
-		variables.put(var.toString(), var);
+		getCurrentScope().getVariable().put(var.toString(), var);
 	}
 	
 	//** When "variable" = "value"/"variable"
@@ -98,56 +97,60 @@ public class Semantic {
 	}
 	
 	public void createVariableWithoutExpression (Variable var) {
-		if (variables.get(var.toString()) != null) {
+		if (getCurrentScope().getVariable().get(var.toString()) != null) {
 			throw new SemanticException("Variable " + var.getName() + " already exists");
 		}
 		
-		variables.put(var.toString(), var);
+		getCurrentScope().getVariable().put(var.toString(), var);
 
 	}
 	
-	public void assignFunction(Variable var, Function exp) {
-		if (variables.get(var.toString()) != null) {
+	// when type "a" = function(list_parameters);
+	public void assignFunction(Variable var, Function func) {
+		if (getCurrentScope().getVariable().get(var.toString()) != null) {
 			throw new SemanticException("Variable " + var.getName() + " already exists");
 		}
 		
-		System.out.println(exp.getReturnType());
-		System.out.println(exp.getReturnType());
-		System.out.println(exp.getReturnType());
-
-		var.setType(exp.getReturnType());
-		variables.put(var.toString(), var);
+		// To distinguish between int a = k(not declared variable) and int a = function(list_parameters);
+		if (cProgram.getFunctions().get(func.getName()) == null ) {
+			throw new SemanticException("Variable " + func.getName() + " is not declared");
+		}
+		
+		//Check the assign between the variable and the function type
+		getCurrentScope().getVariable().put(var.toString(), var);
 	}
 	
 	public Variable getIdentifier(String name) {
-		if (variables.get(name) == null) {
+		if (getCurrentScope().getVariable().get(name) == null) {
 			throw new SemanticException("Identifier name doesn't exists: " + name);
 		}
 		
 
-		return variables.get(name);
+		return getCurrentScope().getVariable().get(name);
 	}
 	
 	public Function possibleFunction(Function func) {
-		if (variables.get(func.getName()) != null) {
+		if (getCurrentScope().getVariable().get(func.getName()) != null) {
 			throw new SemanticException("Variable " + func + " already exists");		
 		}
 		
-		functions.put(func.getName(), new Function(func.getName()));
 		return func;
 	}
 	
 	public void callFunction(Function func, List<Expression> expressions) {
-		if (functions.get(func.getName()) == null) {
-			throw new SemanticException("Function " + func.getName() + " don't exists");		
-		}
+		cProgram.addFunction(func);
 		
 		for (Expression exp : expressions) {
-			System.out.println(exp);
-			func.addParameter(exp);
+			cProgram.getFunctions().get(func.getName()).addParameter(exp);
 		}
 	}
 	
+	public void checkNewScope(String id) {
+		if (cProgram.getFunctions().get(id) != null) {
+			ScopedEntity scoped = new ScopedEntity(id);
+			scopeStack.push(scoped);
+		}
+	}
 
 	public boolean isRelationalExpression(Expression le, Expression re) throws SemanticException {
 		if(!le.getType().equalsAssignRelational(re.getType())){

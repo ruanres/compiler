@@ -404,7 +404,10 @@ declarator
 	;
 
 direct_declarator
-	::= IDENTIFIER:id                 {: RESULT = id; Logger.print("383 identifier: " + id); RESULT = id; :}
+	::= IDENTIFIER:id                 {: RESULT = id; Logger.print("383 identifier: " + id);
+                                       RESULT = id;
+                                       Semantic.getInstance().checkNewScope((String) id);
+                                    :}
 	| LPAREN declarator:decl RPAREN				{:Logger.print("383 declarator: " + decl);:}
 	| direct_declarator:dir_decl LBRACK RBRACK		{:Logger.print("384 direct_declarator: "); RESULT = dir_decl;:}
 	| direct_declarator LBRACK MULT RBRACK	{:Logger.print("385");:}
@@ -526,7 +529,7 @@ statement
 	| expression_statement:exp_stat	{:Logger.print("501 expression_statement: " + exp_stat); RESULT=exp_stat;:}
 	| selection_statement	{:Logger.print("502");:}
 	| iteration_statement	{:Logger.print("503");:}
-	| jump_statement		{:Logger.print("504");:}
+	| jump_statement:jump		{:Logger.print("504 jump_statement: " + jump); RESULT=jump;:}
 	;
 
 labeled_statement
@@ -537,7 +540,7 @@ labeled_statement
 
 compound_statement
   ::= LBRACE RBRACE					{:Logger.print("514");:}
-  | LBRACE  block_item_list RBRACE	{:Logger.print("515");:}
+  | LBRACE  block_item_list:block RBRACE	{:Logger.print("515 block: " + block); RESULT=block;:}
   ;
 
 block_item_list
@@ -575,7 +578,7 @@ jump_statement
 	| CONTINUE SEMICOLON			{:Logger.print("550");:}
 	| BREAK SEMICOLON				{:Logger.print("551");:}
 	| RETURN SEMICOLON				{:Logger.print("552");:}
-	| RETURN expression SEMICOLON	{:Logger.print("553");:}
+	| RETURN expression:exp SEMICOLON	{:Logger.print("553 expression: " + exp) ; RESULT=exp;:}
 	;
 
 translation_unit
@@ -590,7 +593,7 @@ external_declaration
 
 function_definition
 	::= declaration_specifiers declarator declaration_list compound_statement	{:Logger.print("567");:}
-	| declaration_specifiers declarator compound_statement						{:Logger.print("568");:}
+	| declaration_specifiers:decl_spec declarator:decl compound_statement:compound						{:Logger.print("568 declaration_specifiers: " + decl_spec + " declarator: " + decl + " compound_statement: " + compound);    :}
 	;
 
 declaration_list

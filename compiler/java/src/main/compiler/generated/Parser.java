@@ -3031,7 +3031,10 @@ class CUP$Parser$actions {
 		int idleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int idright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Object id = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		 RESULT = id; Logger.print("383 identifier: " + id); RESULT = id; 
+		 RESULT = id; Logger.print("383 identifier: " + id);
+                                       RESULT = id;
+                                       Semantic.getInstance().checkNewScope((String) id);
+                                    
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("direct_declarator",47, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -3712,7 +3715,10 @@ class CUP$Parser$actions {
           case 241: // statement ::= jump_statement 
             {
               Object RESULT =null;
-		Logger.print("504");
+		int jumpleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int jumpright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		Object jump = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		Logger.print("504 jump_statement: " + jump); RESULT=jump;
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("statement",59, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -3757,7 +3763,10 @@ class CUP$Parser$actions {
           case 246: // compound_statement ::= LBRACE block_item_list RBRACE 
             {
               Object RESULT =null;
-		Logger.print("515");
+		int blockleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
+		int blockright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
+		Object block = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
+		Logger.print("515 block: " + block); RESULT=block;
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("compound_statement",61, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -3952,7 +3961,10 @@ class CUP$Parser$actions {
           case 266: // jump_statement ::= RETURN expression SEMICOLON 
             {
               Object RESULT =null;
-		Logger.print("553");
+		int expleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
+		int expright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
+		Object exp = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
+		Logger.print("553 expression: " + exp) ; RESULT=exp;
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("jump_statement",65, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -4006,7 +4018,16 @@ class CUP$Parser$actions {
           case 272: // function_definition ::= declaration_specifiers declarator compound_statement 
             {
               Object RESULT =null;
-		Logger.print("568");
+		int decl_specleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int decl_specright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		Object decl_spec = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		int declleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
+		int declright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
+		Object decl = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
+		int compoundleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int compoundright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		Object compound = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		Logger.print("568 declaration_specifiers: " + decl_spec + " declarator: " + decl + " compound_statement: " + compound);    
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("function_definition",68, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
