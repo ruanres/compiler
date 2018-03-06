@@ -2419,7 +2419,7 @@ class CUP$Parser$actions {
 		int inright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Object in = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		Logger.print("265 declarator: " + de + " initializer: " + in);
-                                                Variable temp = new Variable((String) de,new Type("null"));
+                                                Variable temp = new Variable((String) de,new Type(null));
                                                 RESULT = temp;
                                                 Semantic.getInstance().assignVariable((Variable) temp, (Expression) in);
                                               
@@ -2435,6 +2435,9 @@ class CUP$Parser$actions {
 		int deright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Object de = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		Logger.print("266 declarator: " + de);
+                                    Variable temp = new Variable((String) de,new Type(null));
+                                    RESULT=temp;
+                                    Semantic.getInstance().createVariableWithoutExpression((Variable) temp);
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("init_declarator",30, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;

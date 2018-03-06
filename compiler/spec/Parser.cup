@@ -269,11 +269,14 @@ init_declarator_list
 
 init_declarator
 	::= declarator:de EQ initializer:in					{:Logger.print("265 declarator: " + de + " initializer: " + in);
-                                                Variable temp = new Variable((String) de,new Type("null"));
+                                                Variable temp = new Variable((String) de,new Type(null));
                                                 RESULT = temp;
                                                 Semantic.getInstance().assignVariable((Variable) temp, (Expression) in);
                                               :}
-	| declarator:de									{:Logger.print("266 declarator: " + de);:}
+	| declarator:de									{:Logger.print("266 declarator: " + de);
+                                    Variable temp = new Variable((String) de,new Type(null));
+                                    RESULT=temp;
+                                    Semantic.getInstance().createVariableWithoutExpression((Variable) temp);:}
 	;
 
 storage_class_specifier

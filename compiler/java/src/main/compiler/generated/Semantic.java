@@ -49,6 +49,11 @@ public class Semantic {
 	//** When "type" "variable" = "value"/"variable"
 	public void checkAssignVariableIsValid(Type variableType, Variable var) {
 		Variable currentScopeVar = variables.get(var.getName()); 
+		
+		if (var.getType().toString() == null) {
+			currentScopeVar.setType(variableType);
+		}
+		
 		Type expressionAssignedType = currentScopeVar.getType();
 		
 		
@@ -84,6 +89,15 @@ public class Semantic {
 
 		}
 		
+	}
+	
+	public void createVariableWithoutExpression (Variable var) {
+		if (variables.get(var.toString()) != null) {
+			throw new SemanticException("Variable " + var.getName() + " already exists");
+		}
+		
+		variables.put(var.toString(), var);
+
 	}
 	
 	public Variable getIdentifier(String name) {
