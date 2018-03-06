@@ -70,8 +70,8 @@ non terminal relational_expression, inclusive_or_expression, declaration;
 start with translation_unit;
 
 primary_expression ::= IDENTIFIER:id         {:Logger.print("72 IDENTIFIER: " + id);
-                                               Function func = new Function((String)id, null);
-                                               RESULT = Semantic.getInstance().possibleFunction(func); :}
+                                               Variable var = new Variable((String)id, new Type(null));
+                                               RESULT = var; :}
                        | constant:c         {:Logger.print("73 " + c); RESULT = c; :}
                        | string:s						{:Logger.print("74 - String"); RESULT = s;:}
 	                     | LPAREN expression RPAREN  {:Logger.print("75");:}
@@ -111,7 +111,8 @@ postfix_expression
 	| postfix_expression LBRACK expression RBRACK		{:Logger.print("109");:}
 	| postfix_expression:post LPAREN RPAREN					{:Logger.print("110 postfix_expression: " + post);:}
 	| postfix_expression:post LPAREN argument_expression_list:list RPAREN	{:Logger.print("111 postfix_expression: " + post + " argument_expression_list: " + list);
-                                                                          Semantic.getInstance().callFunction((Function) post, (List<Expression>) list);
+                                                                          Function func = new Function(((Variable) post).getName());
+                                                                          Semantic.getInstance().callFunction((Function) func, (List<Expression>) list);
                                                                           RESULT=post;:}
 	| postfix_expression DOT IDENTIFIER			{:Logger.print("112");:}
 	| postfix_expression PTR_OP IDENTIFIER		{:Logger.print("113");:}
@@ -447,7 +448,12 @@ parameter_list
 	;
 
 parameter_declaration
-	::= declaration_specifiers:decl_spec declarator:decl			{:Logger.print("422 declaration_specifiers: " + decl_spec + " declarator: " + decl);:}
+	::= declaration_specifiers:decl_spec declarator:decl			{:Logger.print("422 declaration_specifiers: " + decl_spec + " declarator: " + decl);
+                                                              RESULT=decl;
+                                                              Type type = new Type(decl_spec.toString());
+                                                              Variable var = new Variable(decl.toString(), type);
+                                                              Semantic.getInstance().initParam(var);
+                                                              :}
 	| declaration_specifiers abstract_declarator	{:Logger.print("423");:}
 	| declaration_specifiers						{:Logger.print("424");:}
 	;

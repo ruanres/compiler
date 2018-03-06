@@ -96,6 +96,15 @@ public class Semantic {
 		
 	}
 	
+	public void initParam(Variable var) {
+		//Checks if param already exists -> type func (int a, int a); 
+		if (getCurrentScope().getVariable().get(var.getName()) != null) {
+			throw new SemanticException("Param " + var.getName() + " already exists");
+		}
+		
+		getCurrentScope().addVariable(var);
+	}
+	
 	public void createVariableWithoutExpression (Variable var) {
 		if (getCurrentScope().getVariable().get(var.toString()) != null) {
 			throw new SemanticException("Variable " + var.getName() + " already exists");
@@ -129,13 +138,6 @@ public class Semantic {
 		return getCurrentScope().getVariable().get(name);
 	}
 	
-	public Function possibleFunction(Function func) {
-		if (getCurrentScope().getVariable().get(func.getName()) != null) {
-			throw new SemanticException("Variable " + func + " already exists");		
-		}
-		
-		return func;
-	}
 	
 	public void callFunction(Function func, List<Expression> expressions) {
 		cProgram.addFunction(func);
@@ -162,17 +164,57 @@ public class Semantic {
     }
 
     private void checkTypeCompatibility(Expression leftExp, Expression rightExp) throws SemanticException{
-        boolean leftIsChar = leftExp.getType().toString().equals("char");
-        boolean rightIsChar = rightExp.getType().toString().equals("char");
+    	
+    	boolean leftIsChar;
+    	boolean rightIsChar;
+    	Type rightType;
+    	Type leftType;
+    	
+    	if (leftExp instanceof Variable) {
+    		Variable temp = getCurrentScope().getVariable().get(leftExp.getName());
+    		leftType = temp.getType();
+        	leftIsChar = leftType.toString().equals("char");
+    	} else {
+    		leftType = leftExp.getType();
+        	leftIsChar = leftType.toString().equals("char");
+    	}
+    	
+    	if (rightExp instanceof Variable) {
+    		Variable temp = getCurrentScope().getVariable().get(rightExp.getName());
+    		rightType = temp.getType();
+            rightIsChar = rightType.toString().equals("char");
+    	} else {
+    		rightType = rightExp.getType();
+            rightIsChar = rightType.toString().equals("char");
+
+    	}
 
         if(leftIsChar || rightIsChar)
             throw new SemanticException("Illegal Operation between " +
-                    leftExp.getType().toString() + " and " + rightExp.getType().toString());
+            		leftType.toString() + " and " + rightType.toString());
     }
 
     public Expression getExpressionForOperation(Operation op, Expression e1, Expression e2) {
         checkTypeCompatibility(e1, e2);
-        Type minorType = getMinorType(e1.getType(), e2.getType());
+        
+        Type e1Type;
+        Type e2Type;
+        
+        if (e1 instanceof Variable) {
+        	Variable temp = getCurrentScope().getVariable().get(e1.getName());
+        	e1Type = temp.getType();
+    	} else {
+    		e1Type = e1.getType();
+    	}
+    	
+    	if (e2 instanceof Variable) {
+    		Variable temp = getCurrentScope().getVariable().get(e2.getName());
+    		e2Type = temp.getType();
+    	} else {
+    		e2Type =  e2.getType();
+    	}
+    	
+        Type minorType = getMinorType(e1Type, e2Type);
 
         getCodeGenerator().generateLDCode(e1);
         getCodeGenerator().generateLDCode(e2);

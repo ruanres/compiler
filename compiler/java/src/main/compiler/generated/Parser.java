@@ -1324,8 +1324,8 @@ class CUP$Parser$actions {
 		int idright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Object id = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		Logger.print("72 IDENTIFIER: " + id);
-                                               Function func = new Function((String)id, null);
-                                               RESULT = Semantic.getInstance().possibleFunction(func); 
+                                               Variable var = new Variable((String)id, new Type(null));
+                                               RESULT = var; 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("primary_expression",1, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -1527,7 +1527,8 @@ class CUP$Parser$actions {
 		int listright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
 		Object list = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
 		Logger.print("111 postfix_expression: " + post + " argument_expression_list: " + list);
-                                                                          Semantic.getInstance().callFunction((Function) post, (List<Expression>) list);
+                                                                          Function func = new Function(((Variable) post).getName());
+                                                                          Semantic.getInstance().callFunction((Function) func, (List<Expression>) list);
                                                                           RESULT=post;
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("postfix_expression",8, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-3)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -3269,6 +3270,11 @@ class CUP$Parser$actions {
 		int declright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Object decl = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		Logger.print("422 declaration_specifiers: " + decl_spec + " declarator: " + decl);
+                                                              RESULT=decl;
+                                                              Type type = new Type(decl_spec.toString());
+                                                              Variable var = new Variable(decl.toString(), type);
+                                                              Semantic.getInstance().initParam(var);
+                                                              
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("parameter_declaration",51, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
