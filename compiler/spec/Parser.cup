@@ -262,7 +262,11 @@ assignment_expression
 	::= conditional_expression:cond_exp										{:Logger.print("213 conditional_expression: " + cond_exp); RESULT=cond_exp;:}
 	| unary_expression:un_exp assignment_operator:as_op assignment_expression:as_exp	{:Logger.print("214 unary_expression: " + un_exp + " assignment_operator: " + as_op + " assignment_expression: " + as_exp);
                                                                                       RESULT=as_exp;
-                                                                                      Semantic.getInstance().checkAssignVariableIsValid((Variable) un_exp, (Expression) as_exp);
+                                                                                      if (as_exp instanceof Variable) {
+                                                                                        Semantic.getInstance().checkAssignVariableIsValid((Variable) un_exp, (Variable) as_exp);
+                                                                                      } else if (as_exp instanceof Expression) {
+                                                                                        Semantic.getInstance().checkAssignVariableIsValid((Variable) un_exp, (Expression) as_exp);
+                                                                                      }
                                                                                       :}
 	;
 

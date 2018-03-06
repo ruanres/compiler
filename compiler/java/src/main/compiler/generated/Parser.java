@@ -2190,7 +2190,11 @@ class CUP$Parser$actions {
 		Object as_exp = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		Logger.print("214 unary_expression: " + un_exp + " assignment_operator: " + as_op + " assignment_expression: " + as_exp);
                                                                                       RESULT=as_exp;
-                                                                                      Semantic.getInstance().checkAssignVariableIsValid((Variable) un_exp, (Expression) as_exp);
+                                                                                      if (as_exp instanceof Variable) {
+                                                                                        Semantic.getInstance().checkAssignVariableIsValid((Variable) un_exp, (Variable) as_exp);
+                                                                                      } else if (as_exp instanceof Expression) {
+                                                                                        Semantic.getInstance().checkAssignVariableIsValid((Variable) un_exp, (Expression) as_exp);
+                                                                                      }
                                                                                       
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("assignment_expression",11, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }

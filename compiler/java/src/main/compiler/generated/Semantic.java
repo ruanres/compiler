@@ -76,8 +76,9 @@ public class Semantic {
 
 	}
 	
-	//** When "variable" = "value"/"variable"
+	//** When "variable" = "value"
 	public void checkAssignVariableIsValid(Variable var, Expression exp) {
+		
 		Variable currentScopeVariable = (Variable) getIdentifier(var.getName()); 
 		
 		if (!currentScopeVariable.getType().equalsAssignRelational(exp.getType())) {
@@ -92,6 +93,13 @@ public class Semantic {
 		getCodeGenerator().generateSTCode(var);
 		getCurrentScope().getVariable().get(var.getName()).setExpression(exp);
 		
+	}
+	
+	//** When "variable" = "variable"
+	public void checkAssignVariableIsValid(Variable var, Variable var_exp) {
+		Variable currentScopeVar = getCurrentScope().getVariable().get(var_exp.getName());
+		checkIfExistExpression(currentScopeVar);
+		checkAssignVariableIsValid(var, currentScopeVar.getExpression());
 	}
 	
 	public void initParam(Variable var) {
