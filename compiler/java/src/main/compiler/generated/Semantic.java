@@ -1,6 +1,8 @@
 package compiler.generated;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Stack;
 
 import core.*;
@@ -14,7 +16,9 @@ public class Semantic {
     private Program cProgram;
     private HashMap<String,Variable> variables = new HashMap<String,Variable>();
     public static CodeGenerator codeGenerator;
-
+    public HashMap<String, Function> functions = new HashMap<String,Function>();
+    
+    
 	public static Semantic getInstance() {
 		if (sAnalysis == null)
 			sAnalysis = new Semantic();
@@ -25,6 +29,8 @@ public class Semantic {
 	}
 	
 	public Semantic() {
+		functions.put("main", new Function("main", null));
+		ScopedEntity scoped = new ScopedEntity("main");
 		cProgram = new Program();
 	}
 	
@@ -69,7 +75,7 @@ public class Semantic {
 	
 	//** When "variable" = "value"/"variable"
 	public void checkAssignVariableIsValid(Variable var, Expression exp) {
-		Variable currentScopeVariable = getIdentifier(var.getName()); 
+		Variable currentScopeVariable = (Variable) getIdentifier(var.getName()); 
 		
 		if (!currentScopeVariable.getType().equalsAssignRelational(exp.getType())) {
 			
@@ -100,12 +106,46 @@ public class Semantic {
 
 	}
 	
+	public void assignFunction(Variable var, Function exp) {
+		if (variables.get(var.toString()) != null) {
+			throw new SemanticException("Variable " + var.getName() + " already exists");
+		}
+		
+		System.out.println(exp.getReturnType());
+		System.out.println(exp.getReturnType());
+		System.out.println(exp.getReturnType());
+
+		var.setType(exp.getReturnType());
+		variables.put(var.toString(), var);
+	}
+	
 	public Variable getIdentifier(String name) {
 		if (variables.get(name) == null) {
 			throw new SemanticException("Identifier name doesn't exists: " + name);
 		}
 		
+
 		return variables.get(name);
+	}
+	
+	public Function possibleFunction(Function func) {
+		if (variables.get(func.getName()) != null) {
+			throw new SemanticException("Variable " + func + " already exists");		
+		}
+		
+		functions.put(func.getName(), new Function(func.getName()));
+		return func;
+	}
+	
+	public void callFunction(Function func, List<Expression> expressions) {
+		if (functions.get(func.getName()) == null) {
+			throw new SemanticException("Function " + func.getName() + " don't exists");		
+		}
+		
+		for (Expression exp : expressions) {
+			System.out.println(exp);
+			func.addParameter(exp);
+		}
 	}
 	
 

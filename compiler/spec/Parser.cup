@@ -69,7 +69,9 @@ non terminal relational_expression, inclusive_or_expression, declaration;
 
 start with translation_unit;
 
-primary_expression ::= IDENTIFIER:id         {:Logger.print("72 IDENTIFIER: " + id); RESULT = Semantic.getInstance().getIdentifier((String) id); :}
+primary_expression ::= IDENTIFIER:id         {:Logger.print("72 IDENTIFIER: " + id);
+                                               Function func = new Function((String)id, null);
+                                               RESULT = Semantic.getInstance().possibleFunction(func); :}
                        | constant:c         {:Logger.print("73 " + c); RESULT = c; :}
                        | string:s						{:Logger.print("74 - String"); RESULT = s;:}
 	                     | LPAREN expression RPAREN  {:Logger.print("75");:}
@@ -107,8 +109,10 @@ generic_association
 postfix_expression
 	::= primary_expression:pr			{:Logger.print("108: " + pr); RESULT = pr; :}
 	| postfix_expression LBRACK expression RBRACK		{:Logger.print("109");:}
-	| postfix_expression LPAREN RPAREN					{:Logger.print("110");:}
-	| postfix_expression LPAREN argument_expression_list RPAREN	{:Logger.print("111");:}
+	| postfix_expression:post LPAREN RPAREN					{:Logger.print("110 postfix_expression: " + post);:}
+	| postfix_expression:post LPAREN argument_expression_list:list RPAREN	{:Logger.print("111 postfix_expression: " + post + " argument_expression_list: " + list);
+                                                                          Semantic.getInstance().callFunction((Function) post, (List<Expression>) list);
+                                                                          RESULT=post;:}
 	| postfix_expression DOT IDENTIFIER			{:Logger.print("112");:}
 	| postfix_expression PTR_OP IDENTIFIER		{:Logger.print("113");:}
 	| postfix_expression INC_OP					{:Logger.print("114");:}
@@ -118,8 +122,12 @@ postfix_expression
 	;
 
 argument_expression_list
-	::= assignment_expression		{:Logger.print("121");:}
-	| argument_expression_list COMMA assignment_expression	{:Logger.print("122");:}
+	::= assignment_expression:as		{:Logger.print("121 assignment_expression: " + as); RESULT=as ;:}
+	| argument_expression_list:arg COMMA assignment_expression:as	{:Logger.print("122 argument_expression_list: " + arg + " assignment_expression: " + as);
+                                                                  List<Expression> exps = new ArrayList<Expression>();
+                                                                  exps.add((Expression) arg);
+                                                                  exps.add((Expression) as);
+                                                                  RESULT=exps;:}
 	;
 
 unary_expression
@@ -271,7 +279,11 @@ init_declarator
 	::= declarator:de EQ initializer:in					{:Logger.print("265 declarator: " + de + " initializer: " + in);
                                                 Variable temp = new Variable((String) de,new Type(null));
                                                 RESULT = temp;
-                                                Semantic.getInstance().assignVariable((Variable) temp, (Expression) in);
+                                                if (in instanceof Function) {
+                                                  Semantic.getInstance().assignFunction((Variable) temp, (Function) in);
+                                                } else {
+                                                  Semantic.getInstance().assignVariable((Variable) temp, (Expression) in);
+                                                }
                                               :}
 	| declarator:de									{:Logger.print("266 declarator: " + de);
                                     Variable temp = new Variable((String) de,new Type(null));
@@ -392,8 +404,8 @@ declarator
 	;
 
 direct_declarator
-	::= IDENTIFIER:d                 {: RESULT = d; Logger.print("383 identifier: " + d);:}
-	| LPAREN declarator RPAREN				{:Logger.print("383");:}
+	::= IDENTIFIER:id                 {: RESULT = id; Logger.print("383 identifier: " + id); RESULT = id; :}
+	| LPAREN declarator:decl RPAREN				{:Logger.print("383 declarator: " + decl);:}
 	| direct_declarator:dir_decl LBRACK RBRACK		{:Logger.print("384 direct_declarator: "); RESULT = dir_decl;:}
 	| direct_declarator LBRACK MULT RBRACK	{:Logger.print("385");:}
 	| direct_declarator LBRACK STATIC type_qualifier_list assignment_expression RBRACK	{:Logger.print("386");:}
@@ -427,12 +439,12 @@ parameter_type_list
 	;
 
 parameter_list
-	::= parameter_declaration						{:Logger.print("417");:}
+	::= parameter_declaration:param_decl						{:Logger.print("417 parameter_declaration: " + param_decl);:}
 	| parameter_list COMMA parameter_declaration	{:Logger.print("418");:}
 	;
 
 parameter_declaration
-	::= declaration_specifiers declarator			{:Logger.print("422");:}
+	::= declaration_specifiers:decl_spec declarator:decl			{:Logger.print("422 declaration_specifiers: " + decl_spec + " declarator: " + decl);:}
 	| declaration_specifiers abstract_declarator	{:Logger.print("423");:}
 	| declaration_specifiers						{:Logger.print("424");:}
 	;
@@ -567,7 +579,7 @@ jump_statement
 	;
 
 translation_unit
-	::= external_declaration				{:Logger.print("557 "); Semantic.getInstance().getCodeGenerator().toString();:}
+	::= external_declaration				{:Logger.print("557 "); :}
 	| translation_unit external_declaration	{:Logger.print("558");:}
 	;
 

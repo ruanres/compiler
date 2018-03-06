@@ -3,25 +3,22 @@ package core;
 
 import java.util.ArrayList;
 
+
 import util.SemanticException;
 
 
 public class Function extends ScopedEntity implements Identifier {
 	
-	private Type returnType = new Type("void"); // Default Return Type
-	private ArrayList<Parameter> functionParameter;
-	private Type returnedType = new Type("void"); // Default Return Type
+	private Type returnType = new Type(null); // Default Return Type
+	private ArrayList<Expression> functionParameter;
+	private Type returnedType = new Type(null); // Default Return Type
 
-	public Function(String name, ArrayList<Parameter> parameters) {
+	public Function(String name, ArrayList<Expression> parameters) {
 		super(name);
-		if (parameters != null)
+		if (parameters != null) {
 			functionParameter = parameters;
-		else
-			parameters = new ArrayList<Parameter>();
-
-		for (Parameter parameter : parameters) {
-			if (parameter instanceof Variable)
-				addVariable((Variable) parameter);
+		} else {
+			functionParameter = new ArrayList<Expression>();
 		}
 	}
 	
@@ -64,4 +61,10 @@ public class Function extends ScopedEntity implements Identifier {
 	public void setReturnedType(Type type) {
 		this.returnedType = type;
 	}
+
+
+	public void addParameter(Expression exp) {
+		functionParameter.add(exp);
+	}
+	
 }
