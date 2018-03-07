@@ -1,24 +1,34 @@
 package compiler.generated;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Set;
+
 import core.Expression;
 import core.Register;
 import core.Variable;
 
 public class CodeGenerator {
-     private String assemblyCode;
+     private HashMap<Integer, String> assemblyCode;
      private int labels;
      private Register[] registers;
  	 private int register;
-
+ 	 private Integer relationalLabel;
+ 	 
 	 public CodeGenerator() {
-		 this.assemblyCode = getInitAssemblyCode();
+		 this.assemblyCode = new HashMap<Integer, String>(); 
 		 this.registers = Register.values();
 	     labels = 100;
 	     register = -1;
+		 initAssemblyCode();
 	 }
 	 
-	 public String getInitAssemblyCode() {
-		 return "100: LD SP, #4000\n";
+	 public void initAssemblyCode() {
+		 assemblyCode.put(labels, "100: LD SP, #4000\n");
 	 }
 	
 	 public void assignmentDeclaration(Variable var) {
@@ -40,8 +50,15 @@ public class CodeGenerator {
 		}
 	 }
 	 
+	 public void generateLDCode(Variable variable) {
+		register++;
+		labels += 4;
+		addCode(labels + ": LD " + allocateRegister() + ", " + variable.getName());
+     }
+	 
 	 public void addCode(String newCode) {
-		this.assemblyCode += newCode + '\n'; 
+		String assemblyStringCode = newCode + '\n'; 
+		this.assemblyCode.put(labels, assemblyStringCode);
 	 }
 	 
 	 public Register allocateRegister(){
@@ -124,11 +141,74 @@ public class CodeGenerator {
         Register result = allocateRegister();
         addCode(labels + ": DIV " + result + ", " + one + ", " + two);
     }
+    
+    public void generateBGTZ() {
+    	labels += 4;
+        Register result = allocateRegister();
+        relationalLabel = labels;
+    	addCode(labels + ": BGTZ " + result + " , "+ " #");
+    }
+    
+    public void generateBLTZ() {
+    	labels += 4;
+        Register result = allocateRegister();
+        relationalLabel = labels;
+    	addCode(labels + ": BLTZ " + result + " , "+ " #");
+    }
+    
+    public void generateBLETZ() {
+    	labels += 4;
+        Register result = allocateRegister();
+        relationalLabel = labels;
+
+    	addCode(labels + ": BLETZ " + result + " , "+ " #");
+    }
+    
+    public void generateBGETZ() {
+    	labels += 4;
+        Register result = allocateRegister();
+        relationalLabel = labels;
+    	addCode(labels + ": BGETZ " + result + " , "+ " #");
+    }
+    
+    public void generateBEQ() {
+    	labels += 4;
+        Register result = allocateRegister();
+        relationalLabel = labels;
+    	addCode(labels + ": BEQ " + result + " , 0 , "+ " #");
+    }
+    
+    public void updateRelation() {
+    	if ( relationalLabel != null) {
+    		String labelString = assemblyCode.get(relationalLabel);
+        	String newString = "#" + (labels + 4);
+        	newString = labelString.replace("#",newString);
+        	assemblyCode.put(relationalLabel, newString);
+        	relationalLabel = null;
+    	}
+    	
+    }
+    
+    public void generateBNE() {
+    	labels += 4;
+        Register result = allocateRegister();
+        relationalLabel = labels;
+    	addCode(labels + ": BNE " + result + " , 0 , "+ " #");
+    }
+ 
 
 
 	 @Override
 	 public String toString() {
-		 System.out.println(assemblyCode);
-		 return assemblyCode;
+		String assCode = "";
+		List<Integer> arrayLabels = new ArrayList<Integer>();
+		arrayLabels.addAll(assemblyCode.keySet());
+		Collections.sort(arrayLabels);
+		
+		for (Integer var : arrayLabels) {
+			assCode += assemblyCode.get(var);
+		}
+		
+		return assCode;
 	 }
 }

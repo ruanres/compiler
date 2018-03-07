@@ -250,11 +250,36 @@ public class Semantic {
 	}
 		
 	
-	public boolean isRelationalExpression(Expression le, Expression re) throws SemanticException {
+	public boolean isRelationalExpression(String operation, Expression le, Expression re) throws SemanticException {
 		if(!le.getType().equalsAssignRelational(re.getType())){
             throw new SemanticException("ERRO: Nao é possivel comparar uma expressao do tipo " + 
 		le.getType().getName() + " com uma expressao do tipo " + re.getType().getName());
         }
+		
+		getCodeGenerator().generateSUBCode();
+		System.out.println(operation);
+		switch (operation) {
+			case ">":
+				getCodeGenerator().generateBGTZ();
+				break;
+			case "<":
+				getCodeGenerator().generateBLTZ();
+				break;
+			case "<=":
+				getCodeGenerator().generateBLETZ();
+				break;
+			case ">=":
+				getCodeGenerator().generateBGETZ();
+				break;
+			case "==":
+				getCodeGenerator().generateBEQ();
+				break;
+			case "!=":
+				getCodeGenerator().generateBNE();
+				break;
+
+
+		}
 
 		return true;
     }
@@ -350,26 +375,32 @@ public class Semantic {
 		return false;
 	}
 
-	public void isRelationalExpression(Object e1, Object e2) {
+	public void isRelationalExpression(String operation, Object e1, Object e2) {
 		Expression exp1;
 		Expression exp2;
 		
 		if (e1 instanceof Variable) {
 			Variable v1 = getCurrentScope().getVariable().get(e1.toString());
+			getCodeGenerator().generateLDCode(v1);
 			exp1 = v1.getExpression();
 			
 		} else {
 			exp1 = (Expression) e1;
+			getCodeGenerator().generateLDCode(exp1);
+
 		}
 		
 		if (e2 instanceof Variable) {
 			Variable v2 = getCurrentScope().getVariable().get(e2.toString());
+			getCodeGenerator().generateLDCode(v2);
 			exp2 = v2.getExpression();
 		} else {
 			exp2 = (Expression) e2;
+			getCodeGenerator().generateLDCode(exp2);
+
 		}
 		
-		isRelationalExpression(exp1, exp2);
+		isRelationalExpression(operation, exp1, exp2);
 	}
 	
 	
