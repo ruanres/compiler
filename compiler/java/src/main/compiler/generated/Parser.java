@@ -1623,8 +1623,6 @@ class CUP$Parser$actions {
                                                                   } else {
                                                                 	  exps.add((Expression) arg);
                                                                   }
-                                                                  
-                                                                  exps.add((Expression) as);
                                                                   RESULT=exps;
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("argument_expression_list",9, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }

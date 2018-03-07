@@ -1,11 +1,12 @@
 int teste(float a , int b);
 
 int main() {
-   int a = teste(4,5, 10, 11);
+   int a = 5;
+   int b = 6;
+   
+   if (a > b) {
+   }
    return 0;
 }
 
-int teste(float a, int b) {
-	return a + b;
-}
 

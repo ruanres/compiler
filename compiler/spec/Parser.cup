@@ -132,8 +132,11 @@ argument_expression_list
 	::= assignment_expression:as		{:Logger.print("121 assignment_expression: " + as); RESULT=as ;:}
 	| argument_expression_list:arg COMMA assignment_expression:as	{:Logger.print("122 argument_expression_list: " + arg + " assignment_expression: " + as);
                                                                   List<Expression> exps = new ArrayList<Expression>();
-                                                                  exps.add((Expression) arg);
-                                                                  exps.add((Expression) as);
+                                                                  if (arg instanceof List<?>) {
+                                                                      exps.addAll((List<Expression>) arg);
+                                                                  } else {
+                                                                	  exps.add((Expression) arg);
+                                                                  }
                                                                   RESULT=exps;:}
 	;
 
