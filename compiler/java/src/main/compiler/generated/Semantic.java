@@ -69,8 +69,6 @@ public class Semantic {
 			
 			getCodeGenerator().changeFunctionLabels(name);
 		} else {
-			System.out.println("fçsdfhjsd");
-			System.out.println(afterMain);
 			if (afterMain) {
 				throw new SemanticException("Function was not previous declared");
 			}
