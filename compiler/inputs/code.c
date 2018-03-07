@@ -1,11 +1,11 @@
 int teste(float a , int b);
 
 int main() {
-   int a = 5 + 4;
-   int b = 6;
-   int c = 7;
-   int d = b + c;
+   int a = teste(4,5, 10);
    return 0;
 }
 
+int teste(float a, int b) {
+	return a + b;
+}
 

@@ -90,8 +90,9 @@ public class Semantic {
 			int checked = cProgram.getFunctions().get(funcName).getChecked();
 			
 			if (checked >= expressions.size()) {
-				
+				throw new SemanticException("The function " + funcName +  " called should have less parameters");
 			}
+			
 			var.setExpression(expressions.get(checked));
 			cProgram.getFunctions().get(funcName).incrementCheck();
 			
@@ -126,6 +127,8 @@ public class Semantic {
 		
 		if (expressions.size() < params.size()) {
 			throw new SemanticException("The function " + funcName +  " called should have more parameters");
+		} else if (expressions.size() < params.size()) {
+			throw new SemanticException("The function " + funcName +  " called should have less parameters");
 		}
 		
 		int index = 0;
