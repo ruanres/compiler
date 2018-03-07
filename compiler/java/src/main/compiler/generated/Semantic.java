@@ -145,6 +145,7 @@ public class Semantic {
 			index += 1;
 		}
 		
+		getCodeGenerator().generateCodeFunction(funcName);
 		cProgram.getFunctions().get(funcName).setFunctionParamaters(expressions);
 		
 		
@@ -427,6 +428,22 @@ public class Semantic {
 		}
 		
 		isRelationalExpression(operation, exp1, exp2);
+	}
+
+	public void checkReturnType(Type type, Object compound) {
+		// TODO Auto-generated method stub
+		Type returnType;
+		
+		if (compound instanceof Variable) {
+			Variable auxVar = getCurrentScope().getVariable().get(compound.toString());
+			returnType = auxVar.getExpression().getType();
+		} else {
+			returnType = ((Expression) compound).getType();
+		}
+		
+		if (!type.equals(returnType)) {
+			throw new SemanticException("Error: The return type should be compatible with: " + type.toString());
+		}
 	}
 	
 	

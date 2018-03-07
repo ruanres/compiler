@@ -119,6 +119,7 @@ postfix_expression
                                                                             auxList = (List<Expression>) list;
                                                                           }
                                                                           Semantic.getInstance().callFunction((Function) func,  auxList);
+
                                                                           RESULT=post;:}
 	| postfix_expression DOT IDENTIFIER			{:Logger.print("112");:}
 	| postfix_expression PTR_OP IDENTIFIER		{:Logger.print("113");:}
@@ -687,7 +688,9 @@ external_declaration
 
 function_definition
 	::= declaration_specifiers declarator declaration_list compound_statement	{:Logger.print("567");:}
-	| declaration_specifiers:decl_spec declarator:decl compound_statement:compound						{:Logger.print("568 declaration_specifiers: " + decl_spec + " declarator: " + decl + " compound_statement: " + compound);    :}
+	| declaration_specifiers:decl_spec declarator:decl compound_statement:compound						{:Logger.print("568 declaration_specifiers: " + decl_spec + " declarator: " + decl + " compound_statement: " + compound);
+                                                                                                Semantic.getInstance().checkReturnType(new Type(decl_spec.toString()), (Object) compound);
+                                                                                              :}
 	;
 
 declaration_list

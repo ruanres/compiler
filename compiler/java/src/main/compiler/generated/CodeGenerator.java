@@ -14,13 +14,16 @@ import core.Variable;
 
 public class CodeGenerator {
      private HashMap<Integer, String> assemblyCode;
+     private HashMap<String, List<Integer>> functions;
      private int labels;
      private Register[] registers;
  	 private int register;
  	 private Integer relationalLabel;
  	 
 	 public CodeGenerator() {
-		 this.assemblyCode = new HashMap<Integer, String>(); 
+		 this.assemblyCode = new HashMap<Integer, String>();
+		 this.functions = new HashMap<String, List<Integer>>(); 
+
 		 this.registers = Register.values();
 	     labels = 100;
 	     register = -1;
@@ -196,7 +199,26 @@ public class CodeGenerator {
     	addCode(labels + ": BNE " + result + " , 0 , "+ " #");
     }
  
+    public void generateCodeFunction(String funcName) {
+    	labels += 4; 
+    	addCode(labels + ": SP, SP, #msize");
+    	labels += 4; 
+    	int auxLabels = labels + 8;
+    	addCode(labels + ": ST, *SP, " + " #" + auxLabels);
+    	labels += 4; 
+    	
+		List<Integer> listLabels;
 
+    	if (functions.get(funcName) == null) {
+    		listLabels = new ArrayList<Integer>();
+    	} else {
+    		listLabels = functions.get(funcName);
+    	}
+    	
+		listLabels.add(labels);
+		functions.put(funcName, listLabels);
+    	addCode(labels + ": BR #");
+    }
 
 	 @Override
 	 public String toString() {

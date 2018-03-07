@@ -1535,6 +1535,7 @@ class CUP$Parser$actions {
                                                                             auxList = (List<Expression>) list;
                                                                           }
                                                                           Semantic.getInstance().callFunction((Function) func,  auxList);
+
                                                                           RESULT=post;
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("postfix_expression",8, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-3)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -4169,7 +4170,9 @@ class CUP$Parser$actions {
 		int compoundleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int compoundright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Object compound = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		Logger.print("568 declaration_specifiers: " + decl_spec + " declarator: " + decl + " compound_statement: " + compound);    
+		Logger.print("568 declaration_specifiers: " + decl_spec + " declarator: " + decl + " compound_statement: " + compound);
+                                                                                                Semantic.getInstance().checkReturnType(new Type(decl_spec.toString()), (Object) compound);
+                                                                                              
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("function_definition",68, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
