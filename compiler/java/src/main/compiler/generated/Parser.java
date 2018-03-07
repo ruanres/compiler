@@ -2537,8 +2537,10 @@ class CUP$Parser$actions {
 
                                                 if (auxFunc != null) {
                                                   RESULT = Semantic.getInstance().assignFunction((Variable) temp, auxFunc);
+                                                } else if (in instanceof Variable) {
+                                                   RESULT = Semantic.getInstance().assignVariable((Variable) temp, (Variable) in);
                                                 } else {
-                                                  RESULT = Semantic.getInstance().assignVariable((Variable) temp, (Expression) in);
+                                                   RESULT = Semantic.getInstance().assignVariable((Variable) temp, (Expression) in);
                                                 }
                                               
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("init_declarator",30, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);

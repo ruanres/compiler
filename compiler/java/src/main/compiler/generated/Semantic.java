@@ -166,6 +166,21 @@ public class Semantic {
 		return getCurrentScope().getVariable().get(var.getName());
 	}
 	
+
+	public Variable assignVariable(Variable var, Variable exp) {
+		Variable auxVar = getCurrentScope().getVariable().get(exp.toString());
+		if (auxVar == null) {
+			throw new SemanticException("Variable " + var.getName() + " doesn't exist");
+		}
+		
+		if (auxVar.getExpression() == null) {
+			throw new SemanticException("Variable " + var.getName() + " was not declared");
+		}
+		
+		return assignVariable(var, auxVar.getExpression());
+	}
+	
+	
 	//** When "type" "variable" = "value"/"variable"
 	public void checkAssignVariableIsValid(Type variableType, Variable var) {
 		Variable currentScopeVar = getCurrentScope().getVariable().get(var.getName()); 
@@ -257,7 +272,7 @@ public class Semantic {
         }
 		
 		getCodeGenerator().generateSUBCode();
-		System.out.println(operation);
+
 		switch (operation) {
 			case ">":
 				

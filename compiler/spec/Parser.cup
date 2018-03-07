@@ -229,7 +229,7 @@ relational_expression
                                                             Semantic.getInstance().isRelationalExpression(lt.toString(), (Object) e1, (Object) e2);
 
                                                             :}
-	| relational_expression:e1 GT:gt shift_expression:e2			{: Logger.print("171 GREATER THAN");
+	| relational_expression:e1 GT:gt shift_expression:e2			{: Logger.print("171 GREATER THAN relational_expression: " + e1 + " shift_expression: " + e2);
                                                             Semantic.getInstance().isRelationalExpression(gt.toString(), (Object) e1, (Object) e2);
                                                         :}
 	| relational_expression:e1 LE_OP:le_op shift_expression:e2			{: Logger.print("172 LESS EQUAL");
@@ -350,10 +350,12 @@ init_declarator
                                                 Function auxFunc = Semantic.getInstance().getFunction(in);
 
                                                 if (auxFunc != null) {
-                                                  RESULT = Semantic.getInstance().assignFunction((Variable) temp, auxFunc);
-                                                } else {
-                                                  RESULT = Semantic.getInstance().assignVariable((Variable) temp, (Expression) in);
-                                                }
+                                               RESULT = Semantic.getInstance().assignFunction((Variable) temp, auxFunc);
+                                             } else if (in instanceof Variable) {
+                                                RESULT = Semantic.getInstance().assignVariable((Variable) temp, (Variable) in);
+                                             } else {
+                                                RESULT = Semantic.getInstance().assignVariable((Variable) temp, (Expression) in);
+                                             }
                                               :}
 	| declarator:de									{:Logger.print("266 declarator: " + de);
                                     Variable temp = new Variable((String) de,new Type(null));
