@@ -68,7 +68,7 @@ public class Semantic {
 		}
 		
 		Function func = new Function(name, params);
-	
+		System.out.println(func.getName());
 		func.initializeFunction();
 		cProgram.addFunction(func);
 	}
@@ -85,7 +85,6 @@ public class Semantic {
 		String funcName = getCurrentScope().getName();
 		
 		if (cProgram.getFunctions().get(funcName) != null) {
-			System.out.println(cProgram.getFunctions().get(funcName).getCheckParam());
 			List<Expression> expressions = cProgram.getFunctions().get(funcName).getFunctionParamaters();
 			int checked = cProgram.getFunctions().get(funcName).getChecked();
 			
@@ -95,9 +94,10 @@ public class Semantic {
 			
 			var.setExpression(expressions.get(checked));
 			cProgram.getFunctions().get(funcName).incrementCheck();
-			
+
 		}
 		
+		getCurrentScope().addParam(var.getType().toString());
 		getCurrentScope().addVariable(var);
 		
 	}
@@ -117,7 +117,7 @@ public class Semantic {
 	public void callFunction(Function func, List<Expression> expressions) {
 		String funcName = func.getName();
 	
-
+		
 		if (cProgram.getFunctions().get(funcName) == null) {
 			throw new SemanticException("The function " + funcName + " wasn't declared");
 		}
@@ -127,7 +127,7 @@ public class Semantic {
 		
 		if (expressions.size() < params.size()) {
 			throw new SemanticException("The function " + funcName +  " called should have more parameters");
-		} else if (expressions.size() < params.size()) {
+		} else if (expressions.size() > params.size()) {
 			throw new SemanticException("The function " + funcName +  " called should have less parameters");
 		}
 		

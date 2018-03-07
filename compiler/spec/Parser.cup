@@ -134,8 +134,10 @@ argument_expression_list
                                                                   List<Expression> exps = new ArrayList<Expression>();
                                                                   if (arg instanceof List<?>) {
                                                                       exps.addAll((List<Expression>) arg);
+                                                                      exps.add((Expression) as);
                                                                   } else {
                                                                 	  exps.add((Expression) arg);
+                                                                    exps.add((Expression) as);
                                                                   }
                                                                   RESULT=exps;:}
 	;

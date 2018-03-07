@@ -1620,8 +1620,10 @@ class CUP$Parser$actions {
                                                                   List<Expression> exps = new ArrayList<Expression>();
                                                                   if (arg instanceof List<?>) {
                                                                       exps.addAll((List<Expression>) arg);
+                                                                      exps.add((Expression) as);
                                                                   } else {
                                                                 	  exps.add((Expression) arg);
+                                                                    exps.add((Expression) as);
                                                                   }
                                                                   RESULT=exps;
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("argument_expression_list",9, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
@@ -1978,7 +1980,7 @@ class CUP$Parser$actions {
 		int e2left = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int e2right = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Object e2 = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		 Logger.print("171 GREATER THAN");
+		 Logger.print("171 GREATER THAN relational_expression: " + e1 + " shift_expression: " + e2);
                                                             Semantic.getInstance().isRelationalExpression(gt.toString(), (Object) e1, (Object) e2);
                                                         
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("relational_expression",74, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
@@ -2536,12 +2538,12 @@ class CUP$Parser$actions {
                                                 Function auxFunc = Semantic.getInstance().getFunction(in);
 
                                                 if (auxFunc != null) {
-                                                  RESULT = Semantic.getInstance().assignFunction((Variable) temp, auxFunc);
-                                                } else if (in instanceof Variable) {
-                                                   RESULT = Semantic.getInstance().assignVariable((Variable) temp, (Variable) in);
-                                                } else {
-                                                   RESULT = Semantic.getInstance().assignVariable((Variable) temp, (Expression) in);
-                                                }
+                                               RESULT = Semantic.getInstance().assignFunction((Variable) temp, auxFunc);
+                                             } else if (in instanceof Variable) {
+                                                RESULT = Semantic.getInstance().assignVariable((Variable) temp, (Variable) in);
+                                             } else {
+                                                RESULT = Semantic.getInstance().assignVariable((Variable) temp, (Expression) in);
+                                             }
                                               
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("init_declarator",30, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -4137,6 +4139,9 @@ class CUP$Parser$actions {
           case 270: // external_declaration ::= declaration 
             {
               Object RESULT =null;
+		int declleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int declright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		Object decl = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		Logger.print("563");
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("external_declaration",67, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }

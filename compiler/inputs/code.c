@@ -1,14 +1,15 @@
-int teste(float a , int b);
+int teste(float a);
 
 int main() {
    int a = 5;
    int b = 6;
-   int c;
+   int c = teste(5.0);
    
-   if (a > c) {
-   	
-   }
    return 0; 
+}
+
+int teste(float a) {
+	return a;
 }
 
 
