@@ -1,5 +1,15 @@
 # Compilador de C para Assembly.
 
+#Grupo
+
+João Victor Mafra, Ruan Reis e Rafael Albuquerque.
+
+#Escopo
+
+• Procedures/Funções
+• Expressões relacionais, literais (inteiros, string, booleanos)
+• Comandos condicionais: if-else
+
 # Gerar Analisador Léxico
 
 ```sh
