@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import compiler.generated.Parser;
 import compiler.generated.Scanner;
+import exceptions.ArithmeticOperationTypeError;
 import exceptions.AssignTypeErrorException;
 import exceptions.ExistingIdentifierException;
 import exceptions.ExistingVariableException;
@@ -193,10 +194,30 @@ public class SemanticTest {
 //		
 //	}
 	
+//	@SuppressWarnings("deprecation")
+//	@Test(expected = ArithmeticOperationTypeError.class)
+//	public void testArithmetic() throws Exception {
+//		scanner = montaScanner("code15");
+//		parser = new Parser((java_cup.runtime.Scanner) scanner);
+//		parser.parse();
+//		
+//	}
+	
+//	@SuppressWarnings("deprecation")
+//	@Test(expected = ArithmeticOperationTypeError.class)
+//	public void testArithmetic2() throws Exception {
+//		scanner = montaScanner("code17");
+//		parser = new Parser((java_cup.runtime.Scanner) scanner);
+//		parser.parse();
+//		
+//	}
+	
+	
+	// Nao deve gerar erro, testa todas as expressoes relacionais e aritmeticas possiveis
 	@SuppressWarnings("deprecation")
-	@Test(expected = AssignTypeErrorException.class)
-	public void testAssign14() throws Exception {
-		scanner = montaScanner("code15");
+	@Test
+	public void testArithmeticAndRelationalWorking() throws Exception {
+		scanner = montaScanner("code16");
 		parser = new Parser((java_cup.runtime.Scanner) scanner);
 		parser.parse();
 		
