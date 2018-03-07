@@ -4122,7 +4122,7 @@ class CUP$Parser$actions {
             {
               Object RESULT =null;
 		Logger.print("558");
-                                            System.out.println(Semantic.getInstance().getCodeGenerator().toString());
+                                            Semantic.getInstance().getCodeGenerator().printToFile();
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("translation_unit",0, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -4171,7 +4171,7 @@ class CUP$Parser$actions {
 		int compoundright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Object compound = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		Logger.print("568 declaration_specifiers: " + decl_spec + " declarator: " + decl + " compound_statement: " + compound);
-                                                                                                Semantic.getInstance().checkReturnType(new Type(decl_spec.toString()), (Object) compound);
+                                                                                                Semantic.getInstance().checkReturnType(new Type(decl_spec.toString()), (String) decl.toString(), (Object) compound);
                                                                                               
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("function_definition",68, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }

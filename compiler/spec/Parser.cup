@@ -678,7 +678,7 @@ jump_statement
 translation_unit
 	::= external_declaration				{:Logger.print("557 "); :}
 	| translation_unit external_declaration	{:Logger.print("558");
-                                            System.out.println(Semantic.getInstance().getCodeGenerator().toString());:}
+                                            Semantic.getInstance().getCodeGenerator().printToFile();:}
 	;
 
 external_declaration
@@ -687,9 +687,9 @@ external_declaration
 	;
 
 function_definition
-	::= declaration_specifiers declarator declaration_list compound_statement	{:Logger.print("567");:}
+	::= declaration_specifiers:decl_spec declarator:decl declaration_list compound_statement	{:Logger.print("567");:}
 	| declaration_specifiers:decl_spec declarator:decl compound_statement:compound						{:Logger.print("568 declaration_specifiers: " + decl_spec + " declarator: " + decl + " compound_statement: " + compound);
-                                                                                                Semantic.getInstance().checkReturnType(new Type(decl_spec.toString()), (Object) compound);
+                                                                                                Semantic.getInstance().checkReturnType(new Type(decl_spec.toString()), (String) decl.toString(), (Object) compound);
                                                                                               :}
 	;
 

@@ -1,5 +1,7 @@
 package compiler.generated;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -14,16 +16,17 @@ import core.Variable;
 
 public class CodeGenerator {
      private HashMap<Integer, String> assemblyCode;
-     private HashMap<String, List<Integer>> functions;
+     private HashMap<String, Integer> functions;
      private int labels;
      private Register[] registers;
  	 private int register;
  	 private Integer relationalLabel;
+ 	 private int currentFunctionLocalization;
  	 
 	 public CodeGenerator() {
 		 this.assemblyCode = new HashMap<Integer, String>();
-		 this.functions = new HashMap<String, List<Integer>>(); 
-
+		 this.functions = new HashMap<String, Integer>(); 
+		 this.currentFunctionLocalization = 1200;
 		 this.registers = Register.values();
 	     labels = 100;
 	     register = -1;
@@ -207,30 +210,55 @@ public class CodeGenerator {
     	addCode(labels + ": ST, *SP, " + " #" + auxLabels);
     	labels += 4; 
     	
-		List<Integer> listLabels;
+    	int functionLabel = functions.get(funcName);
+    	addCode(labels + ": BR #" + functionLabel);
+    	labels += 4;
+    	addCode(labels + ": SUB, SP, SP, #msize");
 
-    	if (functions.get(funcName) == null) {
-    		listLabels = new ArrayList<Integer>();
+    } 
+    
+    public void changeFunctionLabels(String funcName) {
+    	int functionLabel = functions.get(funcName);
+    	labels = functionLabel - 4;
+    }
+    
+    public void initFunction(String funcName) {
+    	functions.put(funcName, currentFunctionLocalization);
+    	currentFunctionLocalization += 1000;
+    }
+    
+    public void generateReturn(String funcName) {
+    	labels += 4;
+    	if (funcName.equals("main")) {
+        	addCode(labels + ": halt");
     	} else {
-    		listLabels = functions.get(funcName);
+        	addCode(labels + ": BR *0(SP)");
     	}
-    	
-		listLabels.add(labels);
-		functions.put(funcName, listLabels);
-    	addCode(labels + ": BR #");
     }
 
 	 @Override
 	 public String toString() {
+		
 		String assCode = "";
 		List<Integer> arrayLabels = new ArrayList<Integer>();
 		arrayLabels.addAll(assemblyCode.keySet());
 		Collections.sort(arrayLabels);
 		
 		for (Integer var : arrayLabels) {
-			assCode += assemblyCode.get(var);
+			assCode += (assemblyCode.get(var) + System.lineSeparator());
 		}
+		return assCode.toString();
+	 }
+	 
+	 public void printToFile() {
 		
-		return assCode;
+		 try {
+			 PrintWriter out = new PrintWriter("output/result.txt");
+			 out.println(this.toString());
+			 out.close();
+		 } catch (FileNotFoundException e) {
+			 e.printStackTrace();
+		 }
+	
 	 }
 }

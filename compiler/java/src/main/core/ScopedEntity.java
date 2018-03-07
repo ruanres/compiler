@@ -30,6 +30,16 @@ public class ScopedEntity extends NamedEntity {
 		this.variables.put(v.getName(), v);
 	}
 	
+	public void clearVariables() {
+		variables = new HashMap<String, Variable>();
+
+	}
+	
+	public void clearParams() {
+		params = new ArrayList<String>();
+
+	}
+	
 	public void addType(Type t) {
 		this.types.put(t.getName(), t);
 	}

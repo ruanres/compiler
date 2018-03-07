@@ -65,11 +65,15 @@ public class Semantic {
 				}
 				
 			}
+			
+			getCodeGenerator().changeFunctionLabels(name);
+		} else {
+			getCodeGenerator().initFunction(name);
 		}
 		
 		Function func = new Function(name, params);
-		System.out.println(func.getName());
 		func.initializeFunction();
+		getCurrentScope().clearParams();
 		cProgram.addFunction(func);
 	}
 	
@@ -143,6 +147,10 @@ public class Semantic {
 			}
 			
 			index += 1;
+		}
+		
+		for (Expression exp: expressions) {
+			getCodeGenerator().generateLDCode(exp);
 		}
 		
 		getCodeGenerator().generateCodeFunction(funcName);
@@ -430,19 +438,31 @@ public class Semantic {
 		isRelationalExpression(operation, exp1, exp2);
 	}
 
-	public void checkReturnType(Type type, Object compound) {
+	public void checkReturnType(Type type, String funcName, Object compound) {
 		// TODO Auto-generated method stub
 		Type returnType;
 		
 		if (compound instanceof Variable) {
 			Variable auxVar = getCurrentScope().getVariable().get(compound.toString());
+			addReturn(funcName, auxVar.getExpression());
 			returnType = auxVar.getExpression().getType();
 		} else {
+			addReturn(funcName,(Expression) compound);
 			returnType = ((Expression) compound).getType();
 		}
 		
 		if (!type.equals(returnType)) {
 			throw new SemanticException("Error: The return type should be compatible with: " + type.toString());
+		}
+		
+	
+		
+		getCodeGenerator().generateReturn(funcName);
+	}
+	
+	private void addReturn(String funcName, Expression exp) {
+		if (funcName != "main") {
+			getCodeGenerator().generateLDCode(exp);
 		}
 	}
 	
