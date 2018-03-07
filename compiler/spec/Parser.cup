@@ -112,7 +112,13 @@ postfix_expression
 	| postfix_expression:post LPAREN RPAREN					{:Logger.print("110 postfix_expression: " + post);:}
 	| postfix_expression:post LPAREN argument_expression_list:list RPAREN	{:Logger.print("111 postfix_expression: " + post + " argument_expression_list: " + list);
                                                                           Function func = new Function(((Variable) post).getName());
-                                                                          Semantic.getInstance().callFunction((Function) func, (List<Expression>) list);
+                                                                          List<Expression> auxList = new ArrayList<Expression>();
+                                                                          if (!(list instanceof List<?>)) {
+                                                                            auxList.add((Expression) list);
+                                                                          } else {
+                                                                            auxList = (List<Expression>) list;
+                                                                          }
+                                                                          Semantic.getInstance().callFunction((Function) func,  auxList);
                                                                           RESULT=post;:}
 	| postfix_expression DOT IDENTIFIER			{:Logger.print("112");:}
 	| postfix_expression PTR_OP IDENTIFIER		{:Logger.print("113");:}
@@ -297,7 +303,13 @@ declaration
 	::= declaration_specifiers SEMICOLON		{:Logger.print("241");:}
 	| declaration_specifiers:decl_types init_declarator_list:decl_vars SEMICOLON		{:Logger.print("242 declaration_specifiers: " + decl_types + " init_declarator_list: " + decl_vars);
                                                                                     RESULT=decl_vars;
-                                                                                    Semantic.getInstance().checkAssignVariableIsValid((Type) decl_types, (Variable) decl_vars);
+                                                                                    Function auxFunc = Semantic.getInstance().getFunction(decl_vars.toString());
+
+                                                                                    if (auxFunc != null) {
+                                                                                      Semantic.getInstance().setTypeFunction(new Type(decl_types.toString()) , auxFunc.getName());
+                                                                                    } else {
+                                                                                      Semantic.getInstance().checkAssignVariableIsValid((Type) decl_types, (Variable) decl_vars);
+                                                                                    }
                                                                                   :}
 	| static_assert_declaration		{:Logger.print("243");:}
 	;
@@ -323,9 +335,10 @@ init_declarator_list
 init_declarator
 	::= declarator:de EQ initializer:in					{:Logger.print("265 declarator: " + de + " initializer: " + in);
                                                 Variable temp = new Variable((String) de,new Type(null));
+                                                Function auxFunc = Semantic.getInstance().getFunction(in);
 
-                                                if (in instanceof Function) {
-                                                  RESULT = Semantic.getInstance().assignFunction((Variable) temp, (Function) in);
+                                                if (auxFunc != null) {
+                                                  RESULT = Semantic.getInstance().assignFunction((Variable) temp, auxFunc);
                                                 } else {
                                                   RESULT = Semantic.getInstance().assignVariable((Variable) temp, (Expression) in);
                                                 }
@@ -464,6 +477,7 @@ direct_declarator
 	| direct_declarator LBRACK type_qualifier_list RBRACK		{:Logger.print("391");:}
 	| direct_declarator LBRACK assignment_expression RBRACK		{:Logger.print("392");:}
 	| direct_declarator:dl LPAREN parameter_type_list:ptl RPAREN		{:Logger.print("393 direct_declarator: " + dl + " parameter_type_list: " + ptl);
+                                                                    RESULT = dl;
                                                                     Semantic.getInstance().addFunction((String) dl, (List<String>) ptl);
                                                                     :}
 	| direct_declarator:dir_decl LPAREN RPAREN							{:Logger.print("394 dir_decl: " + dir_decl);

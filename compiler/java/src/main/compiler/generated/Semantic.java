@@ -41,7 +41,7 @@ public class Semantic {
     }
 	
 	public void checkNewScope(String id) {
-		if (cProgram.getFunctions().get(id) != null) {
+		if (cProgram.getFunctions().get(id) != null || id.equals("main")) {
 			ScopedEntity scoped = new ScopedEntity(id);
 			scopeStack.push(scoped);
 		}
@@ -50,11 +50,23 @@ public class Semantic {
 	
 	// Init Function Scope
 	public void addFunction(String name, List<String> params) {
-		if (cProgram.getFunctions().get(name) != null) {
-			throw new SemanticException("The function " + name + " was already declared");
+		Function auxFunc = cProgram.getFunctions().get(name);
+
+		if ( auxFunc != null) {
+
+			if (params.size() != auxFunc.getParams().size()) {
+				throw new SemanticException("Conflict types between " + name + " function");
+			} else {
+				int index = 0;
+				for(String param : auxFunc.getParams()) {
+					if (!params.get(index++).equals(param)) {
+						throw new SemanticException("Conflict types between " + name + " function");
+					}
+				}
+				
+			}
 		}
 		
-
 		Function func = new Function(name, params);
 	
 		func.initializeFunction();
@@ -66,7 +78,37 @@ public class Semantic {
 	}
 	
 	public void initParam(Variable var) {
-		getCurrentScope().addParam(var.getType().toString());
+		if (getCurrentScope().getVariable().get(var.getName()) != null) {
+			throw new SemanticException("Variable " + var.getName() + " already exists");
+		}
+		
+		String funcName = getCurrentScope().getName();
+		
+		if (cProgram.getFunctions().get(funcName) != null) {
+			System.out.println(cProgram.getFunctions().get(funcName).getCheckParam());
+			List<Expression> expressions = cProgram.getFunctions().get(funcName).getFunctionParamaters();
+			int checked = cProgram.getFunctions().get(funcName).getChecked();
+			
+			if (checked >= expressions.size()) {
+				
+			}
+			var.setExpression(expressions.get(checked));
+			cProgram.getFunctions().get(funcName).incrementCheck();
+			
+		}
+		
+		getCurrentScope().addVariable(var);
+		
+	}
+	
+	public void setTypeFunction(Type functionType , String funcName) {
+		Function auxFunc = cProgram.getFunctions().get(funcName);
+		
+		if ( auxFunc == null) {
+			throw new SemanticException("The function " + funcName + " doesn't exists");
+		}
+		
+		cProgram.getFunctions().get(funcName).setReturnType(functionType);
 	}
 	
 	
@@ -82,9 +124,6 @@ public class Semantic {
 
 		List<String> params = cProgram.getFunctions().get(funcName).getParams();
 		
-		System.out.println(params.size());
-		System.out.println(expressions.size());
-
 		if (expressions.size() < params.size()) {
 			throw new SemanticException("The function " + funcName +  " called should have more parameters");
 		}
@@ -102,6 +141,9 @@ public class Semantic {
 			
 			index += 1;
 		}
+		
+		cProgram.getFunctions().get(funcName).setFunctionParamaters(expressions);
+		
 		
 	}
 	

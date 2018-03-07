@@ -10,11 +10,12 @@ import util.SemanticException;
 public class Function extends ScopedEntity implements Identifier {
 	
 	private Type returnType = new Type(null); // Default Return Type
-	private ArrayList<Variable> variables;
+	private List<Expression> expressions;
 	private List<String> params;
 	private boolean initialized;
 	private Type returnedType = new Type(null); // Default Return Type
-
+	private int checked = 0;
+	
 	public Function(String name, List<String> params) {
 		super(name);
 		this.params = params; 
@@ -25,8 +26,24 @@ public class Function extends ScopedEntity implements Identifier {
 		this.initialized = true;
 	}
 	
-	public ArrayList<Variable> getFunctionParamaters() {
-		return variables;
+	public void incrementCheck() {
+		this.checked = this.checked + 1;
+	}
+	
+	public int getChecked() {
+		return checked;
+	}
+	
+	public List<Expression> getFunctionParamaters() {
+		return expressions;
+	}
+	
+	public void setFunctionParamaters(List<Expression> expressions) {
+		this.expressions = expressions;
+	}
+	
+	public boolean isFunctionInitialized() {
+		return this.initialized;
 	}
 	
 	@Override
@@ -45,10 +62,6 @@ public class Function extends ScopedEntity implements Identifier {
 	
 	public List<Expression> getExpressions() {
 		List<Expression> exps = new ArrayList<Expression>();
-		
-		for (Variable var : variables) {
-			exps.add(var.getExpression());
-		}
 		
 		return exps;
 	}

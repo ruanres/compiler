@@ -1528,7 +1528,13 @@ class CUP$Parser$actions {
 		Object list = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
 		Logger.print("111 postfix_expression: " + post + " argument_expression_list: " + list);
                                                                           Function func = new Function(((Variable) post).getName());
-                                                                          Semantic.getInstance().callFunction((Function) func, (List<Expression>) list);
+                                                                          List<Expression> auxList = new ArrayList<Expression>();
+                                                                          if (!(list instanceof List<?>)) {
+                                                                            auxList.add((Expression) list);
+                                                                          } else {
+                                                                            auxList = (List<Expression>) list;
+                                                                          }
+                                                                          Semantic.getInstance().callFunction((Function) func,  auxList);
                                                                           RESULT=post;
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("postfix_expression",8, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-3)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -2350,7 +2356,13 @@ class CUP$Parser$actions {
 		Object decl_vars = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
 		Logger.print("242 declaration_specifiers: " + decl_types + " init_declarator_list: " + decl_vars);
                                                                                     RESULT=decl_vars;
-                                                                                    Semantic.getInstance().checkAssignVariableIsValid((Type) decl_types, (Variable) decl_vars);
+                                                                                    Function auxFunc = Semantic.getInstance().getFunction(decl_vars.toString());
+
+                                                                                    if (auxFunc != null) {
+                                                                                      Semantic.getInstance().setTypeFunction(new Type(decl_types.toString()) , auxFunc.getName());
+                                                                                    } else {
+                                                                                      Semantic.getInstance().checkAssignVariableIsValid((Type) decl_types, (Variable) decl_vars);
+                                                                                    }
                                                                                   
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("declaration",76, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -2491,9 +2503,10 @@ class CUP$Parser$actions {
 		Object in = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		Logger.print("265 declarator: " + de + " initializer: " + in);
                                                 Variable temp = new Variable((String) de,new Type(null));
-                                                
-                                                if (in instanceof Function) {
-                                                  RESULT = Semantic.getInstance().assignFunction((Variable) temp, (Function) in);
+                                                Function auxFunc = Semantic.getInstance().getFunction(in);
+
+                                                if (auxFunc != null) {
+                                                  RESULT = Semantic.getInstance().assignFunction((Variable) temp, auxFunc);
                                                 } else {
                                                   RESULT = Semantic.getInstance().assignVariable((Variable) temp, (Expression) in);
                                                 }
@@ -3191,6 +3204,7 @@ class CUP$Parser$actions {
 		int ptlright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
 		Object ptl = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
 		Logger.print("393 direct_declarator: " + dl + " parameter_type_list: " + ptl);
+                                                                    RESULT = dl;
                                                                     Semantic.getInstance().addFunction((String) dl, (List<String>) ptl);
                                                                     
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("direct_declarator",47, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-3)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
