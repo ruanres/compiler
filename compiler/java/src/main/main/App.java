@@ -3,7 +3,7 @@ package main;
 import compiler.generated.Parser;
 import compiler.generated.Scanner;
 import java_cup.runtime.Symbol;
-
+import util.SemanticException;
 
 import java.io.*;
 
@@ -49,6 +49,9 @@ public class App {
     	try {
     		Parser parser = new Parser((java_cup.runtime.Scanner) scanner);
     		parser.parse();
+    	} catch (SemanticException e) {
+    		System.err.println(App.scanner.current_lexeme());
+    		e.printStackTrace();
     	} catch (Exception e) {
     		e.printStackTrace();
     	}

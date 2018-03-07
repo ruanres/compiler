@@ -170,11 +170,11 @@ public class Semantic {
 	public Variable assignVariable(Variable var, Variable exp) {
 		Variable auxVar = getCurrentScope().getVariable().get(exp.toString());
 		if (auxVar == null) {
-			throw new SemanticException("Variable " + var.getName() + " doesn't exist");
+			throw new SemanticException("Variable " + auxVar.getName() + " doesn't exist");
 		}
 		
 		if (auxVar.getExpression() == null) {
-			throw new SemanticException("Variable " + var.getName() + " was not declared");
+			throw new SemanticException("Variable " + auxVar.getName() + " was not declared");
 		}
 		
 		return assignVariable(var, auxVar.getExpression());
@@ -266,9 +266,16 @@ public class Semantic {
 		
 	
 	public boolean isRelationalExpression(String operation, Expression le, Expression re) throws SemanticException {
+		if (le == null) {
+			  throw new SemanticException("The left variable was not declared");
+		} else if (re== null ) {
+			  throw new SemanticException("The right variable was not declared");
+
+		}
+		
 		if(!le.getType().equalsAssignRelational(re.getType())){
-            throw new SemanticException("ERRO: Nao é possivel comparar uma expressao do tipo " + 
-		le.getType().getName() + " com uma expressao do tipo " + re.getType().getName());
+            throw new SemanticException("ERRO: Was not possible to compare an expression with the type " + 
+		le.getType().getName() + " with an expression with the type " + re.getType().getName());
         }
 		
 		getCodeGenerator().generateSUBCode();
