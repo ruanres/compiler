@@ -2,7 +2,7 @@ package core;
 
 import java.util.HashMap;
 
-import util.SemanticException;
+import exceptions.SemanticException;
 
 /**
  *	C Program

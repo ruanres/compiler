@@ -4,7 +4,7 @@ package core;
 import java.util.ArrayList;
 import java.util.List;
 
-import util.SemanticException;
+import exceptions.*;
 
 
 public class Function extends ScopedEntity implements Identifier {

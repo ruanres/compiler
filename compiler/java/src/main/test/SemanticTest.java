@@ -13,9 +13,11 @@ import compiler.generated.Parser;
 import compiler.generated.Scanner;
 import exceptions.ArithmeticOperationTypeError;
 import exceptions.AssignTypeErrorException;
+import exceptions.ExistingFunctionException;
 import exceptions.ExistingIdentifierException;
 import exceptions.ExistingVariableException;
 import exceptions.FunctionNotDeclaratedException;
+import exceptions.IllegalParametersException;
 import exceptions.RelationOperationTypeError;
 import exceptions.StringImutableException;
 
@@ -70,6 +72,54 @@ public class SemanticTest {
 //		parser.parse();
 //		
 //	}
+	
+//	@SuppressWarnings("deprecation")
+//	@Test(expected = ExistingFunctionException.class)
+//	public void testFunctionExisting() throws Exception {
+//		scanner = montaScanner("code18");
+//		parser = new Parser((java_cup.runtime.Scanner) scanner);
+//		parser.parse();
+//		
+//	}
+	
+//	@SuppressWarnings("deprecation")
+//	@Test(expected = IllegalParametersException.class)
+//	public void testIlegalParameters() throws Exception {
+//		scanner = montaScanner("code19");
+//		parser = new Parser((java_cup.runtime.Scanner) scanner);
+//		parser.parse();
+//		
+//	}
+	
+//	@SuppressWarnings("deprecation")
+//	@Test(expected = IllegalParametersException.class)
+//	public void testIlegalParameters2() throws Exception {
+//		scanner = montaScanner("code20");
+//		parser = new Parser((java_cup.runtime.Scanner) scanner);
+//		parser.parse();
+//		
+//	}
+	
+//	@SuppressWarnings("deprecation")
+//	@Test(expected = IllegalParametersException.class)
+//	public void testIlegalParameters3() throws Exception {
+//		scanner = montaScanner("code21");
+//		parser = new Parser((java_cup.runtime.Scanner) scanner);
+//		parser.parse();
+//		
+//	}
+	
+//	@SuppressWarnings("deprecation")
+//	@Test(expected = AssignTypeErrorException.class)
+//	public void assignErrorWithFunction() throws Exception {
+//		scanner = montaScanner("code22");
+//		parser = new Parser((java_cup.runtime.Scanner) scanner);
+//		parser.parse();
+//		
+//	}
+	
+	
+	
 	
 //	@SuppressWarnings("deprecation")
 //	@Test(expected = AssignTypeErrorException.class)
@@ -213,11 +263,21 @@ public class SemanticTest {
 //	}
 	
 	
-	// Nao deve gerar erro, testa todas as expressoes relacionais e aritmeticas possiveis
+//	// Nao deve gerar erro, testa todas as expressoes relacionais e aritmeticas possiveis
+//	@SuppressWarnings("deprecation")
+//	@Test
+//	public void testArithmeticAndRelationalWorking() throws Exception {
+//		scanner = montaScanner("code16");
+//		parser = new Parser((java_cup.runtime.Scanner) scanner);
+//		parser.parse();
+//		
+//	}
+	
+	
 	@SuppressWarnings("deprecation")
-	@Test
-	public void testArithmeticAndRelationalWorking() throws Exception {
-		scanner = montaScanner("code16");
+	@Test(expected = AssignTypeErrorException.class)
+	public void testeAssignErrorWithArithmeticExpression() throws Exception {
+		scanner = montaScanner("code23");
 		parser = new Parser((java_cup.runtime.Scanner) scanner);
 		parser.parse();
 		
