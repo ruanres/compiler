@@ -678,7 +678,7 @@ translation_unit
 
 external_declaration
 	::= function_definition		{:Logger.print("562");:}
-	| declaration				{:Logger.print("563");:}
+	| declaration:decl				{:Logger.print("563");:}
 	;
 
 function_definition

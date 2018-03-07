@@ -260,22 +260,26 @@ public class Semantic {
 		System.out.println(operation);
 		switch (operation) {
 			case ">":
-				getCodeGenerator().generateBGTZ();
-				break;
-			case "<":
-				getCodeGenerator().generateBLTZ();
-				break;
-			case "<=":
+				
 				getCodeGenerator().generateBLETZ();
 				break;
-			case ">=":
+			case "<":
+				
 				getCodeGenerator().generateBGETZ();
 				break;
+			case "<=":
+				
+				getCodeGenerator().generateBGTZ();
+				break;
+			case ">=":
+				
+				getCodeGenerator().generateBLTZ();
+				break;
 			case "==":
-				getCodeGenerator().generateBEQ();
+				getCodeGenerator().generateBNE();
 				break;
 			case "!=":
-				getCodeGenerator().generateBNE();
+				getCodeGenerator().generateBEQ();
 				break;
 
 
