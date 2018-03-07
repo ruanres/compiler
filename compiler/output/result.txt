@@ -8,22 +8,6 @@
 
 116: ST b, R1
 
-120: LD R1, 5.0
-
-124: SP, SP, #msize
-
-128: ST, *SP,  #136
-
-132: BR #1200
-
-136: SUB, SP, SP, #msize
-
-140: LD R2, 0
-
-144: halt
-
-1200: LD R3, 4
-
-1204: BR *0(SP)
+120: halt
 
 

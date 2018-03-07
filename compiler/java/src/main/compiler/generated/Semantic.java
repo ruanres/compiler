@@ -15,7 +15,7 @@ public class Semantic {
     private Stack<ScopedEntity> scopeStack = new Stack<ScopedEntity>();
     private Program cProgram;
     public static CodeGenerator codeGenerator;
-    
+    private boolean afterMain;
     
 	public static Semantic getInstance() {
 		if (sAnalysis == null)
@@ -30,6 +30,7 @@ public class Semantic {
 		cProgram = new Program();
 		ScopedEntity scoped = new ScopedEntity("init");
 		scopeStack.push(scoped);
+		afterMain = false;
 	}
 	
 	public static CodeGenerator getCodeGenerator() {
@@ -68,6 +69,12 @@ public class Semantic {
 			
 			getCodeGenerator().changeFunctionLabels(name);
 		} else {
+			System.out.println("fçsdfhjsd");
+			System.out.println(afterMain);
+			if (afterMain) {
+				throw new SemanticException("Function was not previous declared");
+			}
+			
 			getCodeGenerator().initFunction(name);
 		}
 		
@@ -87,7 +94,7 @@ public class Semantic {
 		
 		
 		String funcName = getCurrentScope().getName();
-		System.out.println(cProgram.getFunctions());
+
 		if (cProgram.getFunctions().get(funcName) != null) {
 			if (cProgram.getFunctions().get(funcName).isFunctionInitialized() == false) {
 				
@@ -471,8 +478,10 @@ public class Semantic {
 	}
 	
 	private void addReturn(String funcName, Expression exp) {
-		if (funcName != "main") {
+		if (!funcName.equals("main")) {
 			getCodeGenerator().generateLDCode(exp);
+		} else {
+			afterMain = true;
 		}
 	}
 	
