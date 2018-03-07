@@ -261,8 +261,8 @@ public class Semantic {
 
     private void checkTypeCompatibility(Expression leftExp, Expression rightExp) throws SemanticException{
     	
-    	boolean leftIsChar = leftExp.getType().equals("char");
-    	boolean rightIsChar =  rightExp.getType().equals("char");
+    	boolean leftIsChar = leftExp.getType().toString().equals("char");
+    	boolean rightIsChar =  rightExp.getType().toString().equals("char");
 
         if(leftIsChar || rightIsChar)
             throw new SemanticException("Illegal Operation between " +
@@ -276,6 +276,7 @@ public class Semantic {
         
         Type e1Type = e1.getType();
         Type e2Type = e2.getType();
+        
         
         Type minorType = getMinorType(e1Type, e2Type);
 
