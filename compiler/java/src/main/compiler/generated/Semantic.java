@@ -349,6 +349,28 @@ public class Semantic {
 		}
 		return false;
 	}
+
+	public void isRelationalExpression(Object e1, Object e2) {
+		Expression exp1;
+		Expression exp2;
+		
+		if (e1 instanceof Variable) {
+			Variable v1 = getCurrentScope().getVariable().get(e1.toString());
+			exp1 = v1.getExpression();
+			
+		} else {
+			exp1 = (Expression) e1;
+		}
+		
+		if (e2 instanceof Variable) {
+			Variable v2 = getCurrentScope().getVariable().get(e2.toString());
+			exp2 = v2.getExpression();
+		} else {
+			exp2 = (Expression) e2;
+		}
+		
+		isRelationalExpression(exp1, exp2);
+	}
 	
 	
 }

@@ -225,16 +225,20 @@ shift_expression
 
 relational_expression
 	::= shift_expression:shift									{: Logger.print("169 shift_expression: "  + shift); RESULT=shift; :}
-	| relational_expression:e1 LT shift_expression:e2				{: Logger.print("170 LESS THAN"); Semantic.getInstance().isRelationalExpression((Expression) e1, (Expression) e2);:}
-	| relational_expression:e1 GT shift_expression:e2			{: Logger.print("171 GREATER THAN"); Semantic.getInstance().isRelationalExpression((Expression) e1, (Expression) e2); :}
-	| relational_expression:e1 LE_OP shift_expression:e2			{: Logger.print("172 LESS EQUAL"); Semantic.getInstance().isRelationalExpression((Expression) e1, (Expression) e2); :}
-	| relational_expression:e1 GE_OP shift_expression:e2			{: Logger.print("173 GREATER EQUAL"); Semantic.getInstance().isRelationalExpression((Expression) e1, (Expression) e2); :}
+	| relational_expression:e1 LT shift_expression:e2				{: Logger.print("170 LESS THAN");
+                                                            Semantic.getInstance().isRelationalExpression((Object) e1, (Object) e2);
+                                                            :}
+	| relational_expression:e1 GT shift_expression:e2			{: Logger.print("171 GREATER THAN");
+                                                            Semantic.getInstance().isRelationalExpression((Object) e1, (Object) e2);
+                                                        :}
+	| relational_expression:e1 LE_OP shift_expression:e2			{: Logger.print("172 LESS EQUAL"); Semantic.getInstance().isRelationalExpression((Object) e1, (Object) e2); :}
+	| relational_expression:e1 GE_OP shift_expression:e2			{: Logger.print("173 GREATER EQUAL"); Semantic.getInstance().isRelationalExpression((Object) e1, (Object) e2); :}
 	;
 
 equality_expression
 	::= relational_expression:rel								{: Logger.print("177 relational_expression: " + rel); RESULT=rel;:}
-	| equality_expression:e1 EQ_OP relational_expression:e2		{: Logger.print("178 EQUAL"); Semantic.getInstance().isRelationalExpression((Expression) e1, (Expression) e2); :}
-	| equality_expression:e1 NE_OP relational_expression:e2		{: Logger.print("179 NOT EQUAL"); Semantic.getInstance().isRelationalExpression((Expression) e1, (Expression) e2); :}
+	| equality_expression:e1 EQ_OP relational_expression:e2		{: Logger.print("178 EQUAL"); Semantic.getInstance().isRelationalExpression((Object) e1, (Object) e2); :}
+	| equality_expression:e1 NE_OP relational_expression:e2		{: Logger.print("179 NOT EQUAL"); Semantic.getInstance().isRelationalExpression((Object) e1, (Object) e2); :}
 	;
 
 and_expression
