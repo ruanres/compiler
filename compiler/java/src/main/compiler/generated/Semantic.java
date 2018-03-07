@@ -6,7 +6,17 @@ import java.util.List;
 import java.util.Stack;
 
 import core.*;
-import util.SemanticException;
+import exceptions.ArithmeticOperationTypeError;
+import exceptions.AssignTypeErrorException;
+import exceptions.ExistingFunctionException;
+import exceptions.ExistingIdentifierException;
+import exceptions.ExistingVariableException;
+import exceptions.FunctionNotDeclaratedException;
+import exceptions.IllegalParametersException;
+import exceptions.RelationOperationTypeError;
+import exceptions.SemanticException;
+import exceptions.StringImutableException;
+import exceptions.VariableNotDeclaratedException;
 
 public class Semantic {
 	public static Parser parser;
@@ -51,7 +61,7 @@ public class Semantic {
 	// Init Function Scope
 	public void addFunction(String name, List<String> params) {
 		if (cProgram.getFunctions().get(name) != null) {
-			throw new SemanticException("The function " + name + " was already declared");
+			throw new ExistingFunctionException("The function " + name + " was already declared");
 		}
 		
 
@@ -76,7 +86,7 @@ public class Semantic {
 	
 
 		if (cProgram.getFunctions().get(funcName) == null) {
-			throw new SemanticException("The function " + funcName + " wasn't declared");
+			throw new FunctionNotDeclaratedException("The function " + funcName + " wasn't declared");
 		}
 		
 
@@ -86,7 +96,7 @@ public class Semantic {
 		System.out.println(expressions.size());
 
 		if (expressions.size() < params.size()) {
-			throw new SemanticException("The function " + funcName +  " called should have more parameters");
+			throw new IllegalParametersException("The function " + funcName +  " called must have " + params.size()  + " parameters");
 		}
 		
 		int index = 0;
@@ -96,7 +106,7 @@ public class Semantic {
 			Type typeParamFunctionCall = expressions.get(index).getType();
 
 			if (!param.equals(typeParamFunctionCall)) {
-				throw new SemanticException("The function " + funcName + " should have this types "
+				throw new IllegalParametersException("The function " + funcName + " should have this types "
 						+ "of params: " + params.toString());
 			}
 			
@@ -110,7 +120,7 @@ public class Semantic {
 	
 	public Variable assignVariable(Variable var, Expression exp) {
 		if (getCurrentScope().getVariable().get(var.toString()) != null) {
-			throw new SemanticException("Variable " + var.getName() + " already exists");
+			throw new ExistingVariableException("Variable " + var.getName() + " already exists");
 		}
 		
 		var.setType(exp.getType());
@@ -134,7 +144,7 @@ public class Semantic {
 		
 		//Inicialmente a variavel � associada com o o mesmo tipo da express�o que foi dado assign. S� aqui � verificado se os tipos batem		
 		if (!variableType.equals(expressionAssignedType)) {
-			throw new SemanticException("Nao é possivel a variavel do tipo " + variableType.getName() + " ser associado com um valor/variavel do tipo " +  expressionAssignedType);
+			throw new AssignTypeErrorException("Nao é possivel a variavel do tipo " + variableType.getName() + " ser associado com um valor/variavel do tipo " +  expressionAssignedType);
 		}
 		
 		currentScopeVar.setType(variableType);
@@ -151,9 +161,9 @@ public class Semantic {
 		if (!currentScopeVariable.getType().equalsAssignRelational(exp.getType())) {
 			
 			if (currentScopeVariable.getType().getName() == "char") {
-				throw new SemanticException("ERRO: Literal string é imutavel");
+				throw new StringImutableException("ERRO: Literal string é imutavel");
 			}
-			throw new SemanticException("Nao é possivel a variavel do tipo " + currentScopeVariable.getName() + " ser associado com um valor/variavel do tipo " +  exp.getType());
+			throw new AssignTypeErrorException("Nao é possivel a variavel do tipo " + currentScopeVariable.getName() + " ser associado com um valor/variavel do tipo " +  exp.getType());
 		}
 		
 		getCodeGenerator().generateLDCode(exp);
@@ -172,7 +182,7 @@ public class Semantic {
 
 	public void createVariableWithoutExpression (Variable var) {
 		if (getCurrentScope().getVariable().get(var.toString()) != null) {
-			throw new SemanticException("Variable " + var.getName() + " already exists");
+			throw new ExistingVariableException("Variable " + var.getName() + " already exists");
 		}
 		
 		getCurrentScope().getVariable().put(var.toString(), var);
@@ -182,12 +192,12 @@ public class Semantic {
 	// when type "a" = function(list_parameters);
 	public Variable assignFunction(Variable var, Function func) {
 		if (getCurrentScope().getVariable().get(var.toString()) != null) {
-			throw new SemanticException("Variable " + var.getName() + " already exists");
+			throw new ExistingFunctionException("Variable " + var.getName() + " already exists");
 		}
 		
 		// To distinguish between int a = k(not declared variable) and int a = function(list_parameters);
 		if (cProgram.getFunctions().get(func.getName()) == null ) {
-			throw new SemanticException("Variable " + func.getName() + " is not declared");
+			throw new VariableNotDeclaratedException("Variable " + func.getName() + " is not declared");
 		}
 		
 		//Check the assign between the variable and the function type
@@ -197,7 +207,7 @@ public class Semantic {
 	
 	public Variable getIdentifier(String name) {
 		if (getCurrentScope().getVariable().get(name) == null) {
-			throw new SemanticException("Identifier name doesn't exists: " + name);
+			throw new ExistingIdentifierException("Identifier name doesn't exists: " + name);
 		}
 		
 
@@ -207,7 +217,7 @@ public class Semantic {
 	
 	public boolean isRelationalExpression(Expression le, Expression re) throws SemanticException {
 		if(!le.getType().equalsAssignRelational(re.getType())){
-            throw new SemanticException("ERRO: Nao é possivel comparar uma expressao do tipo " + 
+            throw new RelationOperationTypeError("ERRO: Nao é possivel comparar uma expressao do tipo " + 
 		le.getType().getName() + " com uma expressao do tipo " + re.getType().getName());
         }
 
@@ -220,7 +230,7 @@ public class Semantic {
     	boolean rightIsChar =  rightExp.getType().equals("char");
 
         if(leftIsChar || rightIsChar)
-            throw new SemanticException("Illegal Operation between " +
+            throw new ArithmeticOperationTypeError("Illegal Operation between " +
             		leftExp.toString() + " and " + rightExp.toString());
     }
     
@@ -277,12 +287,12 @@ public class Semantic {
     
     private void checkIfExistExpression(Variable temp) {
     	if (getCurrentScope().getVariable().get(temp.getName()) == null) {
-			throw new SemanticException("Variable " + temp.getName() + " doesn't exists");
+			throw new ExistingVariableException("Variable " + temp.getName() + " doesn't exists");
     	}
     	
     	Variable t = getCurrentScope().getVariable().get(temp.getName());
     	if(!t.existExpression()) {
-			throw new SemanticException("Variable " + temp.getName() + " doesn't have an expression associated"); 
+			throw new ExistingVariableException("Variable " + temp.getName() + " doesn't have an expression associated"); 
     	}
     }
     

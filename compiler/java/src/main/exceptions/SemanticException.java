@@ -1,4 +1,4 @@
-package util;
+package exceptions;
 
 public class SemanticException extends IllegalArgumentException {
 	
