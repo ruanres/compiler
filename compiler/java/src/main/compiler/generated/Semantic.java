@@ -55,7 +55,7 @@ public class Semantic {
 		if ( auxFunc != null) {
 
 			if (params.size() != auxFunc.getParams().size()) {
-				throw new SemanticException("Conflict types between " + name + " function");
+				throw new SemanticException("Conflict types between " + name + " function. The function has more or less params than the previous declaration");
 			} else {
 				int index = 0;
 				for(String param : auxFunc.getParams()) {
@@ -72,7 +72,6 @@ public class Semantic {
 		}
 		
 		Function func = new Function(name, params);
-		func.initializeFunction();
 		getCurrentScope().clearParams();
 		cProgram.addFunction(func);
 	}
@@ -86,18 +85,26 @@ public class Semantic {
 			throw new SemanticException("Variable " + var.getName() + " already exists");
 		}
 		
-		String funcName = getCurrentScope().getName();
 		
+		String funcName = getCurrentScope().getName();
+		System.out.println(cProgram.getFunctions());
 		if (cProgram.getFunctions().get(funcName) != null) {
-			List<Expression> expressions = cProgram.getFunctions().get(funcName).getFunctionParamaters();
-			int checked = cProgram.getFunctions().get(funcName).getChecked();
-			
-			if (checked >= expressions.size()) {
-				throw new SemanticException("The function " + funcName +  " called should have less parameters");
+			if (cProgram.getFunctions().get(funcName).isFunctionInitialized() == false) {
+				
+			} else {
+				List<Expression> expressions = cProgram.getFunctions().get(funcName).getFunctionParamaters();
+				int checked = cProgram.getFunctions().get(funcName).getChecked();
+				
+				
+				
+				if (checked >= expressions.size()) {
+					throw new SemanticException("The function " + funcName +  " called should have less parameters");
+				}
+				
+				var.setExpression(expressions.get(checked));
+				cProgram.getFunctions().get(funcName).incrementCheck();
 			}
 			
-			var.setExpression(expressions.get(checked));
-			cProgram.getFunctions().get(funcName).incrementCheck();
 
 		}
 		
@@ -154,6 +161,7 @@ public class Semantic {
 		}
 		
 		getCodeGenerator().generateCodeFunction(funcName);
+		cProgram.getFunctions().get(funcName).initializeFunction();
 		cProgram.getFunctions().get(funcName).setFunctionParamaters(expressions);
 		
 		
@@ -207,7 +215,9 @@ public class Semantic {
 		}
 		
 		currentScopeVar.setType(variableType);
-		getCodeGenerator().generateSTCode(currentScopeVar);
+		if (currentScopeVar.getExpression() != null) {
+			getCodeGenerator().generateSTCode(currentScopeVar);
+		}
 		getCurrentScope().getVariable().put(var.toString(), var);
 
 	}
@@ -276,9 +286,9 @@ public class Semantic {
 	
 	public boolean isRelationalExpression(String operation, Expression le, Expression re) throws SemanticException {
 		if (le == null) {
-			  throw new SemanticException("The left variable was not declared");
+			  throw new SemanticException("The left variable of declaration was not declared");
 		} else if (re== null ) {
-			  throw new SemanticException("The right variable was not declared");
+			  throw new SemanticException("The right variable of declaration was not declared");
 
 		}
 		
