@@ -5,6 +5,7 @@ public class Variable {
 	private Type type;
 	private String name;
 	private Expression expression;
+	private Function associatedFunction;
 	
 	public Variable(String name, Type type) {
 		this.type = type;
@@ -22,6 +23,7 @@ public class Variable {
 	public Expression getExpression() {
 		return this.expression;
 	}
+	
 	
 	public void setType(Type type) {
 		this.type = type;	
@@ -43,7 +45,13 @@ public class Variable {
 		this.expression = expression;
 	}
 	
+	public void setFunction (Function function) {
+		this.associatedFunction = function;
+	}
 	
+	public Function getFunction() {
+		return this.associatedFunction;
+	}
 	
 	@Override
 	public String toString() {

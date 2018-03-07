@@ -207,6 +207,12 @@ public class Semantic {
 	
 	//** When "type" "variable" = "value"/"variable"
 	public void checkAssignVariableIsValid(Type variableType, Variable var) {
+		if (var.getFunction() != null) {
+			if (!variableType.equals(var.getFunction().getReturnType())) {
+				throw new SemanticException("The variable and the associated function doesn't have the same type");
+			}
+		}
+		
 		Variable currentScopeVar = getCurrentScope().getVariable().get(var.getName()); 
 		
 		if (var.getType().toString() == null) {
@@ -273,11 +279,12 @@ public class Semantic {
 		
 		// To distinguish between int a = k(not declared variable) and int a = function(list_parameters);
 		if (cProgram.getFunctions().get(func.getName()) == null ) {
-			throw new SemanticException("Variable " + func.getName() + " is not declared");
+			throw new SemanticException("Function " + func.getName() + " is not declared");
 		}
 		
 		//Check the assign between the variable and the function type
 		getCurrentScope().getVariable().put(var.toString(), var);
+		getCurrentScope().getVariable().get(var.toString()).setFunction(func);
 		return getCurrentScope().getVariable().get(var.getName());
 	}
 	

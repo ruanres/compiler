@@ -1,17 +1,10 @@
-int teste(float a);
-int ggeasy(int k, float b);
+int teste(float a, float b);
 
 int main() {
-   int a = 5;
-   int b = 6;
-   int c;
-
-   
-   return 0; 
+   int c = teste(2, 3);
+   return 0;
 }
 
-int nossa(float z) {
-	return 4;
+int teste(float a, float b) {
+	return a + b;
 }
-
-
