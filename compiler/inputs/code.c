@@ -1,7 +1,7 @@
 int teste(float a , int b);
 
 int main() {
-   int a = teste(4,5, 10);
+   int a = teste(4,5, 10, 11);
    return 0;
 }
 

@@ -1618,7 +1618,12 @@ class CUP$Parser$actions {
 		Object as = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		Logger.print("122 argument_expression_list: " + arg + " assignment_expression: " + as);
                                                                   List<Expression> exps = new ArrayList<Expression>();
-                                                                  exps.add((Expression) arg);
+                                                                  if (arg instanceof List<?>) {
+                                                                      exps.addAll((List<Expression>) arg);
+                                                                  } else {
+                                                                	  exps.add((Expression) arg);
+                                                                  }
+                                                                  
                                                                   exps.add((Expression) as);
                                                                   RESULT=exps;
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("argument_expression_list",9, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
