@@ -22,7 +22,7 @@ public class CodeGenerator {
  	 private int register;
  	 private Integer relationalLabel;
  	 private int currentFunctionLocalization;
- 	 
+ 	 private Integer branch;
 	 public CodeGenerator() {
 		 this.assemblyCode = new HashMap<Integer, String>();
 		 this.functions = new HashMap<String, Integer>(); 
@@ -184,6 +184,7 @@ public class CodeGenerator {
     }
     
     public void updateRelation() {
+    	boolean check = false;
     	if ( relationalLabel != null) {
     		String labelString = assemblyCode.get(relationalLabel);
     		Integer labelIndex = labelString.indexOf("#");
@@ -191,18 +192,41 @@ public class CodeGenerator {
     	
     		if (labelIndex != -1) {
     			newString = labelString.substring(0 ,labelIndex);
+    	    	addCode(labels + ": ;;;BR #100");
     			newString += "#" + (labels + 4);
+    			branch = labels;
+ 
+
+    			check = true;
     		} else {
+    			System.out.println("fsdjçfdsçjfsd");
     			newString = "#" + (labels + 4);
             	newString = labelString.replace("#",newString);
     		}
     		
     		
-    	
+    		
         	assemblyCode.put(relationalLabel, newString);
-
+        	
+        	if (check) {
+        		relationalLabel = null;
+        	}
     	}
     	
+    }
+    
+    public void updateIfRelation() {
+    	System.out.println(branch);
+    	if (branch != null) {
+    		String labelString = assemblyCode.get(branch);
+    		Integer labelIndex = labelString.indexOf(":");
+			String newString = labelString.substring(0 ,labelIndex+1);
+    		newString += " #BR " + (labels + 4);
+        	assemblyCode.put(branch, newString);
+    	}
+	
+
+
     }
     
     public void generateBNE() {

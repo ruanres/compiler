@@ -128,7 +128,7 @@ postfix_expression
                                                                            	}
                                                                            } else {
                                                                              auxList = (List<Expression>) list;
-
+                                                                             }
                                                                           RESULT=post;:}
 	| postfix_expression DOT IDENTIFIER			{:Logger.print("112");:}
 	| postfix_expression PTR_OP IDENTIFIER		{:Logger.print("113");:}
@@ -660,7 +660,7 @@ expression_statement
 
 selection_statement
 	::= IF LPAREN expression RPAREN statement ELSE statement	{:Logger.print("534");
-                                                              Semantic.getInstance().getCodeGenerator().updateRelation();
+                                                              Semantic.getInstance().getCodeGenerator().updateIfRelation();
                                                             :}
 	| IF LPAREN expression:exp RPAREN statement:stat		{:Logger.print("535 expression: " + exp + " statement: " + stat);
                                                           Semantic.getInstance().getCodeGenerator().updateRelation();

@@ -8,20 +8,24 @@
 
 116: ST c, R1
 
-120: LD R1, 99
+120: LD R1, 5
 
-124: SP, SP, #msize
+124: LD R2, 4
 
-128: ST, *SP,  #136
+128: SUB R3, R1, R2
 
-132: BR #1200
+132: BLETZ R3 ,  #152
+136: LD R4, 4
 
-136: SUB, SP, SP, #msize
+140: ST a, R4
 
-140: halt
+144: LD R1, 5
 
-1200: LD R2, 99
+148:#BR 160
+152: LD R1, 6
 
-1204: BR *0(SP)
+156: ST d, R1
+
+160: halt
 
 

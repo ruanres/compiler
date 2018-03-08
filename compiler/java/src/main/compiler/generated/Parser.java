@@ -1276,6 +1276,7 @@ public void syntax_error(Symbol s) {
    System.out.println(App.scanner.current_lexeme());
  } else {
    System.out.println("Erro sintatico:");
+   System.out.println(sym.terminalNames[s.sym]);
    System.out.println(App.scanner.current_lexeme());
  }
 
@@ -1534,17 +1535,15 @@ class CUP$Parser$actions {
                                                                           Function func = new Function(((Variable) post).getName());
                                                                           List<Expression> auxList = new ArrayList<Expression>();
                                                                           if (!(list instanceof List<?>)) {
-                                                                        	if (list instanceof Variable) {
-                                                                        		Variable v = Semantic.getInstance().getCurrentScope().getVariable().get(list.toString());
-                                                                                auxList.add(v.getExpression());
-                                                                        	} else {
-                                                                                auxList.add((Expression) list);
-                                                                        	}
-                                                                          } else {
-                                                                            auxList = (List<Expression>) list;
-                                                                          }
-                                                                          Semantic.getInstance().callFunction((Function) func,  auxList);
-
+                                                                           	if (list instanceof Variable) {
+                                                                           		Variable v = Semantic.getInstance().getCurrentScope().getVariable().get(list.toString());
+                                                                                   auxList.add(v.getExpression());
+                                                                           	} else {
+                                                                                   auxList.add((Expression) list);
+                                                                           	}
+                                                                           } else {
+                                                                             auxList = (List<Expression>) list;
+                                                                             }
                                                                           RESULT=post;
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("postfix_expression",8, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-3)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -3984,7 +3983,7 @@ class CUP$Parser$actions {
             {
               Object RESULT =null;
 		Logger.print("534");
-                                                              Semantic.getInstance().getCodeGenerator().updateRelation();
+                                                              Semantic.getInstance().getCodeGenerator().updateIfRelation();
                                                             
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("selection_statement",64, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-6)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
