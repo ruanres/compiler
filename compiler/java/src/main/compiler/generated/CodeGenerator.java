@@ -37,8 +37,7 @@ public class CodeGenerator {
 		 assemblyCode.put(labels, "100: LD SP, #4000\n");
 	 }
 	
-	 public void assignmentDeclaration(Variable var) {
-	   // No futuro fazer para função	 
+	 public void assignmentDeclaration(Variable var) { 
 	   generateSTCode(var);
 	 }
 
