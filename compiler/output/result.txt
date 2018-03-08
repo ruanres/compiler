@@ -11,15 +11,10 @@
 120: SUB R3, R1, R2
 
 124: BLETZ R3 ,  #136
-
 128: LD R4, 32
 
 132: ST a, R4
 
-136: LD R1, 34
-
-140: ST a, R1
-
-144: halt
+136: halt
 
 

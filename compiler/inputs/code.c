@@ -3,9 +3,7 @@ int main(){
  
  if (a > 0) {
  	a = 32;
- } else {
- 	a = 34;
  }
 	
-	return;
+	return 0;
 }

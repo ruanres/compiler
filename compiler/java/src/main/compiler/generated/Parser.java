@@ -3980,6 +3980,7 @@ class CUP$Parser$actions {
             {
               Object RESULT =null;
 		Logger.print("534");
+                                                              Semantic.getInstance().getCodeGenerator().updateRelation();
                                                             
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("selection_statement",64, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-6)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }

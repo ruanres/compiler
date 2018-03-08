@@ -186,10 +186,21 @@ public class CodeGenerator {
     public void updateRelation() {
     	if ( relationalLabel != null) {
     		String labelString = assemblyCode.get(relationalLabel);
-        	String newString = "#" + (labels + 4);
-        	newString = labelString.replace("#",newString);
+    		Integer labelIndex = labelString.indexOf("#");
+    		String newString = "";
+    	
+    		if (labelIndex != -1) {
+    			newString = labelString.substring(0 ,labelIndex);
+    			newString += "#" + (labels + 4);
+    		} else {
+    			newString = "#" + (labels + 4);
+            	newString = labelString.replace("#",newString);
+    		}
+    		
+    		
+    	
         	assemblyCode.put(relationalLabel, newString);
-        	relationalLabel = null;
+
     	}
     	
     }
