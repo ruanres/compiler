@@ -4122,7 +4122,7 @@ class CUP$Parser$actions {
             {
               Object RESULT =null;
 		Logger.print("558");
-                                            Semantic.getInstance().getCodeGenerator().printToFile();
+                                            
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("translation_unit",0, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -4132,6 +4132,8 @@ class CUP$Parser$actions {
             {
               Object RESULT =null;
 		Logger.print("562");
+                            Semantic.getInstance().getCodeGenerator().printToFile();
+                            
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("external_declaration",67, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -4152,6 +4154,12 @@ class CUP$Parser$actions {
           case 271: // function_definition ::= declaration_specifiers declarator declaration_list compound_statement 
             {
               Object RESULT =null;
+		int decl_specleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-3)).left;
+		int decl_specright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-3)).right;
+		Object decl_spec = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-3)).value;
+		int declleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int declright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		Object decl = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
 		Logger.print("567");
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("function_definition",68, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-3)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }

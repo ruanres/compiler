@@ -678,11 +678,13 @@ jump_statement
 translation_unit
 	::= external_declaration				{:Logger.print("557 "); :}
 	| translation_unit external_declaration	{:Logger.print("558");
-                                            Semantic.getInstance().getCodeGenerator().printToFile();:}
+                                            :}
 	;
 
 external_declaration
-	::= function_definition		{:Logger.print("562");:}
+	::= function_definition		{:Logger.print("562");
+                            Semantic.getInstance().getCodeGenerator().printToFile();
+                            :}
 	| declaration:decl				{:Logger.print("563");:}
 	;
 
