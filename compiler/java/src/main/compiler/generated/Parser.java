@@ -10,6 +10,7 @@ import java.util.*;
 import java_cup.runtime.*;
 import core.*;
 import util.Logger;
+import main.App;
 import java_cup.runtime.XMLElement;
 
 /** CUP v0.11b 20160615 (GIT 4ac7450) generated parser.
@@ -1269,13 +1270,17 @@ public class Parser extends java_cup.runtime.lr_parser {
     }
 
 
-    public void syntax_error(Symbol s) {
-        String lexeme = s.value.toString();
-        int line = s.right;
-        int column = s.left;
-        String error = String.format("Syntax error at %s at line %d, column %d", lexeme, line, column);
-	    System.err.println(error);
-    }
+public void syntax_error(Symbol s) {
+ if (s.sym == sym.error) {
+   System.out.println("Erro lexico:");
+   System.out.println(App.scanner.current_lexeme());
+ } else {
+   System.out.println("Erro sintatico:");
+   System.out.println(sym.terminalNames[s.sym]);
+   System.out.println(App.scanner.current_lexeme());
+ }
+
+}
 
 
 /** Cup generated class to encapsulate user supplied action code.*/

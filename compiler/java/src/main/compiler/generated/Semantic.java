@@ -470,6 +470,9 @@ public class Semantic {
 			returnType = auxVar.getExpression().getType();
 		} else {
 			addReturn(funcName,(Expression) compound);
+			if (compound == null) {
+				throw new SemanticException("Error: The return type should be compatible with: " + type.toString());
+			}
 			returnType = ((Expression) compound).getType();
 		}
 		

@@ -3,15 +3,21 @@ import java.util.*;
 import java_cup.runtime.*;
 import core.*;
 import util.Logger;
+import main.App;
+
 init with {: Semantic.parser = this;              :};
 parser code {:
-    public void syntax_error(Symbol s) {
-        String lexeme = s.value.toString();
-        int line = s.right;
-        int column = s.left;
-        String error = String.format("Syntax error at %s at line %d, column %d", lexeme, line, column);
-	    System.err.println(error);
-    }
+public void syntax_error(Symbol s) {
+ if (s.sym == sym.error) {
+   System.out.println("Erro lexico:");
+   System.out.println(App.scanner.current_lexeme());
+ } else {
+   System.out.println("Erro sintatico:");
+   System.out.println(sym.terminalNames[s.sym]);
+   System.out.println(App.scanner.current_lexeme());
+ }
+
+}
 :};
 terminal IDENTIFIER, I_CONSTANT, F_CONSTANT, STRING_LITERAL, FUNC_NAME, SIZEOF,
 	PTR_OP, INC_OP, DEC_OP, LEFT_OP, RIGHT_OP, LE_OP, GE_OP, EQ_OP, NE_OP, AND_OP,
