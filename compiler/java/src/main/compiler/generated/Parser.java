@@ -1276,7 +1276,6 @@ public void syntax_error(Symbol s) {
    System.out.println(App.scanner.current_lexeme());
  } else {
    System.out.println("Erro sintatico:");
-   System.out.println(sym.terminalNames[s.sym]);
    System.out.println(App.scanner.current_lexeme());
  }
 
@@ -1535,7 +1534,13 @@ class CUP$Parser$actions {
                                                                           Function func = new Function(((Variable) post).getName());
                                                                           List<Expression> auxList = new ArrayList<Expression>();
                                                                           if (!(list instanceof List<?>)) {
-                                                                            auxList.add((Expression) list);
+                                                                        	if (list instanceof Variable) {
+                                                                        		Variable v = Semantic.getInstance().getCurrentScope().getVariable().get(list.toString());
+                                                                                auxList.add(v.getExpression());
+                                                                        	} else {
+                                                                                auxList.add((Expression) list);
+                                                                        	}
+                                                                        	System.out.println(((Variable) list).getExpression());
                                                                           } else {
                                                                             auxList = (List<Expression>) list;
                                                                           }
