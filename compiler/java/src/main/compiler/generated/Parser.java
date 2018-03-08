@@ -1540,7 +1540,6 @@ class CUP$Parser$actions {
                                                                         	} else {
                                                                                 auxList.add((Expression) list);
                                                                         	}
-                                                                        	System.out.println(((Variable) list).getExpression());
                                                                           } else {
                                                                             auxList = (List<Expression>) list;
                                                                           }

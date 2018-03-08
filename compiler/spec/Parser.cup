@@ -120,11 +120,14 @@ postfix_expression
                                                                           Function func = new Function(((Variable) post).getName());
                                                                           List<Expression> auxList = new ArrayList<Expression>();
                                                                           if (!(list instanceof List<?>)) {
-                                                                            auxList.add((Expression) list);
-                                                                          } else {
-                                                                            auxList = (List<Expression>) list;
-                                                                          }
-                                                                          Semantic.getInstance().callFunction((Function) func,  auxList);
+                                                                           	if (list instanceof Variable) {
+                                                                           		Variable v = Semantic.getInstance().getCurrentScope().getVariable().get(list.toString());
+                                                                                   auxList.add(v.getExpression());
+                                                                           	} else {
+                                                                                   auxList.add((Expression) list);
+                                                                           	}
+                                                                           } else {
+                                                                             auxList = (List<Expression>) list;
 
                                                                           RESULT=post;:}
 	| postfix_expression DOT IDENTIFIER			{:Logger.print("112");:}
