@@ -76,16 +76,15 @@ non terminal relational_expression, inclusive_or_expression, declaration;
 start with translation_unit;
 
 primary_expression ::= IDENTIFIER:id         {:Logger.print("72 IDENTIFIER: " + id);
-                                               Variable var = new Variable((String)id, new Type(null));
-                                               RESULT = var; :}
+                                               RESULT = id; :}
                        | constant:c         {:Logger.print("73 " + c); RESULT = c; :}
                        | string:s						{:Logger.print("74 - String"); RESULT = s;:}
 	                     | LPAREN expression RPAREN  {:Logger.print("75");:}
                        | generic_selection	{:Logger.print("76");:}
                        ;
 
-constant ::= I_CONSTANT:i		/* includes character_constant */ {:Logger.print("79 I_CONSTANT: " + i); RESULT = new Expression(new Type("int"), i.toString());:}
-	           | F_CONSTANT:f 	{:Logger.print("80 F_CONSTANT: " + f); RESULT = new Expression(new Type("float"), f.toString());:}
+constant ::= I_CONSTANT:i		/* includes character_constant */ {:Logger.print("79 I_CONSTANT: " + i); RESULT = i;:}
+	           | F_CONSTANT:f 	{:Logger.print("80 F_CONSTANT: " + f); :}
 	           | ENUMERATION_CONSTANT	/* after it has been defined as such */ {:Logger.print("81");:}
 	           ;
 
@@ -94,7 +93,7 @@ enumeration_constant		/* before it has been defined as such */
 	;
 
 string
-	::= STRING_LITERAL:s				{: Logger.print("89 STRING_LITERAL: " + s); RESULT = new Expression(new Type("char"), s.toString());:}
+	::= STRING_LITERAL:s				{: Logger.print("89 STRING_LITERAL: " + s); :}
 	| FUNC_NAME:f						{: Logger.print("90 FUNC_NAME: " + f); :}
 	;
 
@@ -117,19 +116,7 @@ postfix_expression
 	| postfix_expression LBRACK expression RBRACK		{:Logger.print("109");:}
 	| postfix_expression:post LPAREN RPAREN					{:Logger.print("110 postfix_expression: " + post);:}
 	| postfix_expression:post LPAREN argument_expression_list:list RPAREN	{:Logger.print("111 postfix_expression: " + post + " argument_expression_list: " + list);
-                                                                          Function func = new Function(((Variable) post).getName());
-                                                                          List<Expression> auxList = new ArrayList<Expression>();
-                                                                          if (!(list instanceof List<?>)) {
-                                                                           	if (list instanceof Variable) {
-                                                                           		Variable v = Semantic.getInstance().getCurrentScope().getVariable().get(list.toString());
-                                                                                   auxList.add(v.getExpression());
-                                                                           	} else {
-                                                                                   auxList.add((Expression) list);
-                                                                           	}
-                                                                           } else {
-                                                                             auxList = (List<Expression>) list;
-                                                                             }
-                                                                          RESULT=post;:}
+                                                                        :}
 	| postfix_expression DOT IDENTIFIER			{:Logger.print("112");:}
 	| postfix_expression PTR_OP IDENTIFIER		{:Logger.print("113");:}
 	| postfix_expression INC_OP					{:Logger.print("114");:}
@@ -141,15 +128,7 @@ postfix_expression
 argument_expression_list
 	::= assignment_expression:as		{:Logger.print("121 assignment_expression: " + as); RESULT=as ;:}
 	| argument_expression_list:arg COMMA assignment_expression:as	{:Logger.print("122 argument_expression_list: " + arg + " assignment_expression: " + as);
-                                                                  List<Expression> exps = new ArrayList<Expression>();
-                                                                  if (arg instanceof List<?>) {
-                                                                      exps.addAll((List<Expression>) arg);
-                                                                      exps.add((Expression) as);
-                                                                  } else {
-                                                                	  exps.add((Expression) arg);
-                                                                    exps.add((Expression) as);
-                                                                  }
-                                                                  RESULT=exps;:}
+                                                              :}
 	;
 
 unary_expression
@@ -179,26 +158,10 @@ cast_expression
 multiplicative_expression
 	::= cast_expression:ca									{:Logger.print("150 cast_expression: " + ca); RESULT=ca;:}
 	| multiplicative_expression:me MULT cast_expression:ce	{:Logger.print("151 MULT");
-                                                            if (me instanceof Expression && ce instanceof Expression) {
-                                                              RESULT = Semantic.getInstance().getExpressionForOperation(Operation.MULT, (Expression) me, (Expression) ce);
-														                                } else if (me instanceof Expression && !(ce instanceof Expression)) {
-                                                              RESULT = Semantic.getInstance().getExpressionForOperation(Operation.MULT, (Expression) me, (Variable) ce);
-														                                } else if (!(me instanceof Expression) && (ce instanceof Expression) ){
-                                                              RESULT = Semantic.getInstance().getExpressionForOperation(Operation.MULT, (Variable) me, (Expression) ce);
-														                                } else {
-                                                              RESULT = Semantic.getInstance().getExpressionForOperation(Operation.MULT, (Variable) me, (Variable) ce);
-														                                }
+
                                                           :}
 	| multiplicative_expression:me DIV cast_expression:ce	{:Logger.print("152 DIV");
-                                                          if (me instanceof Expression && ce instanceof Expression) {
-                                                            RESULT = Semantic.getInstance().getExpressionForOperation(Operation.DIV, (Expression) me, (Expression) ce);
-													                                } else if (me instanceof Expression && !(ce instanceof Expression)) {
-                                                            RESULT = Semantic.getInstance().getExpressionForOperation(Operation.DIV, (Expression) me, (Variable) ce);
-													                                } else if (!(me instanceof Expression) && (ce instanceof Expression) ){
-                                                            RESULT = Semantic.getInstance().getExpressionForOperation(Operation.DIV, (Variable) me, (Expression) ce);
-													                                } else {
-                                                            RESULT = Semantic.getInstance().getExpressionForOperation(Operation.DIV, (Variable) me, (Variable) ce);
-													                                }
+
                                                         :}
 	| multiplicative_expression MOD cast_expression		    {:Logger.print("153 MOD"); :}
 	;
@@ -206,116 +169,92 @@ multiplicative_expression
 additive_expression
 	::= multiplicative_expression:multi_exp					    {:Logger.print("157 mult_exp: " + multi_exp); RESULT=multi_exp; :}
 	| additive_expression:ae PLUS multiplicative_expression:me	{:Logger.print("158 sum additive_expression: " + ae + " multiplicative_expression: " + me);
-                                                                if (ae instanceof Expression && me instanceof Expression) {
-	                                                                RESULT = Semantic.getInstance().getExpressionForOperation(Operation.PLUS, (Expression) ae, (Expression) me);
-																                                } else if (ae instanceof Expression && !(me instanceof Expression)) {
-	                                                                RESULT = Semantic.getInstance().getExpressionForOperation(Operation.PLUS, (Expression) ae, (Variable) me);
-																                                } else if (!(ae instanceof Expression) && (me instanceof Expression) ){
-	                                                                RESULT = Semantic.getInstance().getExpressionForOperation(Operation.PLUS, (Variable) ae, (Expression) me);
-																                                } else {
-	                                                                RESULT = Semantic.getInstance().getExpressionForOperation(Operation.PLUS, (Variable) ae, (Variable) me);
-																                                }
+
                                                               :}
 	| additive_expression:ae MINUS multiplicative_expression:me	{:Logger.print("159 sub");
-                                                                if (ae instanceof Expression && me instanceof Expression) {
-	                                                                RESULT = Semantic.getInstance().getExpressionForOperation(Operation.MINUS, (Expression) ae, (Expression) me);
-																                                } else if (ae instanceof Expression && !(me instanceof Expression)) {
-	                                                                RESULT = Semantic.getInstance().getExpressionForOperation(Operation.MINUS, (Expression) ae, (Variable) me);
-																                                } else if (!(ae instanceof Expression) && (me instanceof Expression) ){
-	                                                                RESULT = Semantic.getInstance().getExpressionForOperation(Operation.MINUS, (Variable) ae, (Expression) me);
-																                                } else {
-	                                                                RESULT = Semantic.getInstance().getExpressionForOperation(Operation.MINUS, (Variable) ae, (Variable) me);
-																                                }
+
                                                               :}
 	;
 
 shift_expression
-	::= additive_expression:add_exp								{:Logger.print("163 add_exp: " + add_exp); RESULT=add_exp;:}
+	::= additive_expression:add_exp								{:Logger.print("163 add_exp: " + add_exp); :}
 	| shift_expression LEFT_OP additive_expression		{:Logger.print("164");:}
 	| shift_expression RIGHT_OP additive_expression		{:Logger.print("165");:}
 	;
 
 relational_expression
-	::= shift_expression:shift									{: Logger.print("169 shift_expression: "  + shift); RESULT=shift; :}
+	::= shift_expression:shift									{: Logger.print("169 shift_expression: "  + shift); :}
 	| relational_expression:e1 LT:lt shift_expression:e2				{: Logger.print("170 LESS THAN");
-                                                            Semantic.getInstance().isRelationalExpression(lt.toString(), (Object) e1, (Object) e2);
 
                                                             :}
 	| relational_expression:e1 GT:gt shift_expression:e2			{: Logger.print("171 GREATER THAN relational_expression: " + e1 + " shift_expression: " + e2);
-                                                            Semantic.getInstance().isRelationalExpression(gt.toString(), (Object) e1, (Object) e2);
                                                         :}
-	| relational_expression:e1 LE_OP:le_op shift_expression:e2			{: Logger.print("172 LESS EQUAL");
-                                                                  Semantic.getInstance().isRelationalExpression(le_op.toString(), (Object) e1, (Object) e2); :}
+	| relational_expression:e1 LE_OP:le_op shift_expression:e2			{: Logger.print("172 LESS EQUAL");:}
 	| relational_expression:e1 GE_OP:ge_op shift_expression:e2			{: Logger.print("173 GREATER EQUAL");
-                                                                  Semantic.getInstance().isRelationalExpression(ge_op.toString(), (Object) e1, (Object) e2); :}
+                                                                   :}
 	;
 
 equality_expression
-	::= relational_expression:rel								{: Logger.print("177 relational_expression: " + rel); RESULT=rel;:}
+	::= relational_expression:rel								{: Logger.print("177 relational_expression: " + rel); :}
 	| equality_expression:e1 EQ_OP:eq_op relational_expression:e2		{: Logger.print("178 EQUAL");
-                                                                      Semantic.getInstance().isRelationalExpression(eq_op.toString(), (Object) e1, (Object) e2); :}
+                                                                  :}
 	| equality_expression:e1 NE_OP:ne_op relational_expression:e2		{: Logger.print("179 NOT EQUAL");
-                                                                    Semantic.getInstance().isRelationalExpression(ne_op.toString(), (Object) e1, (Object) e2); :}
+                                                                    :}
 	;
 
 and_expression
-	::= equality_expression:eq_exp						{:Logger.print("183 equality_expression: " + eq_exp); RESULT=eq_exp;:}
+	::= equality_expression:eq_exp						{:Logger.print("183 equality_expression: " + eq_exp); :}
 	| and_expression AND equality_expression	{:Logger.print("184");:}
 	;
 
 exclusive_or_expression
-	::= and_expression:and_exp								{:Logger.print("188 and_expression: " + and_exp); RESULT=and_exp;:}
+	::= and_expression:and_exp								{:Logger.print("188 and_expression: " + and_exp); :}
 	| exclusive_or_expression XOR and_expression	{:Logger.print("189");:}
 	;
 
 inclusive_or_expression
-	::= exclusive_or_expression:ex_or_exp								{:Logger.print("193 exclusive_or_expression: " + ex_or_exp); RESULT=ex_or_exp;:}
+	::= exclusive_or_expression:ex_or_exp								{:Logger.print("193 exclusive_or_expression: " + ex_or_exp); :}
 	| inclusive_or_expression OR exclusive_or_expression	{:Logger.print("194");:}
 	;
 
 logical_and_expression
-	::= inclusive_or_expression:in_or_exp								{:Logger.print("198 inclusive_or_expression: " + in_or_exp); RESULT=in_or_exp;:}
+	::= inclusive_or_expression:in_or_exp								{:Logger.print("198 inclusive_or_expression: " + in_or_exp); :}
 	| logical_and_expression AND_OP inclusive_or_expression	{:Logger.print("199");:}
 	;
 
 logical_or_expression
-	::= logical_and_expression:log_and_exp								{:Logger.print("203 logical_and_expression: " + log_and_exp); RESULT=log_and_exp;:}
+	::= logical_and_expression:log_and_exp								{:Logger.print("203 logical_and_expression: " + log_and_exp);:}
 	| logical_or_expression OR_OP logical_and_expression	{:Logger.print("204");:}
 	;
 
 conditional_expression
-	::= logical_or_expression:log_or_exp													{:Logger.print("208 logical_or_expression: " + log_or_exp); RESULT=log_or_exp;:}
+	::= logical_or_expression:log_or_exp													{:Logger.print("208 logical_or_expression: " + log_or_exp); :}
 	| logical_or_expression QUESTION expression COLON conditional_expression	{:Logger.print("209");:}
 	;
 
 assignment_expression
-	::= conditional_expression:cond_exp										{:Logger.print("213 conditional_expression: " + cond_exp); RESULT=cond_exp;:}
+	::= conditional_expression:cond_exp										{:Logger.print("213 conditional_expression: " + cond_exp); :}
 	| unary_expression:un_exp assignment_operator:as_op assignment_expression:as_exp	{:Logger.print("214 unary_expression: " + un_exp + " assignment_operator: " + as_op + " assignment_expression: " + as_exp);
-                                                                                      RESULT=as_exp;
-                                                                                      if (as_exp instanceof Variable) {
-                                                                                        Semantic.getInstance().checkAssignVariableIsValid((Variable) un_exp, (Variable) as_exp);
-                                                                                      } else if (as_exp instanceof Expression) {
-                                                                                        Semantic.getInstance().checkAssignVariableIsValid((Variable) un_exp, (Expression) as_exp);
-                                                                                      }
+
                                                                                       :}
 	;
 
 assignment_operator
-	::= EQ			    {:Logger.print("218 EQ"); RESULT= new Node("=","primary", "PLUS");:}
-	| MUL_ASSIGN	  {:Logger.print("219 MUL_ASSIGN"); RESULT= new Node("*=","primary", "MUL_ASSIGN");:}
-	| DIV_ASSIGN	  {:Logger.print("220 DIV_ASSIGN"); RESULT= new Node("/=","primary", "DIV_ASSIGN");:}
-	| MOD_ASSIGN	  {:Logger.print("221 MOD_ASSIGN"); RESULT= new Node("%=","primary", "MOD_ASSIGN");:}
-	| ADD_ASSIGN	  {:Logger.print("222 ADD_ASSIGN"); RESULT= new Node("+=","primary", "ADD_ASSIGN");:}
-	| SUB_ASSIGN	  {:Logger.print("223 SUB_ASSIGN"); RESULT= new Node("-=","primary", "SUB_ASSIGN");:}
-	| LEFT_ASSIGN	  {:Logger.print("224 LEFT_ASSIGN"); RESULT= new Node("<<=","primary", "LEFT_ASSIGN");:}
-	| RIGHT_ASSIGN	{:Logger.print("225 RIGHT_ASSIGN"); RESULT= new Node(">>=","primary", "RIGHT_ASSIGN");:}
-	| AND_ASSIGN	  {:Logger.print("226 AND_ASSIGN"); RESULT= new Node("&=","primary", "AND_ASSIGN");:}
-	| XOR_ASSIGN	  {:Logger.print("227 XOR_ASSIGN"); RESULT= new Node("^=","primary", "XOR_ASSIGN");:}
-	| OR_ASSIGN		  {:Logger.print("228 OR_ASSIGN"); RESULT= new Node("|=","primary", "OR_ASSIGN");:}
+	::= EQ			    {:Logger.print("218 EQ"); :}
+	| MUL_ASSIGN	  {:Logger.print("219 MUL_ASSIGN");:}
+	| DIV_ASSIGN	  {:Logger.print("220 DIV_ASSIGN"); :}
+	| MOD_ASSIGN	  {:Logger.print("221 MOD_ASSIGN"); :}
+	| ADD_ASSIGN	  {:Logger.print("222 ADD_ASSIGN"); :}
+	| SUB_ASSIGN	  {:Logger.print("223 SUB_ASSIGN"); :}
+	| LEFT_ASSIGN	  {:Logger.print("224 LEFT_ASSIGN"); :}
+	| RIGHT_ASSIGN	{:Logger.print("225 RIGHT_ASSIGN"); :}
+	| AND_ASSIGN	  {:Logger.print("226 AND_ASSIGN"); :}
+	| XOR_ASSIGN	  {:Logger.print("227 XOR_ASSIGN");:}
+	| OR_ASSIGN		  {:Logger.print("228 OR_ASSIGN"); :}
 	;
 
 expression
-	::= assignment_expression:assign_exp					{:Logger.print("232 assignment_expression: " + assign_exp); RESULT=assign_exp;:}
+	::= assignment_expression:assign_exp					{:Logger.print("232 assignment_expression: " + assign_exp); :}
 	| expression COMMA assignment_expression	{:Logger.print("233");:}
 	;
 
@@ -326,14 +265,7 @@ constant_expression
 declaration
 	::= declaration_specifiers SEMICOLON		{:Logger.print("241");:}
 	| declaration_specifiers:decl_types init_declarator_list:decl_vars SEMICOLON		{:Logger.print("242 declaration_specifiers: " + decl_types + " init_declarator_list: " + decl_vars);
-                                                                                    RESULT=decl_vars;
-                                                                                    Function auxFunc = Semantic.getInstance().getFunction(decl_vars.toString());
 
-                                                                                    if (auxFunc != null) {
-                                                                                      Semantic.getInstance().setTypeFunction(new Type(decl_types.toString()) , auxFunc.getName());
-                                                                                    } else {
-                                                                                      Semantic.getInstance().checkAssignVariableIsValid((Type) decl_types, (Variable) decl_vars);
-                                                                                    }
                                                                                   :}
 	| static_assert_declaration		{:Logger.print("243");:}
 	;
@@ -342,7 +274,7 @@ declaration_specifiers
 	::= storage_class_specifier declaration_specifiers	{:Logger.print("247");:}
 	| storage_class_specifier							{:Logger.print("248");:}
 	| type_specifier declaration_specifiers				{:Logger.print("249");:}
-	| type_specifier:ty									{:Logger.print("250 type_specifier: " + ty);RESULT=ty;:}
+	| type_specifier:ty									{:Logger.print("250 type_specifier: " + ty);:}
 	| type_qualifier declaration_specifiers				{:Logger.print("251");:}
 	| type_qualifier									{:Logger.print("252");:}
 	| function_specifier declaration_specifiers			{:Logger.print("253");:}
@@ -352,27 +284,17 @@ declaration_specifiers
 	;
 
 init_declarator_list
-	::= init_declarator:init_decl								{:Logger.print("260 init_declarator: " + init_decl); RESULT=init_decl;:}
+	::= init_declarator:init_decl								{:Logger.print("260 init_declarator: " + init_decl); :}
 	| init_declarator_list COMMA init_declarator	{:Logger.print("261");:}
 	;
 
 init_declarator
 	::= declarator:de EQ initializer:in					{:Logger.print("265 declarator: " + de + " initializer: " + in);
-                                                Variable temp = new Variable((String) de,new Type(null));
-                                                Function auxFunc = Semantic.getInstance().getFunction(in);
 
-                                                if (auxFunc != null) {
-                                               RESULT = Semantic.getInstance().assignFunction((Variable) temp, auxFunc);
-                                             } else if (in instanceof Variable) {
-                                                RESULT = Semantic.getInstance().assignVariable((Variable) temp, (Variable) in);
-                                             } else {
-                                                RESULT = Semantic.getInstance().assignVariable((Variable) temp, (Expression) in);
-                                             }
                                               :}
 	| declarator:de									{:Logger.print("266 declarator: " + de);
-                                    Variable temp = new Variable((String) de,new Type(null));
-                                    RESULT=temp;
-                                    Semantic.getInstance().createVariableWithoutExpression((Variable) temp);:}
+
+                                    :}
 	;
 
 storage_class_specifier
@@ -484,16 +406,16 @@ alignment_specifier
 
 declarator
 	::= pointer direct_declarator			{:Logger.print("377");:}
-	| direct_declarator:d						{:RESULT = d; Logger.print("378 direct_declarator: " + d);:}
+	| direct_declarator:d						{:Logger.print("378 direct_declarator: " + d);
+                                        :}
 	;
 
 direct_declarator
-	::= IDENTIFIER:id                 {: RESULT = id; Logger.print("383 identifier: " + id);
-                                       RESULT = id;
-                                       Semantic.getInstance().checkNewScope((String) id);
+	::= IDENTIFIER:id                 {: Logger.print("383 identifier: " + id);
+
                                     :}
 	| LPAREN declarator:decl RPAREN				{:Logger.print("383 declarator: " + decl);:}
-	| direct_declarator:dir_decl LBRACK RBRACK		{:Logger.print("384 direct_declarator: "); RESULT = dir_decl;:}
+	| direct_declarator:dir_decl LBRACK RBRACK		{:Logger.print("384 direct_declarator: "); :}
 	| direct_declarator LBRACK MULT RBRACK	{:Logger.print("385");:}
 	| direct_declarator LBRACK STATIC type_qualifier_list assignment_expression RBRACK	{:Logger.print("386");:}
 	| direct_declarator LBRACK STATIC assignment_expression RBRACK		{:Logger.print("387");:}
@@ -503,12 +425,10 @@ direct_declarator
 	| direct_declarator LBRACK type_qualifier_list RBRACK		{:Logger.print("391");:}
 	| direct_declarator LBRACK assignment_expression RBRACK		{:Logger.print("392");:}
 	| direct_declarator:dl LPAREN parameter_type_list:ptl RPAREN		{:Logger.print("393 direct_declarator: " + dl + " parameter_type_list: " + ptl);
-                                                                    RESULT = dl;
-                                                                    Semantic.getInstance().addFunction((String) dl, (List<String>) ptl);
+
                                                                     :}
 	| direct_declarator:dir_decl LPAREN RPAREN							{:Logger.print("394 dir_decl: " + dir_decl);
-                                                            RESULT=dir_decl;
-                                                            Semantic.getInstance().addFunction((String) dir_decl, new ArrayList<String>());
+
                                                           :}
 	| direct_declarator LPAREN identifier_list RPAREN			{:Logger.print("395");:}
 	;
@@ -529,24 +449,21 @@ type_qualifier_list
 parameter_type_list
 	::= parameter_list COMMA ELLIPSIS		{:Logger.print("412");:}
 	| parameter_list:param_list						{:Logger.print("413 parameter_list: " + param_list);
-                                          RESULT=Semantic.getInstance().getCurrentScope().getParams();:}
+                                          :}
 	;
 
 parameter_list
 	::= parameter_declaration:param_decl						{:Logger.print("417 parameter_declaration: " + param_decl);:}
 	| parameter_list:param_list COMMA parameter_declaration:param_decl	{:Logger.print("418 parameter_list: " + param_list + " parameter_declaration: " + param_decl);
-                                                                        RESULT = param_list;:}
+                                                                        :}
 	;
 
 parameter_declaration
 	::= declaration_specifiers:decl_spec declarator:decl			{:Logger.print("422 declaration_specifiers: " + decl_spec + " declarator: " + decl);
-                                                              RESULT=decl;
-                                                              Type type = new Type(decl_spec.toString());
-                                                              Variable var = new Variable(decl.toString(), type);
-                                                              Semantic.getInstance().initParam(var);
+
                                                               :}
 	| declaration_specifiers abstract_declarator	{:Logger.print("423");:}
-	| declaration_specifiers:decl_spec						{:Logger.print("424 declaration_specifiers: " + decl_spec); RESULT=decl_spec;:}
+	| declaration_specifiers:decl_spec						{:Logger.print("424 declaration_specifiers: " + decl_spec); :}
 	;
 
 identifier_list
@@ -592,7 +509,7 @@ direct_abstract_declarator
 initializer
 	::= LBRACE initializer_list RBRACE		{:Logger.print("468");:}
 	| LBRACE initializer_list COMMA RBRACE	{:Logger.print("469");:}
-	| assignment_expression:assign_exp					{:Logger.print("470 assignment_expression: " + assign_exp); RESULT=assign_exp;:}
+	| assignment_expression:assign_exp					{:Logger.print("470 assignment_expression: " + assign_exp);:}
 	;
 
 initializer_list
@@ -626,10 +543,10 @@ statement
   Semantic.getInstance().getCodeGenerator().updateRelation();
 
                         ;:}
-	| expression_statement:exp_stat	{:Logger.print("501 expression_statement: " + exp_stat); RESULT=exp_stat;:}
+	| expression_statement:exp_stat	{:Logger.print("501 expression_statement: " + exp_stat); :}
 	| selection_statement	{:Logger.print("502");:}
 	| iteration_statement	{:Logger.print("503");:}
-	| jump_statement:jump		{:Logger.print("504 jump_statement: " + jump); RESULT=jump;:}
+	| jump_statement:jump		{:Logger.print("504 jump_statement: " + jump); :}
 	;
 
 labeled_statement
@@ -640,30 +557,28 @@ labeled_statement
 
 compound_statement
   ::= LBRACE RBRACE					{:Logger.print("514");:}
-  | LBRACE  block_item_list:block RBRACE	{:Logger.print("515 block: " + block); RESULT=block;:}
+  | LBRACE  block_item_list:block RBRACE	{:Logger.print("515 block: " + block); :}
   ;
 
 block_item_list
-	::= block_item:block					{:Logger.print("519 block_item: " + block);RESULT=block;:}
-	| block_item_list block_item:block	{:Logger.print("520 block_item: " + block);RESULT=block;:}
+	::= block_item:block					{:Logger.print("519 block_item: " + block);:}
+	| block_item_list block_item:block	{:Logger.print("520 block_item: " + block);:}
 	;
 
 block_item
-	::= declaration:decl					{:Logger.print("524 declaration: " + decl);RESULT=decl;:}
-	| statement:stat						{:Logger.print("525 statement: " + stat); RESULT=stat;:}
+	::= declaration:decl					{:Logger.print("524 declaration: " + decl);:}
+	| statement:stat						{:Logger.print("525 statement: " + stat); :}
 	;
 
 expression_statement
 	::= SEMICOLON					{:Logger.print("529");:}
-	| expression:exp SEMICOLON			{:Logger.print("530 expression: " + exp); RESULT=exp;:}
+	| expression:exp SEMICOLON			{:Logger.print("530 expression: " + exp); :}
 	;
 
 selection_statement
 	::= IF LPAREN expression RPAREN statement ELSE statement	{:Logger.print("534");
-                                                              Semantic.getInstance().getCodeGenerator().updateIfRelation();
                                                             :}
 	| IF LPAREN expression:exp RPAREN statement:stat		{:Logger.print("535 expression: " + exp + " statement: " + stat);
-                                                          Semantic.getInstance().getCodeGenerator().updateRelation();
                                                       :}
 	| SWITCH LPAREN expression RPAREN statement	{:Logger.print("536");:}
 	;
@@ -682,7 +597,7 @@ jump_statement
 	| CONTINUE SEMICOLON			{:Logger.print("550");:}
 	| BREAK SEMICOLON				{:Logger.print("551");:}
 	| RETURN SEMICOLON				{:Logger.print("552");:}
-	| RETURN expression:exp SEMICOLON	{:Logger.print("553 expression: " + exp) ; RESULT=exp;:}
+	| RETURN expression:exp SEMICOLON	{:Logger.print("553 expression: " + exp) ;:}
 	;
 
 translation_unit
@@ -693,7 +608,6 @@ translation_unit
 
 external_declaration
 	::= function_definition		{:Logger.print("562");
-                            Semantic.getInstance().getCodeGenerator().printToFile();
                             :}
 	| declaration:decl				{:Logger.print("563");:}
 	;
@@ -701,7 +615,6 @@ external_declaration
 function_definition
 	::= declaration_specifiers:decl_spec declarator:decl declaration_list compound_statement	{:Logger.print("567");:}
 	| declaration_specifiers:decl_spec declarator:decl compound_statement:compound						{:Logger.print("568 declaration_specifiers: " + decl_spec + " declarator: " + decl + " compound_statement: " + compound);
-                                                                                                Semantic.getInstance().checkReturnType(new Type(decl_spec.toString()), (String) decl.toString(), (Object) compound);
                                                                                               :}
 	;
 

@@ -48,10 +48,10 @@ public class CodeGenerator {
 	 }
 	 
 	 public void generateLDCode(Expression expression) {
-		if (expression.getAssemblyValue() != null) {
+		if (expression.getValue() != null) {
 			register++;
 			labels += 4;
-			addCode(labels + ": LD " + allocateRegister() + ", " + expression.getAssemblyValue());
+			addCode(labels + ": LD " + allocateRegister() + ", " + expression.getValue());
 		}
 	 }
 	 
@@ -101,7 +101,7 @@ public class CodeGenerator {
 
     public void generateADDCode(Register result, Register one, Expression exp) {
         labels += 4;
-        addCode(labels + ": ADD " + result + ", " + one + ", #" + exp.getAssemblyValue());
+        addCode(labels + ": ADD " + result + ", " + one + ", #" + exp.getValue());
     }
 
     public void generateSUBCode() {
@@ -117,7 +117,7 @@ public class CodeGenerator {
 
     public void generateSUBCode(Register result, Register one, Expression exp) {
         labels += 4;
-        addCode(labels + ": SUB " + result + ", " + one + ", #" + exp.getAssemblyValue());
+        addCode(labels + ": SUB " + result + ", " + one + ", #" + exp.getValue());
     }
 
     public void generateMULCode() {

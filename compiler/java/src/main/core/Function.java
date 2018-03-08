@@ -7,7 +7,7 @@ import java.util.List;
 import util.SemanticException;
 
 
-public class Function extends ScopedEntity implements Identifier {
+public class Function{
 	
 	private Type returnType = new Type(null); // Default Return Type
 	private List<Expression> expressions;
@@ -15,9 +15,10 @@ public class Function extends ScopedEntity implements Identifier {
 	private boolean initialized;
 	private Type returnedType = new Type(null); // Default Return Type
 	private int checked = 0;
+	private String name;
 	
 	public Function(String name, List<String> params) {
-		super(name);
+		this.name = name;
 		this.params = params; 
 		initialized = false;
 	}
@@ -34,6 +35,10 @@ public class Function extends ScopedEntity implements Identifier {
 		return checked;
 	}
 	
+	public String getName() {
+		return name;
+	}
+	
 	public List<Expression> getFunctionParamaters() {
 		return expressions;
 	}
@@ -46,12 +51,7 @@ public class Function extends ScopedEntity implements Identifier {
 		return this.initialized;
 	}
 	
-	@Override
-	public List<String> getParams() {
-		return this.params;
-	}
 	
-
 	public Function(String name) {
 		this(name, null);
 	}

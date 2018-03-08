@@ -5,15 +5,24 @@ package core;
  * These types could be primitives (char, int, float, ...) and user-defined
  * using structs, unions, etc
  */
-public class Type extends NamedEntity implements Parameter {
-
-	public Type(String name) {
-		super(name);
+public class Type  {
+	private String value;
+	
+	public Type(String value) {
+		this.value = value; 
 	}
-
+	
+	public String getValue() {
+		return this.value;
+	}
+	
+	public void setValue(String value) {
+		this.value = value;
+	}
+	
 	@Override
 	public String toString() {
-		return getName();
+		return this.value;
 	}
 
 	@Override
@@ -22,32 +31,17 @@ public class Type extends NamedEntity implements Parameter {
 			return false;
 		
 		Type auxObj = (Type) obj;
-		String auxObjName = auxObj.getName();
+		String auxObjName = auxObj.getValue();
 		
-		return  this.getName().equals(auxObjName) ||
-				this.getName().equals("float") && auxObjName.equals("int") || 
-				this.getName().equals("int") && auxObjName.equals("float");
+		return  this.getValue().equals(auxObjName) ||
+				this.getValue().equals("float") && auxObjName.equals("int") || 
+				this.getValue().equals("int") && auxObjName.equals("float");
 	}
 
 	public Type getType() {
 		return this;
 	}
 	
-	public boolean equalsAssignRelational(Object obj) {
-		
-		// Impossivel fazer re-atribuicao a uma variavel do tipo string.
-		if (this.getType().getName() == "char") {
-			return false;
-		}
-		if (!(obj instanceof Type))
-			return false;
-		
-		Type auxObj = (Type) obj;
-		String auxObjName = auxObj.getName();
-		
-		return  this.getName().equals(auxObjName) ||
-				this.getName().equals("float") && auxObjName.equals("int") || 
-				this.getName().equals("int") && auxObjName.equals("float");
-	}
+	
 
 }

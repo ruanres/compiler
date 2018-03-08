@@ -3,65 +3,58 @@ package core;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  *	Entity that has a scope.. All variables here holds only to the scope of this entity...
  */
-public class ScopedEntity extends NamedEntity {
+public class ScopedEntity{
 
 	private HashMap<String, Variable> variables;
 	private HashMap<String, Type> types;
 	private List<String> params;
-	
-	private int checkParam = 0;
+	private String name;
 	
 	public ScopedEntity(String name) {
-		super(name);
+		this.name = name;
 		variables = new HashMap<String, Variable>();
 		params = new ArrayList<String>();
 	}
 
-	public Map<String, Variable> getVariable() {
+	public HashMap<String, Variable> getVariables() {
 		return variables;
 	}
-	
-	public void addVariable(Variable v) {
-		this.variables.put(v.getName(), v);
-	}
-	
-	public void clearVariables() {
-		variables = new HashMap<String, Variable>();
 
+	public void setVariables(HashMap<String, Variable> variables) {
+		this.variables = variables;
 	}
 	
-	public void clearParams() {
-		params = new ArrayList<String>();
 
+	public void addVariables(Variable variable) {
+		this.variables.put(variable.getName(), variable);
 	}
 	
-	public void addType(Type t) {
-		this.types.put(t.getName(), t);
-	}
-	
-	public Map<String, Type> getTypes() {
+	public HashMap<String, Type> getTypes() {
 		return types;
 	}
-	
+
+	public void setTypes(HashMap<String, Type> types) {
+		this.types = types;
+	}
+
 	public List<String> getParams() {
-		return this.params;
+		return params;
 	}
-	
-	public void addParam(String param) {
-		this.params.add(param);
+
+	public void setParams(List<String> params) {
+		this.params = params;
 	}
-	//** Needed to check the function call
-	public void incrementCheckParam() {
-		checkParam += 1;
+
+	public String getName() {
+		return name;
 	}
-	
-	public int getCheckParam() {
-		return checkParam;
+
+	public void setName(String name) {
+		this.name = name;
 	}
-	
+
 }
