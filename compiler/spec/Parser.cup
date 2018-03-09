@@ -76,15 +76,24 @@ non terminal relational_expression, inclusive_or_expression, declaration;
 start with translation_unit;
 
 primary_expression ::= IDENTIFIER:id         {:Logger.print("72 IDENTIFIER: " + id);
-                                               RESULT = id; :}
+                                               RESULT = id;
+                                              :}
                        | constant:c         {:Logger.print("73 " + c); RESULT = c; :}
                        | string:s						{:Logger.print("74 - String"); RESULT = s;:}
 	                     | LPAREN expression RPAREN  {:Logger.print("75");:}
                        | generic_selection	{:Logger.print("76");:}
                        ;
 
-constant ::= I_CONSTANT:i		/* includes character_constant */ {:Logger.print("79 I_CONSTANT: " + i); RESULT = i;:}
-	           | F_CONSTANT:f 	{:Logger.print("80 F_CONSTANT: " + f); :}
+constant ::= I_CONSTANT:i		/* includes character_constant */ {:Logger.print("79 I_CONSTANT: " + i);
+                                                                Type type = new Type("int");
+                                                                Expression expression = new Expression(type, i.toString());
+                                                                RESULT = expression;
+
+                                                              :}
+	           | F_CONSTANT:f 	{:Logger.print("80 F_CONSTANT: " + f);
+                                 Type type = new Type("float");
+                                 Expression expression = new Expression(type, f.toString());
+                              :}
 	           | ENUMERATION_CONSTANT	/* after it has been defined as such */ {:Logger.print("81");:}
 	           ;
 
@@ -93,7 +102,10 @@ enumeration_constant		/* before it has been defined as such */
 	;
 
 string
-	::= STRING_LITERAL:s				{: Logger.print("89 STRING_LITERAL: " + s); :}
+	::= STRING_LITERAL:s				{: Logger.print("89 STRING_LITERAL: " + s);
+                                Type type = new Type("char");
+                                Expression expression = new Expression(type, s.toString());
+                              :}
 	| FUNC_NAME:f						{: Logger.print("90 FUNC_NAME: " + f); :}
 	;
 
@@ -177,13 +189,17 @@ additive_expression
 	;
 
 shift_expression
-	::= additive_expression:add_exp								{:Logger.print("163 add_exp: " + add_exp); :}
+	::= additive_expression:add_exp								{:Logger.print("163 add_exp: " + add_exp);
+                                                  RESULT=add_exp;
+                                                :}
 	| shift_expression LEFT_OP additive_expression		{:Logger.print("164");:}
 	| shift_expression RIGHT_OP additive_expression		{:Logger.print("165");:}
 	;
 
 relational_expression
-	::= shift_expression:shift									{: Logger.print("169 shift_expression: "  + shift); :}
+	::= shift_expression:shift									{: Logger.print("169 shift_expression: "  + shift);
+                                                 RESULT=shift;
+                                                :}
 	| relational_expression:e1 LT:lt shift_expression:e2				{: Logger.print("170 LESS THAN");
 
                                                             :}
@@ -195,45 +211,62 @@ relational_expression
 	;
 
 equality_expression
-	::= relational_expression:rel								{: Logger.print("177 relational_expression: " + rel); :}
+	::= relational_expression:rel								{: Logger.print("177 relational_expression: " + rel);
+                                                RESULT = rel;
+                                              :}
 	| equality_expression:e1 EQ_OP:eq_op relational_expression:e2		{: Logger.print("178 EQUAL");
                                                                   :}
 	| equality_expression:e1 NE_OP:ne_op relational_expression:e2		{: Logger.print("179 NOT EQUAL");
+
                                                                     :}
 	;
 
 and_expression
-	::= equality_expression:eq_exp						{:Logger.print("183 equality_expression: " + eq_exp); :}
+	::= equality_expression:eq_exp						{:Logger.print("183 equality_expression: " + eq_exp);
+                                              RESULT=eq_exp;
+                                            :}
 	| and_expression AND equality_expression	{:Logger.print("184");:}
 	;
 
 exclusive_or_expression
-	::= and_expression:and_exp								{:Logger.print("188 and_expression: " + and_exp); :}
+	::= and_expression:and_exp								{:Logger.print("188 and_expression: " + and_exp);
+                                              RESULT=and_exp;
+                                            :}
 	| exclusive_or_expression XOR and_expression	{:Logger.print("189");:}
 	;
 
 inclusive_or_expression
-	::= exclusive_or_expression:ex_or_exp								{:Logger.print("193 exclusive_or_expression: " + ex_or_exp); :}
+	::= exclusive_or_expression:ex_or_exp								{:Logger.print("193 exclusive_or_expression: " + ex_or_exp);
+                                                        RESULT=ex_or_exp;
+                                                      :}
 	| inclusive_or_expression OR exclusive_or_expression	{:Logger.print("194");:}
 	;
 
 logical_and_expression
-	::= inclusive_or_expression:in_or_exp								{:Logger.print("198 inclusive_or_expression: " + in_or_exp); :}
+	::= inclusive_or_expression:in_or_exp								{:Logger.print("198 inclusive_or_expression: " + in_or_exp);
+                                                        RESULT=in_or_exp;
+                                                      :}
 	| logical_and_expression AND_OP inclusive_or_expression	{:Logger.print("199");:}
 	;
 
 logical_or_expression
-	::= logical_and_expression:log_and_exp								{:Logger.print("203 logical_and_expression: " + log_and_exp);:}
+	::= logical_and_expression:log_and_exp								{:Logger.print("203 logical_and_expression: " + log_and_exp);
+                                                          RESULT=log_and_exp;
+                                                        :}
 	| logical_or_expression OR_OP logical_and_expression	{:Logger.print("204");:}
 	;
 
 conditional_expression
-	::= logical_or_expression:log_or_exp													{:Logger.print("208 logical_or_expression: " + log_or_exp); :}
+	::= logical_or_expression:log_or_exp													{:Logger.print("208 logical_or_expression: " + log_or_exp);
+                                                                  RESULT=log_or_exp;
+                                                                :}
 	| logical_or_expression QUESTION expression COLON conditional_expression	{:Logger.print("209");:}
 	;
 
 assignment_expression
-	::= conditional_expression:cond_exp										{:Logger.print("213 conditional_expression: " + cond_exp); :}
+	::= conditional_expression:cond_exp										{:Logger.print("213 conditional_expression: " + cond_exp);
+                                                          RESULT=cond_exp;
+                                                        :}
 	| unary_expression:un_exp assignment_operator:as_op assignment_expression:as_exp	{:Logger.print("214 unary_expression: " + un_exp + " assignment_operator: " + as_op + " assignment_expression: " + as_exp);
 
                                                                                       :}
@@ -265,7 +298,7 @@ constant_expression
 declaration
 	::= declaration_specifiers SEMICOLON		{:Logger.print("241");:}
 	| declaration_specifiers:decl_types init_declarator_list:decl_vars SEMICOLON		{:Logger.print("242 declaration_specifiers: " + decl_types + " init_declarator_list: " + decl_vars);
-
+                                                                                    RESULT = decl_vars;
                                                                                   :}
 	| static_assert_declaration		{:Logger.print("243");:}
 	;
@@ -274,7 +307,9 @@ declaration_specifiers
 	::= storage_class_specifier declaration_specifiers	{:Logger.print("247");:}
 	| storage_class_specifier							{:Logger.print("248");:}
 	| type_specifier declaration_specifiers				{:Logger.print("249");:}
-	| type_specifier:ty									{:Logger.print("250 type_specifier: " + ty);:}
+	| type_specifier:ty									{:Logger.print("250 type_specifier: " + ty);
+                                        RESULT=ty;
+                                      :}
 	| type_qualifier declaration_specifiers				{:Logger.print("251");:}
 	| type_qualifier									{:Logger.print("252");:}
 	| function_specifier declaration_specifiers			{:Logger.print("253");:}
@@ -284,16 +319,19 @@ declaration_specifiers
 	;
 
 init_declarator_list
-	::= init_declarator:init_decl								{:Logger.print("260 init_declarator: " + init_decl); :}
+	::= init_declarator:init_decl								{:Logger.print("260 init_declarator: " + init_decl);
+                                                RESULT=init_decl;
+                                              :}
 	| init_declarator_list COMMA init_declarator	{:Logger.print("261");:}
 	;
 
 init_declarator
 	::= declarator:de EQ initializer:in					{:Logger.print("265 declarator: " + de + " initializer: " + in);
-
+                                                Semantic.getInstance().initVariable(de.toString(), (Object) in);
+                                                RESULT = de;
                                               :}
 	| declarator:de									{:Logger.print("266 declarator: " + de);
-
+                                      RESULT = de;
                                     :}
 	;
 
@@ -407,12 +445,14 @@ alignment_specifier
 declarator
 	::= pointer direct_declarator			{:Logger.print("377");:}
 	| direct_declarator:d						{:Logger.print("378 direct_declarator: " + d);
-                                        :}
+                                    RESULT=d;
+
+                                  :}
 	;
 
 direct_declarator
 	::= IDENTIFIER:id                 {: Logger.print("383 identifier: " + id);
-
+                                      RESULT = id;
                                     :}
 	| LPAREN declarator:decl RPAREN				{:Logger.print("383 declarator: " + decl);:}
 	| direct_declarator:dir_decl LBRACK RBRACK		{:Logger.print("384 direct_declarator: "); :}
@@ -428,7 +468,8 @@ direct_declarator
 
                                                                     :}
 	| direct_declarator:dir_decl LPAREN RPAREN							{:Logger.print("394 dir_decl: " + dir_decl);
-
+                                                              RESULT=dir_decl;
+                                                              Semantic.getInstance().initFunction(dir_decl.toString());
                                                           :}
 	| direct_declarator LPAREN identifier_list RPAREN			{:Logger.print("395");:}
 	;
@@ -509,7 +550,9 @@ direct_abstract_declarator
 initializer
 	::= LBRACE initializer_list RBRACE		{:Logger.print("468");:}
 	| LBRACE initializer_list COMMA RBRACE	{:Logger.print("469");:}
-	| assignment_expression:assign_exp					{:Logger.print("470 assignment_expression: " + assign_exp);:}
+	| assignment_expression:assign_exp					{:Logger.print("470 assignment_expression: " + assign_exp);
+                                                RESULT=assign_exp;
+                                              :}
 	;
 
 initializer_list
@@ -557,16 +600,22 @@ labeled_statement
 
 compound_statement
   ::= LBRACE RBRACE					{:Logger.print("514");:}
-  | LBRACE  block_item_list:block RBRACE	{:Logger.print("515 block: " + block); :}
+  | LBRACE  block_item_list:block RBRACE	{:Logger.print("515 block: " + block);
+                                            RESULT=block;
+                                          :}
   ;
 
 block_item_list
-	::= block_item:block					{:Logger.print("519 block_item: " + block);:}
+	::= block_item:block					{:Logger.print("519 block_item: " + block);
+                                  RESULT=block;
+                                :}
 	| block_item_list block_item:block	{:Logger.print("520 block_item: " + block);:}
 	;
 
 block_item
-	::= declaration:decl					{:Logger.print("524 declaration: " + decl);:}
+	::= declaration:decl					{:Logger.print("524 declaration: " + decl);
+                                  RESULT=decl;
+                                :}
 	| statement:stat						{:Logger.print("525 statement: " + stat); :}
 	;
 
@@ -601,20 +650,23 @@ jump_statement
 	;
 
 translation_unit
-	::= external_declaration				{:Logger.print("557 "); :}
-	| translation_unit external_declaration	{:Logger.print("558");
-                                            :}
+	::= external_declaration:external				{:Logger.print("557 external: " + external); :}
+	| translation_unit:trans external_declaration:external	{:Logger.print("558 translation_unit: " + trans + " external_declaration: " + external);
+
+                                          :}
 	;
 
 external_declaration
-	::= function_definition		{:Logger.print("562");
-                            :}
+	::= function_definition:func		{:Logger.print("562 function_definition: " + func);
+                                      RESULT = func;
+                                  :}
 	| declaration:decl				{:Logger.print("563");:}
 	;
 
 function_definition
 	::= declaration_specifiers:decl_spec declarator:decl declaration_list compound_statement	{:Logger.print("567");:}
 	| declaration_specifiers:decl_spec declarator:decl compound_statement:compound						{:Logger.print("568 declaration_specifiers: " + decl_spec + " declarator: " + decl + " compound_statement: " + compound);
+                                                                                              RESULT = decl;
                                                                                               :}
 	;
 

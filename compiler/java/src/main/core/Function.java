@@ -10,16 +10,17 @@ import util.SemanticException;
 public class Function{
 	
 	private Type returnType = new Type(null); // Default Return Type
-	private List<Expression> expressions;
+	private List<Variable> variables;
 	private List<String> params;
 	private boolean initialized;
 	private Type returnedType = new Type(null); // Default Return Type
 	private int checked = 0;
 	private String name;
 	
-	public Function(String name, List<String> params) {
+	public Function(String name) {
 		this.name = name;
 		this.params = params; 
+		this.variables = new ArrayList<Variable>();
 		initialized = false;
 	}
 	
@@ -39,22 +40,18 @@ public class Function{
 		return name;
 	}
 	
-	public List<Expression> getFunctionParamaters() {
-		return expressions;
+	public List<Variable> getVariables() {
+		return getVariables();
 	}
 	
-	public void setFunctionParamaters(List<Expression> expressions) {
-		this.expressions = expressions;
+	public void setVariables(List<Variable> variables) {
+		this.variables = variables;
 	}
 	
 	public boolean isFunctionInitialized() {
 		return this.initialized;
 	}
 	
-	
-	public Function(String name) {
-		this(name, null);
-	}
 	
 	public Type getReturnType() {
 		return returnType;

@@ -1,12 +1,11 @@
 package compiler.generated;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Stack;
 
+import compiler.generated.scopes.AssignScope;
+import compiler.generated.scopes.FunctionScope;
 import core.*;
-import util.SemanticException;
+
 
 public class Semantic {
 	public static Parser parser;
@@ -15,7 +14,6 @@ public class Semantic {
     private Stack<ScopedEntity> scopeStack = new Stack<ScopedEntity>();
     private Program cProgram;
     public static CodeGenerator codeGenerator;
-    private boolean afterMain;
     
 	public static Semantic getInstance() {
 		if (sAnalysis == null)
@@ -28,9 +26,7 @@ public class Semantic {
 	
 	public Semantic() {
 		cProgram = new Program();
-		ScopedEntity scoped = new ScopedEntity("init");
-		scopeStack.push(scoped);
-		afterMain = false;
+
 	}
 	
 	public static CodeGenerator getCodeGenerator() {
@@ -40,6 +36,22 @@ public class Semantic {
 	public ScopedEntity getCurrentScope() {
         return scopeStack.peek();
     }
+
+	
+	public void initFunction(String funcName) {
+		FunctionScope.getInstance().initFunction(funcName, cProgram, scopeStack);
+	}
+	
+	public void initVariable(String varName, Object assign) {
+		if (assign instanceof Expression) {
+			AssignScope.getInstance().initVariable(varName, (Expression) assign, scopeStack.peek());
+		} else {
+			AssignScope.getInstance().initVariable(varName, assign.toString(), scopeStack.peek());
+		}
+		
+	}
+	
+
 	
 	
 	
